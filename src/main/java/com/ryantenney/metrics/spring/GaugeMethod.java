@@ -7,19 +7,19 @@ import java.lang.reflect.Method;
 
 public class GaugeMethod extends Gauge<Object> {
 
-    private final Object bean;
-    private final Method method;
+	private final Object bean;
+	private final Method method;
 
-    public GaugeMethod(final Object bean, final Method method) {
-        this.bean = bean;
-        this.method = method;
+	public GaugeMethod(final Object bean, final Method method) {
+		this.bean = bean;
+		this.method = method;
 
-        ReflectionUtils.makeAccessible(method);
-    }
+		ReflectionUtils.makeAccessible(method);
+	}
 
-    @Override
-    public Object value() {
-        return ReflectionUtils.invokeMethod(method, bean);
-    }
+	@Override
+	public Object value() {
+		return ReflectionUtils.invokeMethod(method, bean);
+	}
 
 }

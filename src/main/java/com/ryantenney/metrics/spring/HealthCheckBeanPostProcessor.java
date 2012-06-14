@@ -11,35 +11,35 @@ import com.yammer.metrics.core.HealthCheckRegistry;
 
 public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
 
-    private static final Log log = LogFactory.getLog(HealthCheckBeanPostProcessor.class);
+	private static final Log log = LogFactory.getLog(HealthCheckBeanPostProcessor.class);
 
-    private final HealthCheckRegistry healthChecks;
+	private final HealthCheckRegistry healthChecks;
 
-    public HealthCheckBeanPostProcessor(final HealthCheckRegistry healthChecks) {
-        this.healthChecks = healthChecks;
-    }
+	public HealthCheckBeanPostProcessor(final HealthCheckRegistry healthChecks) {
+		this.healthChecks = healthChecks;
+	}
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof HealthCheck) {
-            healthChecks.register((HealthCheck) bean);
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		if (bean instanceof HealthCheck) {
+			healthChecks.register((HealthCheck) bean);
 
-            if (log.isDebugEnabled()) {
-                log.debug("Registering HealthCheck bean " + beanName);
-            }
-        }
+			if (log.isDebugEnabled()) {
+				log.debug("Registering HealthCheck bean " + beanName);
+			}
+		}
 
-        return bean;
-    }
+		return bean;
+	}
 
-    @Override
-    public int getOrder() {
-        return LOWEST_PRECEDENCE;
-    }
+	@Override
+	public int getOrder() {
+		return LOWEST_PRECEDENCE;
+	}
 
 }

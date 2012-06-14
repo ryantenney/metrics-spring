@@ -14,21 +14,22 @@ import static org.hamcrest.Matchers.instanceOf;
 
 public class AltClockTest {
 
-    @Test
-    public void testOverriddenClock() throws Throwable {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:alt-clock.xml");
-    	MetricsRegistry registry = ctx.getBean(MetricsRegistry.class);
+	@Test
+	public void testOverriddenClock() throws Throwable {
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:alt-clock.xml");
+		MetricsRegistry registry = ctx.getBean(MetricsRegistry.class);
 
-      	assertThat(getClockField().get(registry), instanceOf(CpuTimeClock.class));
-    }
+		assertThat(getClockField().get(registry), instanceOf(CpuTimeClock.class));
+	}
 
-    protected Field getClockField() throws NoSuchFieldException {
-        for (Field f : MetricsRegistry.class.getDeclaredFields()) {
-            if (f.getType() == Clock.class) {
-                f.setAccessible(true);
-                return f;
-            }
-        }
-        throw new NoSuchFieldException();
-    }
+	protected Field getClockField() throws NoSuchFieldException {
+		for (Field f : MetricsRegistry.class.getDeclaredFields()) {
+			if (f.getType() == Clock.class) {
+				f.setAccessible(true);
+				return f;
+			}
+		}
+		throw new NoSuchFieldException();
+	}
+
 }

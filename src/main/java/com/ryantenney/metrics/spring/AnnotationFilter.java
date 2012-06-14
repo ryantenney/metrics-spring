@@ -9,20 +9,20 @@ import java.lang.reflect.Method;
 
 public class AnnotationFilter implements MethodFilter, FieldFilter {
 
-    private final Class<? extends Annotation> clazz;
+	private final Class<? extends Annotation> clazz;
 
-    public AnnotationFilter(final Class<? extends Annotation> clazz) {
-        this.clazz = clazz;
-    }
+	public AnnotationFilter(final Class<? extends Annotation> clazz) {
+		this.clazz = clazz;
+	}
 
-    @Override
-    public boolean matches(Method method) {
-        return method.isAnnotationPresent(clazz);
-    }
+	@Override
+	public boolean matches(Method method) {
+		return method.isAnnotationPresent(clazz);
+	}
 
-    @Override
-    public boolean matches(Field field) {
-        return field.isAnnotationPresent(clazz);
-    }
+	@Override
+	public boolean matches(Field field) {
+		return field.isAnnotationPresent(clazz);
+	}
 
 }

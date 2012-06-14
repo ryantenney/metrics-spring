@@ -39,7 +39,7 @@ public class MeteredClassTest {
 	Timer triple_Timed;
 	Meter triple_Metered;
 	Meter triple_ExceptionMetered;
-	
+
 	@Before
 	@SuppressWarnings(value = "unchecked")
 	public void init() {
@@ -141,4 +141,5 @@ public class MeteredClassTest {
 		assertEquals(2, triple_Timed.count());
 		assertEquals(1, triple_ExceptionMetered.count());
 	}
+
 }

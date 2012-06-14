@@ -15,58 +15,57 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.util.ClassUtils;
 
-public abstract class AbstractProxyingBeanPostProcessor extends ProxyConfig implements
-                                                                            BeanPostProcessor {
+public abstract class AbstractProxyingBeanPostProcessor extends ProxyConfig implements BeanPostProcessor {
 
-    private static final long serialVersionUID = -3482052668071169769L;
+	private static final long serialVersionUID = -3482052668071169769L;
 
-    private final Log log = LogFactory.getLog(getClass());
+	private final Log log = LogFactory.getLog(getClass());
 
-    private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+	private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-    public abstract MethodInterceptor getMethodInterceptor(Class<?> targetClass);
+	public abstract MethodInterceptor getMethodInterceptor(Class<?> targetClass);
 
-    public abstract Pointcut getPointcut();
+	public abstract Pointcut getPointcut();
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof AopInfrastructureBean) {
-            return bean;
-        }
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		if (bean instanceof AopInfrastructureBean) {
+			return bean;
+		}
 
-        final Class<?> targetClass = AopUtils.getTargetClass(bean);
-        final Pointcut pointcut = getPointcut();
+		final Class<?> targetClass = AopUtils.getTargetClass(bean);
+		final Pointcut pointcut = getPointcut();
 
-        if (AopUtils.canApply(pointcut, targetClass)) {
-            final MethodInterceptor interceptor = getMethodInterceptor(targetClass);
-            final PointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, interceptor);
+		if (AopUtils.canApply(pointcut, targetClass)) {
+			final MethodInterceptor interceptor = getMethodInterceptor(targetClass);
+			final PointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, interceptor);
 
-            if (bean instanceof Advised) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Bean " + beanName + " is already proxied, adding Advisor to existing proxy");
-                }
+			if (bean instanceof Advised) {
+				if (log.isDebugEnabled()) {
+					log.debug("Bean " + beanName + " is already proxied, adding Advisor to existing proxy");
+				}
 
-                ((Advised) bean).addAdvisor(0, advisor);
-                return bean;
-            }
+				((Advised) bean).addAdvisor(0, advisor);
+				return bean;
+			}
 
-            if (log.isDebugEnabled()) {
-                log.debug("Proxying bean " + beanName + " of type " + targetClass.getCanonicalName());
-            }
+			if (log.isDebugEnabled()) {
+				log.debug("Proxying bean " + beanName + " of type " + targetClass.getCanonicalName());
+			}
 
-            final ProxyFactory proxyFactory = new ProxyFactory(bean);
-            proxyFactory.copyFrom(this);
-            proxyFactory.addAdvisor(advisor);
+			final ProxyFactory proxyFactory = new ProxyFactory(bean);
+			proxyFactory.copyFrom(this);
+			proxyFactory.addAdvisor(advisor);
 
-            return proxyFactory.getProxy(this.beanClassLoader);
-        }
+			return proxyFactory.getProxy(this.beanClassLoader);
+		}
 
-        return bean;
-    }
+		return bean;
+	}
 
 }

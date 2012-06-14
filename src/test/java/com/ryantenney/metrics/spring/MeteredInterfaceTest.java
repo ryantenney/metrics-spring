@@ -11,51 +11,51 @@ import com.yammer.metrics.core.MetricsRegistry;
 
 public class MeteredInterfaceTest {
 
-    ClassPathXmlApplicationContext ctx;
+	ClassPathXmlApplicationContext ctx;
 
-    @Before
-    public void init() {
-        this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface.xml");
-    }
+	@Before
+	public void init() {
+		this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface.xml");
+	}
 
-    @After
-    public void destroy() {
-        ctx.getBean(MetricsRegistry.class).shutdown();
-    }
+	@After
+	public void destroy() {
+		ctx.getBean(MetricsRegistry.class).shutdown();
+	}
 
-    @Test
-    public void testMeteredInterface() {
-        MeteredInterface mi = ctx.getBean(MeteredInterface.class);
-        Assert.assertNotNull("Expected to be able to get MeteredInterface by interface and not by class.", mi);
-    }
+	@Test
+	public void testMeteredInterface() {
+		MeteredInterface mi = ctx.getBean(MeteredInterface.class);
+		Assert.assertNotNull("Expected to be able to get MeteredInterface by interface and not by class.", mi);
+	}
 
-    @Test(expected=NoSuchBeanDefinitionException.class)
-    public void testMeteredClass() {
-        MeteredInterfaceImpl mc = ctx.getBean(MeteredInterfaceImpl.class);
-        Assert.assertNull("Expected to be unable to get MeteredClass by class.", mc);
-    }
+	@Test(expected=NoSuchBeanDefinitionException.class)
+	public void testMeteredClass() {
+		MeteredInterfaceImpl mc = ctx.getBean(MeteredInterfaceImpl.class);
+		Assert.assertNull("Expected to be unable to get MeteredClass by class.", mc);
+	}
 
-    @Test
-    public void testTimedMethod() {
-        Assert.assertTrue(ctx.getBean(MeteredInterface.class).timedMethod());
-        Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
-    }
+	@Test
+	public void testTimedMethod() {
+		Assert.assertTrue(ctx.getBean(MeteredInterface.class).timedMethod());
+		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
+	}
 
-    @Test
-    public void testMeteredMethod() {
-        Assert.assertTrue(ctx.getBean(MeteredInterface.class).meteredMethod());
-        Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
-    }
+	@Test
+	public void testMeteredMethod() {
+		Assert.assertTrue(ctx.getBean(MeteredInterface.class).meteredMethod());
+		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
+	}
 
-    @Test(expected=BogusException.class)
-    public void testExceptionMeteredMethod() throws Throwable {
-    	try {
-    		ctx.getBean(MeteredInterface.class).exceptionMeteredMethod();
-    	} catch (Throwable t) {
-    		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
-    		throw t;
-    	}
-    	Assert.fail();
-    }
+	@Test(expected=BogusException.class)
+	public void testExceptionMeteredMethod() throws Throwable {
+		try {
+			ctx.getBean(MeteredInterface.class).exceptionMeteredMethod();
+		} catch (Throwable t) {
+			Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
+			throw t;
+		}
+		Assert.fail();
+	}
 
 }
