@@ -1,8 +1,8 @@
 package com.ryantenney.metrics.spring;
 
 import org.aopalliance.intercept.MethodInterceptor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.framework.Advised;
@@ -19,7 +19,7 @@ public abstract class AbstractProxyingBeanPostProcessor extends ProxyConfig impl
 
 	private static final long serialVersionUID = -3482052668071169769L;
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -46,17 +46,13 @@ public abstract class AbstractProxyingBeanPostProcessor extends ProxyConfig impl
 			final PointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, interceptor);
 
 			if (bean instanceof Advised) {
-				if (log.isDebugEnabled()) {
-					log.debug("Bean " + beanName + " is already proxied, adding Advisor to existing proxy");
-				}
+				log.debug("Bean {} is already proxied, adding Advisor to existing proxy", beanName);
 
 				((Advised) bean).addAdvisor(0, advisor);
 				return bean;
 			}
 
-			if (log.isDebugEnabled()) {
-				log.debug("Proxying bean " + beanName + " of type " + targetClass.getCanonicalName());
-			}
+			log.debug("Proxying bean {} of type {}", beanName, targetClass.getCanonicalName());
 
 			final ProxyFactory proxyFactory = new ProxyFactory(bean);
 			proxyFactory.copyFrom(this);

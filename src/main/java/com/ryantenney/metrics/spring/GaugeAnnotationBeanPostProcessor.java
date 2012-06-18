@@ -4,8 +4,8 @@ import com.yammer.metrics.annotation.Gauge;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricsRegistry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 
 public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
-	private static final Log log = LogFactory.getLog(GaugeAnnotationBeanPostProcessor.class);
+	private static final Logger log = LoggerFactory.getLogger(GaugeAnnotationBeanPostProcessor.class);
 
 	private static final AnnotationFilter filter = new AnnotationFilter(Gauge.class);
 
@@ -51,9 +51,7 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 
 				metrics.newGauge(metricName, new GaugeField(bean, field));
 
-				if (log.isDebugEnabled()) {
-					log.debug("Created gauge " + metricName + " for field " + targetClass.getCanonicalName() + "." + field.getName());
-				}
+				log.debug("Created gauge {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
 			}
 		}, filter);
 
@@ -72,9 +70,7 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 
 				metrics.newGauge(metricName, new GaugeMethod(bean, method));
 
-				if (log.isDebugEnabled()) {
-					log.debug("Created gauge " + metricName + " for method " + targetClass.getCanonicalName() + "." + method.getName());
-				}
+				log.debug("Created gauge {} for method {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), method.getName() });
 			}
 		}, filter);
 
