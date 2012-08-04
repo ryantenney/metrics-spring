@@ -13,7 +13,7 @@ The `metrics-spring` module integrates [Yammer Metrics](http://metrics.codahale.
 		<version>2.1.2</version>
 	</dependency>
 
-This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics). Version 2.1.2 will be the last version of this module available at these coordinates. New coordinates will be available soon.
+This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics). Version 2.1.2 will be the last version of this module available at these coordinates. This is the new official home of this project, and new coordinates will be available soon.
 
 ###Usage
 
@@ -49,8 +49,8 @@ The most important part of the configuration is the element `<metrics:annotation
 
 The `<metrics:annotation-driven />` element accepts 5 optional arguments:
 
-* `metrics-registry` - the id of the `MetricsRegsitry` bean with which the generated metrics should be registered. If omitted, this defaults to registry provided by Metrics.defaultRegistry().
-* `health-check-registry` - the id of the `HealthCheckRegsitry` bean with which to register any beans which extend the class HealthCheck. If omitted, this defaults to registry provided by HealthChecks.defaultRegistry().
+* `metrics-registry` - the id of the `MetricsRegsitry` bean with which the generated metrics should be registered. If omitted, this defaults to registry provided by `Metrics.defaultRegistry()`.
+* `health-check-registry` - the id of the `HealthCheckRegsitry` bean with which to register any beans which extend the class `HealthCheck`. If omitted, this defaults to the registry provided by `HealthChecks.defaultRegistry()`.
 * `scope` - sets the scope for each of the metrics.
 * `proxy-target-class` - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This *may* be necessary if you use class-based autowiring.
 * `expose-proxy` - if set to true, the target can access the proxy which wraps it by calling `AopContext.currentProxy()`.
@@ -72,7 +72,7 @@ Due to a limitations of Spring AOP, only public methods can be proxied, so `@Tim
 			this.bar(); // doesn't pass through the proxy
 			
 			// fix: reengineer
-			// workaround: enable `expose-proxy` in and then:
+			// workaround: enable `expose-proxy` and change to:
 			((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
 		}
 	}
