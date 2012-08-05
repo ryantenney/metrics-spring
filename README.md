@@ -5,6 +5,12 @@
 
 The `metrics-spring` module integrates [Yammer Metrics](http://metrics.codahale.com/) with Spring AOP, complete with simple XML configuration.
 
+This module does the following things:
+
+* Proxies beans which contain methods annotated with `@Timed`, `@Metered`, and `@ExceptionMetered`
+* Registers a `Gauge` for beans which have members annotated with `@Gauge`
+* Registers with the `HealthCheckRegistry` any beans which extend the class `HealthCheck`
+
 ###Maven
 
 	<dependency>
@@ -15,7 +21,7 @@ The `metrics-spring` module integrates [Yammer Metrics](http://metrics.codahale.
 
 This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics). Version 2.1.2 will be the last version of this module available at these coordinates. This is the new official home of this project, and new coordinates will be available soon.
 
-###Usage
+###Basic Usage
 
 Spring Context XML:
 
@@ -23,31 +29,20 @@ Spring Context XML:
 		   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		   xmlns:metrics="http://www.yammer.com/schema/metrics"
 		   xsi:schemaLocation="
-				http://www.yammer.com/schema/metrics
-				http://www.yammer.com/schema/metrics/metrics.xsd
 				http://www.springframework.org/schema/beans
-				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+				http://www.yammer.com/schema/metrics
+				http://www.yammer.com/schema/metrics/metrics.xsd">
 	
-		<metrics:metrics-registry id="metrics"/>
-		<metrics:health-check-registry id="health"/>
+		<metrics:annotation-driven />
 	
-		<metrics:annotation-driven metrics-registry="metrics" health-check-registry="health"/>
-	
-		<metrics:jmx-reporter id="metricsJmxReporter" metrics-registry="metrics"/>
-	
-		<!-- other beans -->
+		<!-- beans -->
 	
 	</beans>
 
-The most important part of the configuration is the element `<metrics:annotation-driven />`. This registers custom Spring bean processors, which serve three purposes:
-
-* Proxying beans which have methods annotated with `@Timed`, `@Metered`, and `@ExceptionMetered`
-* Registering a `Gauge` for beans which have members annotated with `@Gauge`
-* Registering beans which extend the class `HealthCheck`
-
 ###XML Config
 
-The `<metrics:annotation-driven />` element accepts 5 optional arguments:
+The `<metrics:annotation-driven />` element is required, and has 5 optional arguments:
 
 * `metrics-registry` - the id of the `MetricsRegsitry` bean with which the generated metrics should be registered. If omitted, this defaults to registry provided by `Metrics.defaultRegistry()`.
 * `health-check-registry` - the id of the `HealthCheckRegsitry` bean with which to register any beans which extend the class `HealthCheck`. If omitted, this defaults to the registry provided by `HealthChecks.defaultRegistry()`.
@@ -59,9 +54,9 @@ The elements `<metrics:metrics-registry />` and `<metrics:health-check-registry 
 
 The element `<metrics:jmx-reporter />` creates a JMX Reporter for the specified metrics registry. A JMX Reporter is automatically created for the default metrics registry.
 
-###A Note on the Limitations of Spring AOP 
+###A Note on the Limitations of Spring AOP
 
-Due to a limitations of Spring AOP, only public methods can be proxied, so `@Timed`, `@Metered`, and `@ExceptionMetered` have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.
+Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`, `@Metered`, and `@ExceptionMetered` have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.
 
 	public class Foo {
 		
@@ -80,7 +75,7 @@ Due to a limitations of Spring AOP, only public methods can be proxied, so `@Tim
 As `@Gauge` doesn’t involve a proxy, it is possible to use this annotation on private fields and methods.
 
 ##License
----------
+=========
 
 Copyright (c) 2012 Ryan Tenney, Martello Technologies
 
