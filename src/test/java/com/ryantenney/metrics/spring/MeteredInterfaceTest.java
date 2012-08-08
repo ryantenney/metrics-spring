@@ -18,11 +18,6 @@ public class MeteredInterfaceTest {
 		this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface.xml");
 	}
 
-	@After
-	public void destroy() {
-		ctx.getBean(MetricsRegistry.class).shutdown();
-	}
-
 	@Test
 	public void testMeteredInterface() {
 		MeteredInterface mi = ctx.getBean(MeteredInterface.class);
@@ -38,13 +33,13 @@ public class MeteredInterfaceTest {
 	@Test
 	public void testTimedMethod() {
 		Assert.assertTrue(ctx.getBean(MeteredInterface.class).timedMethod());
-		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
+		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).getAllMetrics().isEmpty());
 	}
 
 	@Test
 	public void testMeteredMethod() {
 		Assert.assertTrue(ctx.getBean(MeteredInterface.class).meteredMethod());
-		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
+		Assert.assertTrue(ctx.getBean(MetricsRegistry.class).getAllMetrics().isEmpty());
 	}
 
 	@Test(expected=BogusException.class)
@@ -52,7 +47,7 @@ public class MeteredInterfaceTest {
 		try {
 			ctx.getBean(MeteredInterface.class).exceptionMeteredMethod();
 		} catch (Throwable t) {
-			Assert.assertTrue(ctx.getBean(MetricsRegistry.class).allMetrics().isEmpty());
+			Assert.assertTrue(ctx.getBean(MetricsRegistry.class).getAllMetrics().isEmpty());
 			throw t;
 		}
 		Assert.fail();
