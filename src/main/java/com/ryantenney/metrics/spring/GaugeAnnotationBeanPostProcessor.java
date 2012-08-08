@@ -43,11 +43,8 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-				final Gauge gauge = field.getAnnotation(Gauge.class);
-				final String group = MetricName.chooseGroup(gauge.group(), targetClass);
-				final String type = MetricName.chooseType(gauge.type(), targetClass);
-				final String name = gauge.name().isEmpty() ? field.getName() : gauge.name();
-				final MetricName metricName = new MetricName(group, type, name, scope);
+				final Gauge annotation = field.getAnnotation(Gauge.class);
+				final MetricName metricName = Util.forGaugeField(targetClass, field, annotation, scope);
 
 				metrics.newGauge(metricName, new GaugeField(bean, field));
 
@@ -62,11 +59,8 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 					throw new IllegalStateException("Method " + method.getName() + " is annotated with @Gauge but requires parameters.");
 				}
 
-				final Gauge gauge = method.getAnnotation(Gauge.class);
-				final String group = MetricName.chooseGroup(gauge.group(), targetClass);
-				final String type = MetricName.chooseType(gauge.type(), targetClass);
-				final String name = MetricName.chooseName(gauge.name(), method);
-				final MetricName metricName = new MetricName(group, type, name, scope);
+				final Gauge annotation = method.getAnnotation(Gauge.class);
+				final MetricName metricName = Util.forGaugeMethod(targetClass, method, annotation, scope);
 
 				metrics.newGauge(metricName, new GaugeMethod(bean, method));
 

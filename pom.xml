@@ -6,7 +6,7 @@
 
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>2.1.2-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>Metrics Spring Integration</name>
     <packaging>bundle</packaging>
     <description>Spring integration for Yammer's Metrics Library</description>
@@ -15,8 +15,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <metrics.version>2.1.2</metrics.version>
-        <spring.version>3.1.1.RELEASE</spring.version>
+        <metrics.version>3.0.0-SNAPSHOT</metrics.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
     </properties>
 
     <developers>
@@ -45,8 +45,8 @@
         <url>http://github.com/ryantenney/metrics-spring/issues</url>
     </issueManagement>
 
-    <!-- distributionManagement>
-        <snapshotRepository>
+    <distributionManagement>
+        <!--snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
@@ -55,12 +55,12 @@
             <id>sonatype-nexus-staging</id>
             <name>Nexus Release Repository</name>
             <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
+        </repository-->
         <site>
             <id>repo.ryantenney.com</id>
-            <url>scp://ryantenney.com/home/ryantenney/metrics.ryantenney.com/maven/</url>
+            <url>scp://ubuntu@ryantenney.com/home/ubuntu/metrics/maven/</url>
         </site>
-    </distributionManagement-->
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -175,6 +175,41 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>2.2</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                            <version>2.4</version>
+                            <configuration>
+                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.8.1</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>findbugs-maven-plugin</artifactId>
+                            <version>2.4.0</version>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
             </plugin>
         </plugins>
     </build>
