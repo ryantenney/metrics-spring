@@ -1,4 +1,4 @@
-#Spring Module for Yammer Metrics
+#Metrics for Spring [![Build Status](https://secure.travis-ci.org/ryantenney/metrics-spring.png)](http://travis-ci.org/ryantenney/metrics-spring)
 =================================
 
 ##About
