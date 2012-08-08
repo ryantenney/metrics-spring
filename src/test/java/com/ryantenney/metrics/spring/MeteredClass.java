@@ -4,11 +4,15 @@ import com.yammer.metrics.annotation.ExceptionMetered;
 import com.yammer.metrics.annotation.Gauge;
 import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
+import com.yammer.metrics.util.ToggleGauge;
 
 public class MeteredClass {
 
 	@Gauge
 	private int gaugedField = 999;
+
+	@Gauge
+	private ToggleGauge gaugedGaugeField = new ToggleGauge();
 
 	@Gauge
 	public int gaugedMethod() {

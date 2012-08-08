@@ -19,6 +19,7 @@ import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.core.Timer;
+import com.yammer.metrics.util.ToggleGauge;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -33,6 +34,7 @@ public class MeteredClassTest {
 
 	Gauge<Object> gaugedField;
 	Gauge<Object> gaugedMethod;
+	Gauge<?> gaugedGaugeField;
 	Timer timedMethod;
 	Meter meteredMethod;
 	Meter exceptionMeteredMethod;
@@ -47,6 +49,7 @@ public class MeteredClassTest {
 
 		gaugedField = (Gauge<Object>) metrics.get(new MetricName(MeteredClass.class, "gaugedField"));
 		gaugedMethod = (Gauge<Object>) metrics.get(new MetricName(MeteredClass.class, "gaugedMethod"));
+		gaugedGaugeField = (Gauge<?>) metrics.get(new MetricName(MeteredClass.class, "gaugedGaugeField"));
 		timedMethod = (Timer) metrics.get(new MetricName(MeteredClass.class, "timedMethod"));
 		meteredMethod = (Meter) metrics.get(new MetricName(MeteredClass.class, "meteredMethod"));
 		exceptionMeteredMethod = (Meter) metrics.get(new MetricName(MeteredClass.class, "exceptionMeteredMethodExceptions"));
@@ -64,6 +67,8 @@ public class MeteredClassTest {
 
 		assertEquals(1000, gaugedField.getValue());
 		assertEquals(1000, gaugedMethod.getValue());
+
+		assertEquals(1, gaugedGaugeField.getValue());
 	}
 
 	@Test

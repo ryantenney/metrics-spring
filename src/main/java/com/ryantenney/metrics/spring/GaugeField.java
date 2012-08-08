@@ -19,7 +19,11 @@ public class GaugeField extends Gauge<Object> {
 
 	@Override
 	public Object getValue() {
-		return ReflectionUtils.getField(field, bean);
+		Object value = ReflectionUtils.getField(field, bean);
+		if (value instanceof Gauge) {
+			value = ((Gauge<Object>) value).getValue();
+		}
+		return value;
 	}
 
 }
