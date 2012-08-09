@@ -13,7 +13,7 @@
 
 	<metrics:annotation-driven proxy-target-class="true" />
 
-	<bean class="com.ryantenney.metrics.spring.ProxyTargetClass" />
-	<bean class="com.ryantenney.metrics.spring.AutowiredCollaborator" />
+	<bean class="com.ryantenney.metrics.spring.ProxyTargetClassTest.ProxyTargetClass" />
+	<bean class="com.ryantenney.metrics.spring.ProxyTargetClassTest.AutowiredCollaborator" />
 
 </beans>

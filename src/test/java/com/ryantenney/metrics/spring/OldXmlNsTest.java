@@ -9,6 +9,10 @@ import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.HealthCheckRegistry;
 import com.yammer.metrics.core.MetricsRegistry;
 
+/**
+ * Purpose of test:
+ * Verifies that the old xmlns/schemaLocation at yammer.com still works
+ */
 public class OldXmlNsTest {
 
 	@Test

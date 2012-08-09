@@ -9,11 +9,8 @@
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-2.1.xsd">
 
-	<metrics:metrics-registry id="metrics" />
-	<metrics:health-check-registry id="health" />
+	<metrics:annotation-driven />
 
-	<metrics:annotation-driven metrics-registry="metrics" health-check-registry="health" />
-
-	<bean id="metered-class" class="com.ryantenney.metrics.spring.MeteredClass" />
+	<bean id="metered-class" class="com.ryantenney.metrics.spring.MeteredClassTest.MeteredClass" />
 
 </beans>
