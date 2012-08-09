@@ -10,10 +10,8 @@
 			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-2.1.xsd">
 
 	<metrics:metrics-registry id="metrics" />
-	<metrics:health-check-registry id="health" />
+	<metrics:annotation-driven metrics-registry="metrics" />
 
-	<metrics:annotation-driven metrics-registry="metrics" health-check-registry="health" />
-
-	<bean id="metered-interface" class="com.ryantenney.metrics.spring.MeteredInterfaceImpl" />
+	<bean id="metered-interface" class="com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterfaceImpl" />
 
 </beans>
