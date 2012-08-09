@@ -19,7 +19,7 @@ This module does the following things:
 		<version>2.1.2</version>
 	</dependency>
 
-This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics). Version 2.1.2 will be the last version of this module available at these coordinates. This is the new official home of this project, and new coordinates will be available soon.
+This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics). Version 2.1.x will be the last version of this module available at these coordinates. This is the new official home of this project, and new coordinates will be available soon.
 
 ###Basic Usage
 
