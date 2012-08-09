@@ -106,6 +106,7 @@ public class MeteredInterfaceTest {
 	}
 
 
+	@SuppressWarnings("serial")
 	public static class BogusException extends Throwable {}
 
 

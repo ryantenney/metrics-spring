@@ -16,7 +16,7 @@ public class ProxyTargetClassTest {
 
 	@Test(expected = BeanCreationException.class)
 	public void negativeContextLoadingTest() {
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:proxy-target-class-disabled.xml");
+		new ClassPathXmlApplicationContext("classpath:proxy-target-class-disabled.xml");
 	}
 
 	@Test

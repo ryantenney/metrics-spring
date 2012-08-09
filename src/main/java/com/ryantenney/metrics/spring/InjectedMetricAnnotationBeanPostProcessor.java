@@ -1,6 +1,5 @@
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.annotation.Gauge;
 import com.yammer.metrics.core.Counter;
 import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.Meter;
@@ -17,10 +16,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
-import org.springframework.util.ReflectionUtils.MethodCallback;
-
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class InjectedMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 

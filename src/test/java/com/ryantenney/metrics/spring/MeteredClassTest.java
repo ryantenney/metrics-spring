@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -45,6 +43,7 @@ public class MeteredClassTest {
 	Meter triple_ExceptionMetered;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void init() {
 		Map<MetricName, Metric> metrics = metricsRegistry.getAllMetrics();
 
@@ -189,6 +188,7 @@ public class MeteredClassTest {
 	}
 
 
+	@SuppressWarnings("serial")
 	public static class BogusException extends Throwable {}
 
 
