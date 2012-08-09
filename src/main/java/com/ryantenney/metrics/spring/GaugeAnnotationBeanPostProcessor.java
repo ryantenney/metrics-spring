@@ -42,11 +42,22 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
-			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
+				ReflectionUtils.makeAccessible(field);
+
 				final Gauge annotation = field.getAnnotation(Gauge.class);
 				final MetricName metricName = Util.forGaugeField(targetClass, field, annotation, scope);
 
-				metrics.newGauge(metricName, new GaugeField(bean, field));
+				metrics.newGauge(metricName, new com.yammer.metrics.core.Gauge<Object>() {
+					@Override
+					public Object getValue() {
+						Object value = ReflectionUtils.getField(field, bean);
+						if (value instanceof com.yammer.metrics.core.Gauge) {
+							value = ((com.yammer.metrics.core.Gauge<?>) value).getValue();
+						}
+						return value;
+					}
+				});
 
 				log.debug("Created gauge {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
 			}
@@ -54,7 +65,7 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 
 		ReflectionUtils.doWithMethods(targetClass, new MethodCallback() {
 			@Override
-			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+			public void doWith(final Method method) throws IllegalArgumentException, IllegalAccessException {
 				if (method.getParameterTypes().length > 0) {
 					throw new IllegalStateException("Method " + method.getName() + " is annotated with @Gauge but requires parameters.");
 				}
@@ -62,7 +73,12 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				final Gauge annotation = method.getAnnotation(Gauge.class);
 				final MetricName metricName = Util.forGaugeMethod(targetClass, method, annotation, scope);
 
-				metrics.newGauge(metricName, new GaugeMethod(bean, method));
+				metrics.newGauge(metricName, new com.yammer.metrics.core.Gauge<Object>() {
+					@Override
+					public Object getValue() {
+						return ReflectionUtils.invokeMethod(method, bean);
+					}
+				});
 
 				log.debug("Created gauge {} for method {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), method.getName() });
 			}
