@@ -1,5 +1,6 @@
 package com.ryantenney.metrics.spring;
 
+import com.ryantenney.metrics.annotation.InjectedMetric;
 import com.yammer.metrics.core.Counter;
 import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.Meter;

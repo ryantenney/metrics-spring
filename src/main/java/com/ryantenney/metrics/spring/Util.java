@@ -4,6 +4,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 
+import com.ryantenney.metrics.annotation.InjectedMetric;
 import com.yammer.metrics.annotation.*;
 import com.yammer.metrics.core.MetricName;
 
