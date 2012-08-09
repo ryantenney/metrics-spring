@@ -13,6 +13,9 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.yammer.metrics.annotation.ExceptionMetered;
+import com.yammer.metrics.annotation.Metered;
+import com.yammer.metrics.annotation.Timed;
 import com.yammer.metrics.core.Gauge;
 import com.yammer.metrics.core.Meter;
 import com.yammer.metrics.core.Metric;
@@ -23,7 +26,6 @@ import com.yammer.metrics.util.ToggleGauge;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class MeteredClassTest {
 
 	@Autowired
@@ -43,7 +45,6 @@ public class MeteredClassTest {
 	Meter triple_ExceptionMetered;
 
 	@Before
-	@SuppressWarnings(value = "unchecked")
 	public void init() {
 		Map<MetricName, Metric> metrics = metricsRegistry.getAllMetrics();
 
@@ -146,5 +147,49 @@ public class MeteredClassTest {
 		assertEquals(2, triple_Timed.getCount());
 		assertEquals(1, triple_ExceptionMetered.getCount());
 	}
+
+
+	public static class MeteredClass {
+
+		@com.yammer.metrics.annotation.Gauge
+		private int gaugedField = 999;
+
+		@com.yammer.metrics.annotation.Gauge
+		private ToggleGauge gaugedGaugeField = new ToggleGauge();
+
+		@com.yammer.metrics.annotation.Gauge
+		public int gaugedMethod() {
+			return this.gaugedField;
+		}
+
+		public void setGaugedField(int value) {
+			this.gaugedField = value;
+		}
+
+		@Timed
+		public void timedMethod(boolean doThrow) throws Throwable {
+			if (doThrow) throw new BogusException();
+		}
+
+		@Metered
+		public void meteredMethod() {}
+
+		@ExceptionMetered(cause=BogusException.class)
+		public <T extends Throwable> void exceptionMeteredMethod(Class<T> clazz) throws Throwable {
+			if (clazz != null) throw clazz.newInstance();
+		}
+
+		@Timed(name="triplyMeteredMethod-timed")
+		@Metered(name="triplyMeteredMethod-metered")
+		@ExceptionMetered(name="triplyMeteredMethod-exceptionMetered", cause=BogusException.class)
+		public void triplyMeteredMethod(boolean doThrow) throws Throwable {
+			if (doThrow) throw new BogusException();
+		}
+
+	}
+
+
+	public static class BogusException extends Throwable {}
+
 
 }

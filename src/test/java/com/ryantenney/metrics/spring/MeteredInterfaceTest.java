@@ -48,9 +48,9 @@ public class MeteredInterfaceTest {
 	}
 
 	@Test(expected=NoSuchBeanDefinitionException.class)
-	public void testMeteredClass() {
+	public void testMeteredInterfaceImpl() {
 		MeteredInterfaceImpl mc = ctx.getBean(MeteredInterfaceImpl.class);
-		Assert.assertNull("Expected to be unable to get MeteredClass by class.", mc);
+		Assert.assertNull("Expected to be unable to get MeteredInterfaceImpl by class.", mc);
 	}
 
 	@Test
@@ -104,6 +104,9 @@ public class MeteredInterfaceTest {
 		}
 
 	}
+
+
+	public static class BogusException extends Throwable {}
 
 
 }
