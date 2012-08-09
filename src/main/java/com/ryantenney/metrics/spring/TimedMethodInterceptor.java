@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
+class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
 
 	private static final Logger log = LoggerFactory.getLogger(TimedMethodInterceptor.class);
 

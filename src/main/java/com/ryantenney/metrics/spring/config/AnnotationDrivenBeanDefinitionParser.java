@@ -21,7 +21,7 @@ import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
 
 import static org.springframework.beans.factory.config.BeanDefinition.*;
 
-public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
+class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		final Object source = parserContext.extractSource(element);
