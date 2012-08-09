@@ -15,6 +15,7 @@ import com.yammer.metrics.Metrics;
 import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
+import com.ryantenney.metrics.spring.InjectedMetricAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
 
@@ -73,6 +74,11 @@ public class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParse
 
 		registerComponent(parserContext,
 				build(GaugeAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+					.addConstructorArgReference(metricsBeanName)
+					.addConstructorArgValue(scope));
+
+		registerComponent(parserContext,
+				build(InjectedMetricAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
 					.addConstructorArgReference(metricsBeanName)
 					.addConstructorArgValue(scope));
 
