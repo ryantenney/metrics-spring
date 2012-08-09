@@ -46,7 +46,7 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				ReflectionUtils.makeAccessible(field);
 
 				final Gauge annotation = field.getAnnotation(Gauge.class);
-				final MetricName metricName = Util.forGaugeField(targetClass, field, annotation, scope);
+				final MetricName metricName = Util.forGauge(targetClass, field, annotation, scope);
 
 				metrics.newGauge(metricName, new com.yammer.metrics.core.Gauge<Object>() {
 					@Override
@@ -71,7 +71,7 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				}
 
 				final Gauge annotation = method.getAnnotation(Gauge.class);
-				final MetricName metricName = Util.forGaugeMethod(targetClass, method, annotation, scope);
+				final MetricName metricName = Util.forGauge(targetClass, method, annotation, scope);
 
 				metrics.newGauge(metricName, new com.yammer.metrics.core.Gauge<Object>() {
 					@Override

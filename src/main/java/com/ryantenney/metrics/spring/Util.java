@@ -52,17 +52,10 @@ class Util {
 							  scope);
 	}
 
-	public static MetricName forGaugeMethod(Class<?> klass, Method method, Gauge annotation, String scope) {
+	public static MetricName forGauge(Class<?> klass, Member member, Gauge annotation, String scope) {
 		return new MetricName(chooseDomain(annotation.group(), klass),
 							  chooseType(annotation.type(), klass),
-							  chooseName(annotation.name(), method),
-							  scope);
-	}
-
-	public static MetricName forGaugeField(Class<?> klass, Field field, Gauge annotation, String scope) {
-		return new MetricName(chooseDomain(annotation.group(), klass),
-							  chooseType(annotation.type(), klass),
-							  chooseName(annotation.name(), field),
+							  chooseName(annotation.name(), member),
 							  scope);
 	}
 
