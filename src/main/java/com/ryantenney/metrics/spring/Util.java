@@ -75,4 +75,11 @@ class Util {
 							  scope);
 	}
 
+	public static MetricName forInjectedMetricField(Class<?> klass, Field field, InjectedMetric annotation, String scope) {
+		return new MetricName(chooseDomain(annotation.group(), klass),
+							  chooseType(annotation.type(), klass),
+							  chooseName(annotation.name(), field),
+							  scope);
+	}
+
 }
