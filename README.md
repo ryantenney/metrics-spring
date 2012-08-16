@@ -13,11 +13,13 @@ This module does the following things:
 
 ###Maven
 
-	<dependency>
-		<groupId>com.ryantenney.metrics</groupId>
-		<artifactId>metrics-spring</artifactId>
-		<version>2.1.4</version>
-	</dependency>
+```xml
+<dependency>
+	<groupId>com.ryantenney.metrics</groupId>
+	<artifactId>metrics-spring</artifactId>
+	<version>2.1.4</version>
+</dependency>
+```
 
 This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics).
 
@@ -25,20 +27,36 @@ This module was formerly contained in the [Yammer Metrics repository](https://gi
 
 Spring Context XML:
 
-	<beans xmlns="http://www.springframework.org/schema/beans"
-		   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
-		   xsi:schemaLocation="
-				http://www.springframework.org/schema/beans
-				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-				http://www.ryantenney.com/schema/metrics
-				http://www.ryantenney.com/schema/metrics/metrics-2.1.xsd">
-	
-		<metrics:annotation-driven />
-	
-		<!-- beans -->
-	
-	</beans>
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+	   xsi:schemaLocation="
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.ryantenney.com/schema/metrics
+			http://www.ryantenney.com/schema/metrics/metrics-2.2.xsd">
+
+	<metrics:annotation-driven />
+
+	<!-- beans -->
+
+</beans>
+```
+
+Alternate XML-free config:
+
+```java
+import org.springframework.context.annotation.Configuration;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
+
+@Configuration
+@EnableMetrics
+public class SpringConfiguringClass {
+
+}
+```
 
 ###XML Config
 
