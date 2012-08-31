@@ -40,6 +40,17 @@ Spring Context XML:
 	
 	</beans>
 
+Alternate, XML-less config:
+
+	import org.springframework.context.annotation.Configuration;
+	import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+	
+	@Configuration
+	@EnableMetrics
+	public class SpringConfiguringClass {
+		// ...
+	}
+
 ###XML Config
 
 The `<metrics:annotation-driven />` element is required, and has 5 optional arguments:
