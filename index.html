@@ -76,6 +76,18 @@
 &lt;/beans&gt;
 </code></pre>
 
+<p>Alternate, XML-less config:</p>
+
+<pre><code>import org.springframework.context.annotation.Configuration;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+
+@Configuration
+@EnableMetrics
+public class SpringConfiguringClass {
+    // ...
+}
+</code></pre>
+
 <h3>XML Config</h3>
 
 <p>The <code>&lt;metrics:annotation-driven /&gt;</code> element is required, and has 5 optional arguments:</p>
