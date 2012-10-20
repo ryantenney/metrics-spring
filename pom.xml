@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <metrics.version>3.0.0-SNAPSHOT</metrics.version>
-        <spring.version>3.1.2.RELEASE</spring.version>
+        <spring.version>3.2.0.M2</spring.version>
     </properties>
 
     <developers>
@@ -61,6 +61,14 @@
             <url>scp://ubuntu@ryantenney.com/home/ubuntu/metrics/maven/</url>
         </site>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>repository.springsource.milestone</id>
+            <name>SpringSource Milestone Repository</name>
+            <url>http://repo.springsource.org/milestone</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
