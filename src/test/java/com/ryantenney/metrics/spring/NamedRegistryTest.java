@@ -30,7 +30,7 @@ public class NamedRegistryTest {
 	@Test
 	public void testNamedRegistry() {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:named-registry.xml");
-		Assert.assertSame("MetricsRegistry should have name.", "SpecifiedRegistryName", ctx.getBean(MetricsRegistry.class).getName());
+		Assert.assertEquals("MetricsRegistry should have name.", "SpecifiedRegistryName", ctx.getBean(MetricsRegistry.class).getName());
 	}
 
 }
