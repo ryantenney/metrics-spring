@@ -1,2 +1,4 @@
 http\://www.yammer.com/schema/metrics/metrics.xsd=com/ryantenney/metrics/spring/config/yammer-metrics.xsd
 http\://www.ryantenney.com/schema/metrics/metrics-2.1.xsd=com/ryantenney/metrics/spring/config/metrics-2.1.xsd
+http\://www.ryantenney.com/schema/metrics/metrics-3.0.xsd=com/ryantenney/metrics/spring/config/metrics-3.0.xsd
+http\://www.ryantenney.com/schema/metrics/metrics.xsd=com/ryantenney/metrics/spring/config/metrics-3.0.xsd

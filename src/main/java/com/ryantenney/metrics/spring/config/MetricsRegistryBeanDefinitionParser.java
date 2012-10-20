@@ -36,6 +36,11 @@ class MetricsRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionPa
 		if (StringUtils.hasText(clock)) {
 			builder.addConstructorArgReference(clock);
 		}
+
+		String name = element.getAttribute("name");
+		if (StringUtils.hasText(name)) {
+			builder.addConstructorArgValue(name);
+		}
 	}
 
 }

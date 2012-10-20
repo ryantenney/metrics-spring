@@ -9,11 +9,6 @@
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
 			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<context:annotation-config />
-
-	<metrics:annotation-driven proxy-target-class="true" />
-
-	<bean class="com.ryantenney.metrics.spring.ProxyTargetClassTest.ProxyTargetClass" />
-	<bean class="com.ryantenney.metrics.spring.ProxyTargetClassTest.AutowiredCollaborator" />
+	<metrics:metrics-registry id="metrics" name="SpecifiedRegistryName" />
 
 </beans>
