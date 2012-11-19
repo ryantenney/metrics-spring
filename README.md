@@ -16,7 +16,7 @@ This module does the following things:
 	<dependency>
 		<groupId>com.yammer.metrics</groupId>
 		<artifactId>metrics-spring</artifactId>
-		<version>2.1.2</version>
+		<version>2.1.4</version>
 	</dependency>
 
 This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics). Version 2.1.x will be the last version of this module available at these coordinates. This is the new official home of this project, and new coordinates will be available soon.
@@ -31,8 +31,8 @@ Spring Context XML:
 		   xsi:schemaLocation="
 				http://www.springframework.org/schema/beans
 				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-				http://www.yammer.com/schema/metrics
-				http://www.yammer.com/schema/metrics/metrics.xsd">
+				http://www.ryantenney.com/schema/metrics
+				http://www.ryantenney.com/schema/metrics/metrics.xsd">
 	
 		<metrics:annotation-driven />
 	
