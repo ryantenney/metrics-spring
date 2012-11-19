@@ -28,7 +28,7 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h1>Metrics for Spring <a href="http://travis-ci.org/ryantenney/metrics-spring"><img src="https://secure.travis-ci.org/ryantenney/metrics-spring.png" alt="Build Status"></a>
+          <h1>Metrics for Spring <a href="http://travis-ci.org/ryantenney/metrics-spring"><img src="https://secure.travis-ci.org/ryantenney/metrics-spring.png?branch=master" alt="Build Status"></a>
 </h1>
 
 <h1></h1>
@@ -49,13 +49,13 @@
 </ul><h3>Maven</h3>
 
 <pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;com.yammer.metrics&lt;/groupId&gt;
+    &lt;groupId&gt;com.ryantenney.metrics&lt;/groupId&gt;
     &lt;artifactId&gt;metrics-spring&lt;/artifactId&gt;
-    &lt;version&gt;2.1.3&lt;/version&gt;
+    &lt;version&gt;2.1.4&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
 
-<p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Yammer Metrics repository</a>. Version 2.1.x will be the last version of this module available at these coordinates. This is the new official home of this project, and new coordinates will be available soon.</p>
+<p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Yammer Metrics repository</a>.</p>
 
 <h3>Basic Usage</h3>
 
@@ -63,12 +63,12 @@
 
 <pre><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:metrics="http://www.yammer.com/schema/metrics"
+       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-            http://www.yammer.com/schema/metrics
-            http://www.yammer.com/schema/metrics/metrics.xsd"&gt;
+            http://www.ryantenney.com/schema/metrics
+            http://www.ryantenney.com/schema/metrics/metrics-2.1.xsd"&gt;
 
     &lt;metrics:annotation-driven /&gt;
 
