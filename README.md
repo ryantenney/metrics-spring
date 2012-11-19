@@ -14,7 +14,7 @@ This module does the following things:
 ###Maven
 
 	<dependency>
-		<groupId>com.yammer.metrics</groupId>
+		<groupId>com.ryantenney.metrics</groupId>
 		<artifactId>metrics-spring</artifactId>
 		<version>2.1.4</version>
 	</dependency>
@@ -27,7 +27,7 @@ Spring Context XML:
 
 	<beans xmlns="http://www.springframework.org/schema/beans"
 		   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		   xmlns:metrics="http://www.yammer.com/schema/metrics"
+		   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
 		   xsi:schemaLocation="
 				http://www.springframework.org/schema/beans
 				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
