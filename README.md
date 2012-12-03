@@ -30,7 +30,7 @@ Spring Context XML:
 		   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
 		   xsi:schemaLocation="
 				http://www.springframework.org/schema/beans
-				http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+				http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 				http://www.ryantenney.com/schema/metrics
 				http://www.ryantenney.com/schema/metrics/metrics.xsd">
 	
@@ -40,7 +40,7 @@ Spring Context XML:
 	
 	</beans>
 
-Alternate, XML-less config:
+Alternate, XML-less config (will be available in v3):
 
 	import org.springframework.context.annotation.Configuration;
 	import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
@@ -85,9 +85,12 @@ Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`
 
 As `@Gauge` doesn’t involve a proxy, it is possible to use this annotation on private fields and methods.
 
-##License
-=========
+---
+
+### License
 
 Copyright (c) 2012 Ryan Tenney, Martello Technologies
 
 Published under Apache Software License 2.0, see LICENSE
+
+[![Rochester Made](http://rochestermade.com/media/images/rochester-made-dark-on-light.png)](http://rochestermade.com)
