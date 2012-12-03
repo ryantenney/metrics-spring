@@ -13,11 +13,13 @@ This module does the following things:
 
 ###Maven
 
-	<dependency>
-		<groupId>com.ryantenney.metrics</groupId>
-		<artifactId>metrics-spring</artifactId>
-		<version>2.1.4</version>
-	</dependency>
+```xml
+<dependency>
+	<groupId>com.ryantenney.metrics</groupId>
+	<artifactId>metrics-spring</artifactId>
+	<version>2.1.4</version>
+</dependency>
+```
 
 This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics).
 
@@ -25,31 +27,35 @@ This module was formerly contained in the [Yammer Metrics repository](https://gi
 
 Spring Context XML:
 
-	<beans xmlns="http://www.springframework.org/schema/beans"
-		   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
-		   xsi:schemaLocation="
-				http://www.springframework.org/schema/beans
-				http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-				http://www.ryantenney.com/schema/metrics
-				http://www.ryantenney.com/schema/metrics/metrics.xsd">
-	
-		<metrics:annotation-driven />
-	
-		<!-- beans -->
-	
-	</beans>
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+	   xsi:schemaLocation="
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.ryantenney.com/schema/metrics
+			http://www.ryantenney.com/schema/metrics/metrics.xsd">
+
+	<metrics:annotation-driven />
+
+	<!-- beans -->
+
+</beans>
+```
 
 Alternate, XML-less config (will be available in v3):
 
-	import org.springframework.context.annotation.Configuration;
-	import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
-	
-	@Configuration
-	@EnableMetrics
-	public class SpringConfiguringClass {
-		// ...
-	}
+```java
+import org.springframework.context.annotation.Configuration;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+
+@Configuration
+@EnableMetrics
+public class SpringConfiguringClass {
+	// ...
+}
+```
 
 ###XML Config
 
@@ -69,19 +75,21 @@ The element `<metrics:jmx-reporter />` creates a JMX Reporter for the specified 
 
 Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`, `@Metered`, and `@ExceptionMetered` have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.
 
-	public class Foo {
+```java
+public class Foo {
+	
+	@Timed
+	public void bar() { /* … */ }
+	
+	public void baz() {
+		this.bar(); // doesn't pass through the proxy
 		
-		@Timed
-		public void bar() { /* … */ }
-		
-		public void baz() {
-			this.bar(); // doesn't pass through the proxy
-			
-			// fix: reengineer
-			// workaround: enable `expose-proxy` and change to:
-			((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
-		}
+		// fix: reengineer
+		// workaround: enable `expose-proxy` and change to:
+		((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
 	}
+}
+```
 
 As `@Gauge` doesn’t involve a proxy, it is possible to use this annotation on private fields and methods.
 
