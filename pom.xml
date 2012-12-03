@@ -37,7 +37,8 @@
 
     <scm>
         <connection>scm:git:git://github.com/ryantenney/metrics-spring.git</connection>
-        <url>http://github.com/ryantenney/metrics-spring/</url>
+        <developerConnection>scm:git:git@github.com:ryantenney/metrics-spring.git</developerConnection>
+        <url>https://github.com/ryantenney/metrics-spring/</url>
     </scm>
 
     <issueManagement>
@@ -46,7 +47,7 @@
     </issueManagement>
 
     <distributionManagement>
-        <!--snapshotRepository>
+        <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
@@ -55,11 +56,7 @@
             <id>sonatype-nexus-staging</id>
             <name>Nexus Release Repository</name>
             <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository-->
-        <site>
-            <id>repo.ryantenney.com</id>
-            <url>scp://ubuntu@ryantenney.com/home/ubuntu/metrics/maven/</url>
-        </site>
+        </repository>
     </distributionManagement>
 
     <repositories>
@@ -185,40 +182,46 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-ssh</artifactId>
-                        <version>2.2</version>
-                    </dependency>
-                </dependencies>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.4</version>
-                            <configuration>
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>2.8.1</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>findbugs-maven-plugin</artifactId>
-                            <version>2.4.0</version>
-                        </plugin>
-                    </reportPlugins>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+                    <!-- Make signing prompt for passphrase properly http://jira.codehaus.org/browse/MGPG-9 -->
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                    <stagingRepository>sonatype-nexus-staging::default::https://oss.sonatype.org/service/local/staging/deploy/maven2</stagingRepository>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
