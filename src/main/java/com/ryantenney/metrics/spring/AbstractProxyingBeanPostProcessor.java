@@ -15,7 +15,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.util.ClassUtils;
 
-public abstract class AbstractProxyingBeanPostProcessor extends ProxyConfig implements BeanPostProcessor {
+abstract class AbstractProxyingBeanPostProcessor extends ProxyConfig implements BeanPostProcessor {
 
 	private static final long serialVersionUID = -3482052668071169769L;
 

@@ -2,7 +2,7 @@ package com.ryantenney.metrics.spring.config;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
-public class MetricsNamespaceHandler extends NamespaceHandlerSupport {
+class MetricsNamespaceHandler extends NamespaceHandlerSupport {
 
 	@Override
 	public void init() {

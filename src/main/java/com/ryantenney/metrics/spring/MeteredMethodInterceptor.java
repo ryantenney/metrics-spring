@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
+class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 	private static final Logger log = LoggerFactory.getLogger(MeteredMethodInterceptor.class);
 

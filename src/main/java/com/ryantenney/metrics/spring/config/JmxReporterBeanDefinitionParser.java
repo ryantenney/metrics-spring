@@ -6,7 +6,7 @@ import org.w3c.dom.Element;
 
 import com.ryantenney.metrics.spring.JmxReporterFactory;
 
-public class JmxReporterBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class JmxReporterBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected Class<?> getBeanClass(Element element) {

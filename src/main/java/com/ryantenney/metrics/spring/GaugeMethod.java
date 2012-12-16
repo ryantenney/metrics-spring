@@ -5,7 +5,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 
-public class GaugeMethod extends Gauge<Object> {
+class GaugeMethod extends Gauge<Object> {
 
 	private final Object bean;
 	private final Method method;

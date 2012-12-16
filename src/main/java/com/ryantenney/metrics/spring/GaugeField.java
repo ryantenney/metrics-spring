@@ -5,7 +5,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
-public class GaugeField extends Gauge<Object> {
+class GaugeField extends Gauge<Object> {
 
 	private final Object bean;
 	private final Field field;

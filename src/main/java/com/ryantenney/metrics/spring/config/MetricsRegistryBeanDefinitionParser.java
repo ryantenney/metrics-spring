@@ -7,7 +7,7 @@ import org.w3c.dom.Element;
 
 import com.yammer.metrics.core.MetricsRegistry;
 
-public class MetricsRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class MetricsRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected Class<?> getBeanClass(Element element) {

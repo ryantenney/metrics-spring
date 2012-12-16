@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
+class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
 
 	private static final Logger log = LoggerFactory.getLogger(ExceptionMeteredMethodInterceptor.class);
 

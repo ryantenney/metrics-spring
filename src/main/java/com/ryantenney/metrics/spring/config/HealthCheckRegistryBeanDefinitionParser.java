@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 
 import com.yammer.metrics.core.HealthCheckRegistry;
 
-public class HealthCheckRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class HealthCheckRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected Class<?> getBeanClass(Element element) {
