@@ -50,13 +50,9 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 	@Override
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-		final Metered metered = method.getAnnotation(Metered.class);
-
-		final String group = MetricName.chooseGroup(metered.group(), targetClass);
-		final String type = MetricName.chooseType(metered.type(), targetClass);
-		final String name = MetricName.chooseName(metered.name(), method);
-		final MetricName metricName = new MetricName(group, type, name, scope);
-		final Meter meter = metrics.newMeter(metricName, metered.eventType(), metered.rateUnit());
+		final Metered annotation = method.getAnnotation(Metered.class);
+		final MetricName metricName = Util.forMeteredMethod(targetClass, method, annotation, scope);
+		final Meter meter = metrics.newMeter(metricName, annotation.eventType(), annotation.rateUnit());
 
 		meters.put(method.getName(), meter);
 

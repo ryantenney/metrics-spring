@@ -62,19 +62,14 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 
 	@Override
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-		final ExceptionMetered metered = method.getAnnotation(ExceptionMetered.class);
+		final ExceptionMetered annotation = method.getAnnotation(ExceptionMetered.class);
+		final MetricName metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation, scope);
+		final Meter meter = metrics.newMeter(metricName, annotation.eventType(), annotation.rateUnit());
 
-		final String methodName = method.getName();
-		final String group = MetricName.chooseGroup(metered.group(), targetClass);
-		final String type = MetricName.chooseType(metered.type(), targetClass);
-		final String name = metered.name() == null || metered.name().equals("") ? methodName + ExceptionMetered.DEFAULT_NAME_SUFFIX : metered.name();
-		final MetricName metricName = new MetricName(group, type, name, scope);
-		final Meter meter = metrics.newMeter(metricName, metered.eventType(), metered.rateUnit());
+		meters.put(method.getName(), meter);
+		causes.put(method.getName(), annotation.cause());
 
-		meters.put(methodName, meter);
-		causes.put(methodName, metered.cause());
-
-		log.debug("Created metric {} for method {}", metricName, methodName);
+		log.debug("Created metric {} for method {}", metricName, method.getName());
 	}
 
 	@Override

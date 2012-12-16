@@ -53,14 +53,10 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 
 	@Override
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-		final Timed timed = method.getAnnotation(Timed.class);
+		final Timed annotation = method.getAnnotation(Timed.class);
+		final MetricName metricName = Util.forTimedMethod(targetClass, method, annotation, scope);
 
-		final String group = MetricName.chooseGroup(timed.group(), targetClass);
-		final String type = MetricName.chooseType(timed.type(), targetClass);
-		final String name = MetricName.chooseName(timed.name(), method);
-		final MetricName metricName = new MetricName(group, type, name, scope);
-
-		final Timer timer = metrics.newTimer(metricName, timed.durationUnit(), timed.rateUnit());
+		final Timer timer = metrics.newTimer(metricName, annotation.durationUnit(), annotation.rateUnit());
 		timers.put(method.getName(), timer);
 
 		log.debug("Created metric {} for method {}", metricName, method.getName());
