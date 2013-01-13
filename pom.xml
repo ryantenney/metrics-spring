@@ -71,6 +71,11 @@
             <version>${metrics.version}</version>
         </dependency>
         <dependency>
+  			<groupId>com.yammer.metrics</groupId>
+  			<artifactId>metrics-graphite</artifactId>
+  			<version>${metrics.version}</version>
+		</dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
