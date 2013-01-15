@@ -40,7 +40,9 @@ class GraphiteReporterBeanDefinitionParser extends AbstractSingleBeanDefinitionP
 		builder.addConstructorArgReference(element.getAttribute("metrics-registry"));
 		builder.addConstructorArgValue(element.getAttribute("graphite-host"));
 		builder.addConstructorArgValue(Integer.parseInt(element.getAttribute("graphite-port")));
-		builder.addConstructorArgValue(element.getAttribute("prefix"));
+		if(element.getAttribute("prefix") != null) {
+			builder.addConstructorArgValue(element.getAttribute("prefix"));
+		}
 		builder.addConstructorArgValue(Integer.parseInt(element.getAttribute("report-interval-seconds")));
 	}
 
