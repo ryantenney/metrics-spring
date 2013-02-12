@@ -193,7 +193,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.2.1</version>
@@ -202,10 +201,11 @@
                     <mavenExecutorId>forked-path</mavenExecutorId>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <preparationGoals>clean test</preparationGoals>
+                    <!--
                     <stagingRepository>sonatype-nexus-staging::default::https://oss.sonatype.org/service/local/staging/deploy/maven2</stagingRepository>
+                    -->
                 </configuration>
             </plugin>
--->    
         <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -263,35 +263,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.1</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
