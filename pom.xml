@@ -34,9 +34,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/ryantenney/metrics-spring.git</connection>
-        <developerConnection>scm:git:git@github.com:ryantenney/metrics-spring.git</developerConnection>
-        <url>https://github.com/ryantenney/metrics-spring/</url>
+        <connection>scm:git:git://github.com/jflo/metrics-spring.git</connection>
+        <developerConnection>scm:git:git@github.com:jflo/metrics-spring.git</developerConnection>
+        <url>https://github.com/jflo/metrics-spring/</url>
     </scm>
 
     <issueManagement>
