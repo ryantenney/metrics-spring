@@ -10,6 +10,12 @@
     <description>Spring integration for Yammer's Metrics Library</description>
     <url>http://github.com/ryantenney/metrics-spring/</url>
 
+    <parent>
+     <groupId>com.espn</groupId>
+     <artifactId>espn</artifactId>
+     <version>54</version>
+    </parent>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
