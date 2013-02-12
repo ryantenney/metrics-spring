@@ -45,7 +45,7 @@
         <system>github</system>
         <url>http://github.com/ryantenney/metrics-spring/issues</url>
     </issueManagement>
-
+<!--
     <distributionManagement>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
@@ -58,7 +58,24 @@
             <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
+-->
+    <distributionManagement>
+        <repository>
+            <id>espn.releases</id>
+            <name>ESPN3 Maven2 Release Repository</name>
+            <url>http://maven2.corp.espn3.com/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>espn.snapshots</id>
+            <name>ESPN3 Maven2 Snapshot Repository</name>
+            <url>http://maven2.corp.espn3.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>espn.project.site</id>
+            <name>ESPN Maven2 Projects Site</name>
+            <url>scp://mavendocs.corp.espn3.com/Volumes/DataDisk/wwwroot/maven2/</url>
+        </site>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>com.yammer.metrics</groupId>
@@ -71,10 +88,10 @@
             <version>${metrics.version}</version>
         </dependency>
         <dependency>
-  			<groupId>com.yammer.metrics</groupId>
-  			<artifactId>metrics-graphite</artifactId>
-  			<version>${metrics.version}</version>
-		</dependency>
+  	    <groupId>com.yammer.metrics</groupId>
+  	    <artifactId>metrics-graphite</artifactId>
+            <version>${metrics.version}</version>
+	</dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -178,19 +195,20 @@
                     </execution>
                 </executions>
             </plugin>
+<!--
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.2.1</version>
                 <configuration>
                     <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-                    <!-- Make signing prompt for passphrase properly http://jira.codehaus.org/browse/MGPG-9 -->
                     <mavenExecutorId>forked-path</mavenExecutorId>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <preparationGoals>clean test</preparationGoals>
                     <stagingRepository>sonatype-nexus-staging::default::https://oss.sonatype.org/service/local/staging/deploy/maven2</stagingRepository>
                 </configuration>
             </plugin>
-            <plugin>
+-->    
+        <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>2.3.3</version>
