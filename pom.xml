@@ -4,7 +4,7 @@
 
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>3.0.0-JFLO</version>
+    <version>3.0.1-JFLO-SNAPSHOT</version>
     <name>Metrics Spring Integration</name>
     <packaging>bundle</packaging>
     <description>Spring integration for Yammer's Metrics Library</description>
