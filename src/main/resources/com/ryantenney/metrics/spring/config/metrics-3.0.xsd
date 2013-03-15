@@ -37,5 +37,16 @@
 			<xsd:attribute name="metrics-registry" type="xsd:string" use="required"/>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="graphite-reporter">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:string" use="optional"/>
+			<xsd:attribute name="metrics-registry" type="xsd:string" use="required"/>
+			<xsd:attribute name="graphite-host" type="xsd:string" use="required"/>
+			<xsd:attribute name="graphite-port" type="xsd:int" use="required"/>
+			<xsd:attribute name="prefix" type="xsd:string" use="optional"/>
+			<xsd:attribute name="report-interval-seconds" type="xsd:int" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
 
 </xsd:schema>
