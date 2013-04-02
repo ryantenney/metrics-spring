@@ -16,10 +16,9 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.yammer.metrics.Meter;
+import com.yammer.metrics.MetricRegistry;
 import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -38,16 +37,14 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 	private static final MethodFilter filter = new AnnotationFilter(Metered.class);
 
-	protected final MetricsRegistry metrics;
+	protected final MetricRegistry metrics;
 	protected final Class<?> targetClass;
 	protected final Map<String, Meter> meters;
-	protected final String scope;
 
-	public MeteredMethodInterceptor(final MetricsRegistry metrics, final Class<?> targetClass, final String scope) {
+	public MeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
 		this.meters = new HashMap<String, Meter>();
-		this.scope = scope;
 
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @Metered annotated methods");
@@ -67,8 +64,8 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 	@Override
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 		final Metered annotation = method.getAnnotation(Metered.class);
-		final MetricName metricName = Util.forMeteredMethod(targetClass, method, annotation, scope);
-		final Meter meter = metrics.newMeter(metricName, annotation.eventType(), annotation.rateUnit());
+		final String metricName = Util.forMeteredMethod(targetClass, method, annotation);
+		final Meter meter = metrics.meter(metricName);
 
 		meters.put(method.getName(), meter);
 

@@ -17,6 +17,7 @@
 package com.ryantenney.metrics.spring;
 
 import static org.junit.Assert.*;
+import static com.ryantenney.metrics.spring.TestUtil.*;
 
 import java.util.Map;
 
@@ -28,13 +29,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ryantenney.metrics.annotation.InjectedMetric;
 
-import com.yammer.metrics.core.Counter;
-import com.yammer.metrics.core.Histogram;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
+import com.yammer.metrics.Counter;
+import com.yammer.metrics.Histogram;
+import com.yammer.metrics.Meter;
+import com.yammer.metrics.Metric;
+import com.yammer.metrics.MetricRegistry;
+import com.yammer.metrics.Timer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:injected-metrics.xml")
@@ -44,33 +44,27 @@ public class InjectedMetricTest {
 	InjectedMetricTest.Target target;
 
 	@Autowired
-	MetricsRegistry metricsRegistry;
+	MetricRegistry metricRegistry;
 
 	@Test
 	public void targetIsNotNull() {
 		assertNotNull(target);
 
-		Map<MetricName, Metric> metrics = metricsRegistry.getAllMetrics();
-
 		assertNotNull(target.theNameForTheMeter);
-		Meter meter = (Meter) metrics.get(new MetricName(InjectedMetricTest.Target.class, "theNameForTheMeter"));
+		Meter meter = (Meter) forInjectedMetricField(metricRegistry, InjectedMetricTest.Target.class, "theNameForTheMeter");
 		assertSame(target.theNameForTheMeter, meter);
 
 		assertNotNull(target.timer);
-		Timer timer = (Timer) metrics.get(new MetricName(InjectedMetricTest.Target.class, "theNameForTheTimer"));
+        Timer timer = (Timer) forInjectedMetricField(metricRegistry, InjectedMetricTest.Target.class, "timer");
 		assertSame(target.timer, timer);
 
 		assertNotNull(target.counter);
-		Counter ctr = (Counter) metrics.get(new MetricName("group", "type", "counter"));
+		Counter ctr = (Counter) forInjectedMetricField(metricRegistry, InjectedMetricTest.Target.class, "counter");
 		assertSame(target.counter, ctr);
 
-		assertNotNull(target.unbiasedHistogram);
-		Histogram hist1 = (Histogram) metrics.get(new MetricName(InjectedMetricTest.Target.class, "unbiasedHistogram"));
-		assertSame(target.unbiasedHistogram, hist1);
-
-		assertNotNull(target.biasedHistogram);
-		Histogram hist2 = (Histogram) metrics.get(new MetricName(InjectedMetricTest.Target.class, "biasedHistogram"));
-		assertSame(target.biasedHistogram, hist2);
+		assertNotNull(target.histogram);
+		Histogram hist = (Histogram) forInjectedMetricField(metricRegistry, InjectedMetricTest.Target.class, "histogram");
+		assertSame(target.histogram, hist);
 	}
 
 	public static class Target {
@@ -81,18 +75,11 @@ public class InjectedMetricTest {
 		@InjectedMetric(name = "theNameForTheTimer")
 		private Timer timer;
 
-		@InjectedMetric(group = "group", type = "type")
+		@InjectedMetric(name = "group.type.counter", absolute = true)
 		Counter counter;
 
 		@InjectedMetric
-		Histogram unbiasedHistogram;
-
-		@InjectedMetric(biased = true)
-		Histogram biasedHistogram;
-
-		public Timer getTimer() {
-			return timer;
-		}
+		Histogram histogram;
 
 	}
 

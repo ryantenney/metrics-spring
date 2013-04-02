@@ -16,6 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
+import com.yammer.metrics.MetricRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -32,10 +34,6 @@ import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
 import com.ryantenney.metrics.spring.InjectedMetricAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
-import com.yammer.metrics.HealthChecks;
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.HealthCheckRegistry;
-import com.yammer.metrics.core.MetricsRegistry;
 
 /**
  * This is the main class providing the configuration behind the Metrics Java config.
@@ -48,6 +46,9 @@ import com.yammer.metrics.core.MetricsRegistry;
  * @since 3.0
  */
 public class MetricsConfigurationSupport implements ImportAware {
+
+    private MetricRegistry metricRegistry;
+    private HealthCheckRegistry healthCheckRegistry;
 
 	protected ProxyConfig config;
 	protected String scope;
@@ -70,31 +71,31 @@ public class MetricsConfigurationSupport implements ImportAware {
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public ExceptionMeteredAnnotationBeanPostProcessor exceptionMeteredAnnotationBeanPostProcessor() {
-		return new ExceptionMeteredAnnotationBeanPostProcessor(getMetricsRegistry(), config, scope);
+		return new ExceptionMeteredAnnotationBeanPostProcessor(getMetricRegistry(), config);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MeteredAnnotationBeanPostProcessor meteredAnnotationBeanPostProcessor() {
-		return new MeteredAnnotationBeanPostProcessor(getMetricsRegistry(), config, scope);
+		return new MeteredAnnotationBeanPostProcessor(getMetricRegistry(), config);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TimedAnnotationBeanPostProcessor timedAnnotationBeanPostProcessor() {
-		return new TimedAnnotationBeanPostProcessor(getMetricsRegistry(), config, scope);
+		return new TimedAnnotationBeanPostProcessor(getMetricRegistry(), config);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public GaugeAnnotationBeanPostProcessor gaugeAnnotationBeanPostProcessor() {
-		return new GaugeAnnotationBeanPostProcessor(getMetricsRegistry(), scope);
+		return new GaugeAnnotationBeanPostProcessor(getMetricRegistry());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public InjectedMetricAnnotationBeanPostProcessor injectedMetricAnnotationBeanPostProcessor() {
-		return new InjectedMetricAnnotationBeanPostProcessor(getMetricsRegistry(), scope);
+		return new InjectedMetricAnnotationBeanPostProcessor(getMetricRegistry());
 	}
 
 	@Bean
@@ -103,14 +104,20 @@ public class MetricsConfigurationSupport implements ImportAware {
 		return new HealthCheckBeanPostProcessor(getHealthCheckRegistry());
 	}
 
-	protected MetricsRegistry getMetricsRegistry() {
-		return Metrics.defaultRegistry();
+	protected synchronized MetricRegistry getMetricRegistry() {
+		if (metricRegistry == null) {
+            metricRegistry = new MetricRegistry(""); // TODO: MetricRegistry name was removed
+        }
+        return metricRegistry;
 	}
 
-	protected HealthCheckRegistry getHealthCheckRegistry() {
-		return HealthChecks.defaultRegistry();
+	protected synchronized HealthCheckRegistry getHealthCheckRegistry() {
+        if (healthCheckRegistry == null) {
+            healthCheckRegistry = new HealthCheckRegistry();
+        }
+		return healthCheckRegistry;
 	}
 
-	protected void configureMetricsReporters(MetricsRegistry metricsRegistry) {}
+	protected void configureMetricsReporters(MetricRegistry metricsRegistry) {}
 
 }

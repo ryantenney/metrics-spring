@@ -18,12 +18,11 @@ package com.ryantenney.metrics.spring.config.annotation;
 
 import java.util.List;
 
+import com.yammer.metrics.MetricRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.yammer.metrics.core.HealthCheckRegistry;
-import com.yammer.metrics.core.MetricsRegistry;
 
 /**
  * This is the class imported by {@link EnableMetrics @EnableMetrics}.
@@ -38,7 +37,7 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 
 	private MetricsConfigurerComposite delegates = new MetricsConfigurerComposite();
 
-	private MetricsRegistry metricsRegistry;
+	private MetricRegistry metricRegistry;
 	private HealthCheckRegistry healthCheckRegistry;
 
 	@Autowired(required = false)
@@ -49,18 +48,18 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 	}
 
 	@Override
-	public void configureMetricsReporters(final MetricsRegistry metricsRegistry) {
-		this.delegates.configureMetricsReporters(metricsRegistry);
+	public void configureMetricsReporters(final MetricRegistry metricsRegistry) {
+		this.delegates.configureMetricsReporters(metricRegistry);
 	}
 
 	@Bean
 	@Override
-	public MetricsRegistry getMetricsRegistry() {
-		if (this.metricsRegistry == null) {
-			this.metricsRegistry = this.delegates.getMetricsRegistry();
-			this.configureMetricsReporters(this.metricsRegistry);
+	public MetricRegistry getMetricRegistry() {
+		if (this.metricRegistry == null) {
+			this.metricRegistry = this.delegates.getMetricRegistry();
+			this.configureMetricsReporters(this.metricRegistry);
 		}
-		return this.metricsRegistry;
+		return this.metricRegistry;
 	}
 
 	@Bean

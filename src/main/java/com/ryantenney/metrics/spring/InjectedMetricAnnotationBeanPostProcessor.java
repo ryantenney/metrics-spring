@@ -17,13 +17,7 @@
 package com.ryantenney.metrics.spring;
 
 import com.ryantenney.metrics.annotation.InjectedMetric;
-import com.yammer.metrics.core.Counter;
-import com.yammer.metrics.core.Histogram;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
+import com.yammer.metrics.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +35,10 @@ public class InjectedMetricAnnotationBeanPostProcessor implements BeanPostProces
 
 	private static final AnnotationFilter filter = new AnnotationFilter(InjectedMetric.class);
 
-	private final MetricsRegistry metrics;
-	private final String scope;
+	private final MetricRegistry metrics;
 
-	public InjectedMetricAnnotationBeanPostProcessor(final MetricsRegistry metrics, final String scope) {
+	public InjectedMetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
 		this.metrics = metrics;
-		this.scope = scope;
 	}
 
 	@Override
@@ -62,24 +54,24 @@ public class InjectedMetricAnnotationBeanPostProcessor implements BeanPostProces
 			@Override
 			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
 				final InjectedMetric annotation = field.getAnnotation(InjectedMetric.class);
-				final MetricName metricName = Util.forInjectedMetricField(targetClass, field, annotation, scope);
+				final String metricName = Util.forInjectedMetricField(targetClass, field, annotation);
 
 				final Class<?> type = field.getType();
 				Metric metric = null;
 				if (Meter.class == type) {
-					metric = metrics.newMeter(metricName, annotation.eventType(), annotation.rateUnit());
+					metric = metrics.meter(metricName);
 				} else if (Timer.class == type) {
-					metric = metrics.newTimer(metricName, annotation.durationUnit(), annotation.rateUnit());
+					metric = metrics.timer(metricName);
 				} else if (Counter.class == type) {
-					metric = metrics.newCounter(metricName);
+					metric = metrics.counter(metricName);
 				} else if (Histogram.class == type) {
-					metric = metrics.newHistogram(metricName, annotation.biased());
+					metric = metrics.histogram(metricName);
 				} else {
 					throw new IllegalStateException("Cannot inject a metric of type " + type.getCanonicalName());
 				}
 
 				ReflectionUtils.makeAccessible(field);
-				field.set(bean, metric);
+                ReflectionUtils.setField(field, bean, metric);
 
 				log.debug("Injected metric {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
 			}

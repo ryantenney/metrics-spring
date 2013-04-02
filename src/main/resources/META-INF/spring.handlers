@@ -1,2 +1,1 @@
-http\://www.yammer.com/schema/metrics=com.ryantenney.metrics.spring.config.MetricsNamespaceHandler
 http\://www.ryantenney.com/schema/metrics=com.ryantenney.metrics.spring.config.MetricsNamespaceHandler

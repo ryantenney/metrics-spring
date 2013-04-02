@@ -38,16 +38,6 @@ import java.util.concurrent.TimeUnit;
 public @interface InjectedMetric {
 
 	/**
-	 * The group of the metric.
-	 */
-	String group() default "";
-
-	/**
-	 * The type of the metric.
-	 */
-	String type() default "";
-
-	/**
 	 * The name of the metric.
 	 */
 	String name() default "";
@@ -56,24 +46,6 @@ public @interface InjectedMetric {
 	 * The name of the type of events the meter is measuring.
 	 * Applies to Meter
 	 */
-	String eventType() default "calls";
-
-	/**
-	 * The time unit of the meter's rate.
-	 * Applies to Meter, Timer
-	 */
-	TimeUnit rateUnit() default TimeUnit.SECONDS;
-
-	/**
-	 * The time unit of the timer's duration.
-	 * Applies to Timer
-	 */
-	TimeUnit durationUnit() default TimeUnit.MILLISECONDS;
-
-	/**
-	 * The type of sampling that should be performed.
-	 * Applies to Histogram
-	 */
-	boolean biased() default false;
+	boolean absolute() default false;
 
 }

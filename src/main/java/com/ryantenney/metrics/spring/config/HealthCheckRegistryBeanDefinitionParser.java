@@ -19,7 +19,7 @@ package com.ryantenney.metrics.spring.config;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.w3c.dom.Element;
 
-import com.yammer.metrics.core.HealthCheckRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
 
 class HealthCheckRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 

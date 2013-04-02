@@ -16,8 +16,9 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.yammer.metrics.MetricRegistry;
+import com.yammer.metrics.Timer;
 import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.*;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -37,16 +38,14 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 
 	private static final MethodFilter filter = new AnnotationFilter(Timed.class);
 
-	private final MetricsRegistry metrics;
+	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
 	private final Map<String, Timer> timers;
-	private final String scope;
 
-	public TimedMethodInterceptor(final MetricsRegistry metrics, final Class<?> targetClass, final String scope) {
+	public TimedMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
 		this.timers = new HashMap<String, Timer>();
-		this.scope = scope;
 
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @Timed annotated methods");
@@ -57,7 +56,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		final Timer timer = timers.get(invocation.getMethod().getName());
-		final TimerContext timerCtx = timer != null ? timer.time() : null;
+		final com.yammer.metrics.Timer.Context timerCtx = timer != null ? timer.time() : null;
 		try {
 			return invocation.proceed();
 		} finally {
@@ -70,8 +69,8 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 	@Override
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 		final Timed annotation = method.getAnnotation(Timed.class);
-		final MetricName metricName = Util.forTimedMethod(targetClass, method, annotation, scope);
-		final Timer timer = metrics.newTimer(metricName, annotation.durationUnit(), annotation.rateUnit());
+		final String metricName = Util.forTimedMethod(targetClass, method, annotation);
+		final Timer timer = metrics.timer(metricName);
 
 		timers.put(method.getName(), timer);
 

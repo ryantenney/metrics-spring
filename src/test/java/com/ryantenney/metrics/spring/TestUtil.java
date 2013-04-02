@@ -21,64 +21,109 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.ReflectionUtils;
+import com.ryantenney.metrics.annotation.InjectedMetric;
+import com.yammer.metrics.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.yammer.metrics.annotation.ExceptionMetered;
 import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.Gauge;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
 
 /**
  * This exists in part to get access to the Util class in testing.
  */
 class TestUtil extends Util {
 
-	public static Gauge<?> forGaugeField(MetricsRegistry metricsRegistry, Class<?> clazz, String fieldName) {
-		Field field = ReflectionUtils.findField(clazz, fieldName);
-		MetricName metricName = forGauge(clazz, field, field.getAnnotation(com.yammer.metrics.annotation.Gauge.class), null);
-		return (Gauge<?>) metricsRegistry.getAllMetrics().get(metricName);
+    private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
+
+	public static Gauge<?> forGaugeField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+		Field field = findField(clazz, fieldName);
+		String metricName = forGauge(clazz, field, field.getAnnotation(com.yammer.metrics.annotation.Gauge.class));
+        log.info("Looking up gauge field named '{}'", metricName);
+		return metricsRegistry.getGauges().get(metricName);
 	}
 
-	public static Gauge<?> forGaugeMethod(MetricsRegistry metricsRegistry, Class<?> clazz, String methodName) {
-		Method method = getMethodByName(clazz, methodName);
-		MetricName metricName = forGauge(clazz, method, method.getAnnotation(com.yammer.metrics.annotation.Gauge.class), null);
-		return (Gauge<?>) metricsRegistry.getAllMetrics().get(metricName);
+	public static Gauge<?> forGaugeMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+		Method method = findMethod(clazz, methodName);
+		String metricName = forGauge(clazz, method, method.getAnnotation(com.yammer.metrics.annotation.Gauge.class));
+        log.info("Looking up gauge method named '{}'", metricName);
+		return metricsRegistry.getGauges().get(metricName);
 	}
 
-	public static Timer forTimedMethod(MetricsRegistry metricsRegistry, Class<?> clazz, String methodName) {
-		Method method = getMethodByName(clazz, methodName);
-		MetricName metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class), null);
-		return (Timer) metricsRegistry.getAllMetrics().get(metricName);
+	public static Timer forTimedMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+        System.out.println(clazz);
+        System.out.println(methodName);
+		Method method = findMethod(clazz, methodName);
+        System.out.println(method);
+		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class));
+        log.info("Looking up timed method named '{}'", metricName);
+		return metricsRegistry.getTimers().get(metricName);
 	}
 
-	public static Meter forMeteredMethod(MetricsRegistry metricsRegistry, Class<?> clazz, String methodName) {
-		Method method = getMethodByName(clazz, methodName);
-		MetricName metricName = forMeteredMethod(clazz, method, method.getAnnotation(Metered.class), null);
-		return (Meter) metricsRegistry.getAllMetrics().get(metricName);
+	public static Meter forMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+		Method method = findMethod(clazz, methodName);
+		String metricName = forMeteredMethod(clazz, method, method.getAnnotation(Metered.class));
+        log.info("Looking up metered method named '{}'", metricName);
+		return metricsRegistry.getMeters().get(metricName);
 	}
 
-	public static Meter forExceptionMeteredMethod(MetricsRegistry metricsRegistry, Class<?> clazz, String methodName) {
-		Method method = getMethodByName(clazz, methodName);
-		MetricName metricName = forExceptionMeteredMethod(clazz, method, method.getAnnotation(ExceptionMetered.class), null);
-		return (Meter) metricsRegistry.getAllMetrics().get(metricName);
+	public static Meter forExceptionMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+		Method method = findMethod(clazz, methodName);
+		String metricName = forExceptionMeteredMethod(clazz, method, method.getAnnotation(ExceptionMetered.class));
+        log.info("Looking up exception metered method named '{}'", metricName);
+		return metricsRegistry.getMeters().get(metricName);
 	}
 
-	private static Method getMethodByName(Class<?> clazz, String methodName) {
-		List<Method> methodsFound = new ArrayList<Method>();
-		for (Method method : clazz.getMethods()) {
-			if (method.getName().equals(methodName)) {
-				methodsFound.add(method);
-			}
-		}
-		if (methodsFound.size() == 1) {
-			return methodsFound.get(0);
-		} else {
-			throw new RuntimeException("No unique method " + methodName + " found on class " + clazz.getName());
-		}
-	}
+    public static Metric forInjectedMetricField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+        Field field = findField(clazz, fieldName);
+        String metricName = forInjectedMetricField(clazz, field, field.getAnnotation(InjectedMetric.class));
+        log.info("Looking up injected metric field named '{}'", metricName);
+        Class<?> type = field.getType();
+        if (type.isAssignableFrom(Meter.class)) {
+            return metricsRegistry.getMeters().get(metricName);
+        }
+        else if (type.isAssignableFrom(Timer.class)) {
+            return metricsRegistry.getTimers().get(metricName);
+        }
+        else if (type.isAssignableFrom(Gauge.class)) {
+            return metricsRegistry.getGauges().get(metricName);
+        }
+        else if (type.isAssignableFrom(Counter.class)) {
+            return metricsRegistry.getCounters().get(metricName);
+        }
+        else if (type.isAssignableFrom(Histogram.class)) {
+            return metricsRegistry.getHistograms().get(metricName);
+        }
+        return null;
+    }
+
+    private static Field findField(Class<?> clazz, String fieldName) {
+        List<Field> fieldsFound = new ArrayList<Field>();
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                fieldsFound.add(field);
+            }
+        }
+        if (fieldsFound.size() == 1) {
+            return fieldsFound.get(0);
+        } else {
+            throw new RuntimeException("No unique field " + fieldName + " found on class " + clazz.getName());
+        }
+    }
+
+    private static Method findMethod(Class<?> clazz, String methodName) {
+        List<Method> methodsFound = new ArrayList<Method>();
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.getName().equals(methodName)) {
+                methodsFound.add(method);
+            }
+        }
+        if (methodsFound.size() == 1) {
+            return methodsFound.get(0);
+        } else {
+            throw new RuntimeException("No unique method " + methodName + " found on class " + clazz.getName());
+        }
+    }
 
 }

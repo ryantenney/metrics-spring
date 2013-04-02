@@ -17,79 +17,41 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Field;
 
 import com.ryantenney.metrics.annotation.InjectedMetric;
 import com.yammer.metrics.annotation.*;
-import com.yammer.metrics.core.MetricName;
+import org.slf4j.LoggerFactory;
+
+import static com.yammer.metrics.MetricRegistry.name;
 
 class Util {
 
-	private static String getPackageName(Class<?> klass) {
-		return klass.getPackage() == null ? "" : klass.getPackage().getName();
+	public static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
+        return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	private static String getClassName(Class<?> klass) {
-		return klass.getSimpleName().replaceAll("\\$$", "");
+	public static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
+        return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	private static String chooseDomain(String domain, Class<?> klass) {
-		if(domain == null || domain.isEmpty()) {
-			domain = getPackageName(klass);
-		}
-		return domain;
+	public static String forGauge(Class<?> klass, Member member, Gauge annotation) {
+        return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	private static String chooseType(String type, Class<?> klass) {
-		if(type == null || type.isEmpty()) {
-			type = getClassName(klass);
-		}
-		return type;
+	public static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member, ExceptionMetered.DEFAULT_NAME_SUFFIX);
 	}
 
-	private static String chooseName(String name, Member field) {
-		if(name == null || name.isEmpty()) {
-			name = field.getName();
-		}
-		return name;
+	public static String forInjectedMetricField(Class<?> klass, Member member, InjectedMetric annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	public static MetricName forTimedMethod(Class<?> klass, Method method, Timed annotation, String scope) {
-		return new MetricName(chooseDomain(annotation.group(), klass),
-							  chooseType(annotation.type(), klass),
-							  chooseName(annotation.name(), method),
-							  scope);
-	}
-
-	public static MetricName forMeteredMethod(Class<?> klass, Method method, Metered annotation, String scope) {
-		return new MetricName(chooseDomain(annotation.group(), klass),
-							  chooseType(annotation.type(), klass),
-							  chooseName(annotation.name(), method),
-							  scope);
-	}
-
-	public static MetricName forGauge(Class<?> klass, Member member, Gauge annotation, String scope) {
-		return new MetricName(chooseDomain(annotation.group(), klass),
-							  chooseType(annotation.type(), klass),
-							  chooseName(annotation.name(), member),
-							  scope);
-	}
-
-	public static MetricName forExceptionMeteredMethod(Class<?> klass, Method method, ExceptionMetered annotation, String scope) {
-		return new MetricName(chooseDomain(annotation.group(), klass),
-							  chooseType(annotation.type(), klass),
-							  annotation.name().isEmpty()
-								  ? method.getName() + ExceptionMetered.DEFAULT_NAME_SUFFIX
-								  : annotation.name(),
-							  scope);
-	}
-
-	public static MetricName forInjectedMetricField(Class<?> klass, Field field, InjectedMetric annotation, String scope) {
-		return new MetricName(chooseDomain(annotation.group(), klass),
-							  chooseType(annotation.type(), klass),
-							  chooseName(annotation.name(), field),
-							  scope);
-	}
+    private static String chooseName(String explicitName, boolean absolute, Class<?> klass, Member member, String... suffixes) {
+        if (explicitName != null && !explicitName.isEmpty()) {
+            if (absolute) return explicitName;
+            return name(klass.getCanonicalName(), explicitName);
+        }
+        return name(name(klass.getCanonicalName(), member.getName()), suffixes);
+    }
 
 }

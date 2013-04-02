@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.yammer.metrics.core.HealthCheckRegistry;
-import com.yammer.metrics.core.MetricsRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
+import com.yammer.metrics.MetricRegistry;
 
 /**
  * Defines callback methods to customize the Java-based configuration
@@ -33,13 +33,13 @@ public interface MetricsConfigurer {
 	 * Configure reporters.
 	 * @param metricsRegistry
 	 */
-	public void configureMetricsReporters(MetricsRegistry metricsRegistry);
+	public void configureMetricsReporters(MetricRegistry metricsRegistry);
 
 	/**
-	 * Override this method to provide a custom {@code MetricsRegistry}.
+	 * Override this method to provide a custom {@code MetricRegistry}.
 	 * @return
 	 */
-	public MetricsRegistry getMetricsRegistry();
+	public MetricRegistry getMetricRegistry();
 
 	/**
 	 * Override this method to provide a custom {@code HealthCheckRegistry}.

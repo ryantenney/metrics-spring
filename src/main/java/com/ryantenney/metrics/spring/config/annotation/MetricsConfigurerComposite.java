@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.yammer.metrics.HealthChecks;
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.HealthCheckRegistry;
-import com.yammer.metrics.core.MetricsRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
+import com.yammer.metrics.MetricRegistry;
 
 /**
  * A {@link MetricsConfigurer} implementation that delegates to other {@link MetricsConfigurer} instances.
@@ -42,22 +40,26 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 	}
 
 	@Override
-	public void configureMetricsReporters(final MetricsRegistry metricsRegistry) {
+	public void configureMetricsReporters(final MetricRegistry metricRegistry) {
 		for (MetricsConfigurer configurer : this.configurers) {
-			configurer.configureMetricsReporters(metricsRegistry);
+			configurer.configureMetricsReporters(metricRegistry);
 		}
 	}
 
 	@Override
-	public MetricsRegistry getMetricsRegistry() {
-		List<MetricsRegistry> candidates = new ArrayList<MetricsRegistry>();
+	public MetricRegistry getMetricRegistry() {
+		List<MetricRegistry> candidates = new ArrayList<MetricRegistry>();
 		for (MetricsConfigurer configurer : this.configurers) {
-			MetricsRegistry healthCheckRegistry = configurer.getMetricsRegistry();
+			MetricRegistry healthCheckRegistry = configurer.getMetricRegistry();
 			if (healthCheckRegistry != null) {
 				candidates.add(healthCheckRegistry);
 			}
 		}
-		return selectSingleInstance(candidates, MetricsRegistry.class, Metrics.defaultRegistry());
+		MetricRegistry instance = selectSingleInstance(candidates, MetricRegistry.class);
+        if (instance == null) {
+            instance = new MetricRegistry(""); // TODO
+        }
+        return instance;
 	}
 
 	@Override
@@ -69,16 +71,20 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 				candidates.add(healthCheckRegistry);
 			}
 		}
-		return selectSingleInstance(candidates, HealthCheckRegistry.class, HealthChecks.defaultRegistry());
+		HealthCheckRegistry instance = selectSingleInstance(candidates, HealthCheckRegistry.class);
+        if (instance == null) {
+            instance = new HealthCheckRegistry();
+        }
+        return instance;
 	}
 
-	private <T> T selectSingleInstance(final List<T> instances, final Class<T> instanceType, final T defaultInstance) {
+	private <T> T selectSingleInstance(final List<T> instances, final Class<T> instanceType) {
 		if (instances.size() > 1) {
 			throw new IllegalStateException("Only one [" + instanceType + "] was expected but multiple instances were provided: " + instances);
 		} else if (instances.size() == 1) {
 			return instances.get(0);
-		} else {		
-			return defaultInstance;
+		} else {
+			return null;
 		}
 	}
 

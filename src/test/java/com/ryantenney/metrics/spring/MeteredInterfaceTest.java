@@ -26,8 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.yammer.metrics.annotation.ExceptionMetered;
 import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.Metrics;
+import com.yammer.metrics.MetricRegistry;
 
 /**
  * Purpose of test:
@@ -38,12 +37,12 @@ import com.yammer.metrics.Metrics;
 public class MeteredInterfaceTest {
 
 	ClassPathXmlApplicationContext ctx;
-	MetricsRegistry metricsRegistry;
+	MetricRegistry metricRegistry;
 
 	@Before
 	public void init() {
 		this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface.xml");
-		this.metricsRegistry = this.ctx.getBean(MetricsRegistry.class);
+		this.metricRegistry = this.ctx.getBean(MetricRegistry.class);
 	}
 
 	@After
@@ -52,9 +51,8 @@ public class MeteredInterfaceTest {
 	}
 
 	@Test
-	public void notUsingDefaultMetricsRegistry() {
-		Assert.assertNotSame("For the purpose of this test we cannot use the default registry!", Metrics.defaultRegistry(), this.metricsRegistry);
-		Assert.assertTrue("No metrics registered", this.metricsRegistry.getAllMetrics().isEmpty());
+	public void noMetricsRegistered() {
+		Assert.assertTrue("No metrics registered", this.metricRegistry.getNames().isEmpty());
 	}
 
 	@Test
@@ -72,13 +70,13 @@ public class MeteredInterfaceTest {
 	@Test
 	public void testTimedMethod() {
 		ctx.getBean(MeteredInterface.class).timedMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricsRegistry.getAllMetrics().isEmpty());
+        Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
 	}
 
 	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredInterface.class).meteredMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricsRegistry.getAllMetrics().isEmpty());
+        Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
 	}
 
 	@Test(expected=BogusException.class)
@@ -86,7 +84,7 @@ public class MeteredInterfaceTest {
 		try {
 			ctx.getBean(MeteredInterface.class).exceptionMeteredMethod();
 		} catch (Throwable t) {
-			Assert.assertTrue("No metrics should be registered", this.metricsRegistry.getAllMetrics().isEmpty());
+            Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
 			throw t;
 		}
 	}

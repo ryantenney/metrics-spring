@@ -16,13 +16,13 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.reporting.JmxReporter;
+import com.yammer.metrics.JmxReporter;
+import com.yammer.metrics.MetricRegistry;
 
 public class JmxReporterFactory {
 
-	public static JmxReporter createInstance(MetricsRegistry metrics) {
-		final JmxReporter reporter = new JmxReporter(metrics);
+	public static JmxReporter createInstance(MetricRegistry metrics) {
+        final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
 		reporter.start();
 		return reporter;
 	}

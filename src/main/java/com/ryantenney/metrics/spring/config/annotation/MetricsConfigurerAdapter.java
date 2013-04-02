@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.yammer.metrics.core.HealthCheckRegistry;
-import com.yammer.metrics.core.MetricsRegistry;
+import com.yammer.metrics.MetricRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
 
 /**
  * An implementation of {@link MetricsConfigurer} with empty methods allowing
@@ -35,14 +35,14 @@ public abstract class MetricsConfigurerAdapter implements MetricsConfigurer {
 	 * <p>This implementation is empty.
 	 */
 	@Override
-	public void configureMetricsReporters(MetricsRegistry metricsRegistry) {}
+	public void configureMetricsReporters(MetricRegistry metricsRegistry) {}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>This implementation returns {@code null}.
 	 */
 	@Override
-	public MetricsRegistry getMetricsRegistry() {
+	public MetricRegistry getMetricRegistry() {
 		return null;
 	}
 

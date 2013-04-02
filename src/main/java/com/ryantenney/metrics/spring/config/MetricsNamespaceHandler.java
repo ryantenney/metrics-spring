@@ -23,9 +23,9 @@ class MetricsNamespaceHandler extends NamespaceHandlerSupport {
 	@Override
 	public void init() {
 		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
-		registerBeanDefinitionParser("metrics-registry", new MetricsRegistryBeanDefinitionParser());
+		registerBeanDefinitionParser("metric-registry", new MetricRegistryBeanDefinitionParser());
 		registerBeanDefinitionParser("health-check-registry", new HealthCheckRegistryBeanDefinitionParser());
-		registerBeanDefinitionParser("jmx-reporter", new JmxReporterBeanDefinitionParser());
+		registerBeanDefinitionParser("reporter", new JmxReporterBeanDefinitionParser());
 	}
 
 }

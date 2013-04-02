@@ -21,26 +21,18 @@ import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import com.yammer.metrics.core.MetricsRegistry;
+import com.yammer.metrics.MetricRegistry;
 
-class MetricsRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class MetricRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected Class<?> getBeanClass(Element element) {
-		return MetricsRegistry.class;
+		return MetricRegistry.class;
 	}
 
 	@Override
 	protected void doParse(Element element, BeanDefinitionBuilder builder) {
-		String clock = element.getAttribute("clock");
-		if (StringUtils.hasText(clock)) {
-			builder.addConstructorArgReference(clock);
-		}
-
-		String name = element.getAttribute("name");
-		if (StringUtils.hasText(name)) {
-			builder.addConstructorArgValue(name);
-		}
+		builder.addConstructorArgValue("FOOBAR"); // TODO
 	}
 
 }

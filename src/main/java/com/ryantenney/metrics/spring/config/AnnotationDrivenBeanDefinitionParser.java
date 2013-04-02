@@ -16,6 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config;
 
+import com.yammer.metrics.MetricRegistry;
+import com.yammer.metrics.health.HealthCheckRegistry;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -26,8 +28,6 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import com.yammer.metrics.HealthChecks;
-import com.yammer.metrics.Metrics;
 import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
@@ -45,19 +45,14 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		final CompositeComponentDefinition compDefinition = new CompositeComponentDefinition(element.getTagName(), source);
 		parserContext.pushContainingComponent(compDefinition);
 
-		String metricsBeanName = element.getAttribute("metrics-registry");
+		String metricsBeanName = element.getAttribute("metric-registry");
 		if (!StringUtils.hasText(metricsBeanName)) {
-			metricsBeanName = registerComponent(parserContext, build(Metrics.class, source, ROLE_APPLICATION).setFactoryMethod("defaultRegistry"));
+			metricsBeanName = registerComponent(parserContext, build(MetricRegistry.class, source, ROLE_APPLICATION).addConstructorArgValue("FOOBAR")); // TODO
 		}
 
 		String healthCheckBeanName = element.getAttribute("health-check-registry");
 		if (!StringUtils.hasText(healthCheckBeanName)) {
-			healthCheckBeanName = registerComponent(parserContext, build(HealthChecks.class, source, ROLE_APPLICATION).setFactoryMethod("defaultRegistry"));
-		}
-
-		String scope = element.getAttribute("scope");
-		if (!StringUtils.hasText(scope)) {
-			scope = null;
+			healthCheckBeanName = registerComponent(parserContext, build(HealthCheckRegistry.class, source, ROLE_APPLICATION));
 		}
 
 		ProxyConfig proxyConfig = new ProxyConfig();
@@ -73,30 +68,25 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		registerComponent(parserContext,
 				build(ExceptionMeteredAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-					.addConstructorArgValue(scope));
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(MeteredAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-					.addConstructorArgValue(scope));
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(TimedAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-					.addConstructorArgValue(scope));
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(GaugeAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
-					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(scope));
+					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,
 				build(InjectedMetricAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
-					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(scope));
+					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,
 				build(HealthCheckBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)

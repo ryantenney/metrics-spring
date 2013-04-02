@@ -16,10 +16,9 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.yammer.metrics.Meter;
+import com.yammer.metrics.MetricRegistry;
 import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -39,18 +38,16 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 
 	private static final MethodFilter filter = new AnnotationFilter(ExceptionMetered.class);
 
-	private final MetricsRegistry metrics;
+	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
 	private final Map<String, Meter> meters;
 	private final Map<String, Class<? extends Throwable>> causes;
-	private final String scope;
 
-	public ExceptionMeteredMethodInterceptor(final MetricsRegistry metrics, final Class<?> targetClass, final String scope) {
+	public ExceptionMeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
 		this.meters = new HashMap<String, Meter>();
 		this.causes = new HashMap<String, Class<? extends Throwable>>();
-		this.scope = scope;
 
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @ExceptionMetered annotated methods");
@@ -79,8 +76,8 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 	@Override
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 		final ExceptionMetered annotation = method.getAnnotation(ExceptionMetered.class);
-		final MetricName metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation, scope);
-		final Meter meter = metrics.newMeter(metricName, annotation.eventType(), annotation.rateUnit());
+		final String metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation);
+		final Meter meter = metrics.meter(metricName);
 
 		final String methodName = method.getName();
 		meters.put(methodName, meter);

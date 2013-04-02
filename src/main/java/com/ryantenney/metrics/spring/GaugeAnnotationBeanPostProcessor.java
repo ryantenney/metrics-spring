@@ -16,9 +16,8 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.yammer.metrics.MetricRegistry;
 import com.yammer.metrics.annotation.Gauge;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +38,10 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 
 	private static final AnnotationFilter filter = new AnnotationFilter(Gauge.class);
 
-	private final MetricsRegistry metrics;
-	private final String scope;
+	private final MetricRegistry metrics;
 
-	public GaugeAnnotationBeanPostProcessor(final MetricsRegistry metrics, final String scope) {
+	public GaugeAnnotationBeanPostProcessor(final MetricRegistry metrics) {
 		this.metrics = metrics;
-		this.scope = scope;
 	}
 
 	@Override
@@ -62,14 +59,14 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				ReflectionUtils.makeAccessible(field);
 
 				final Gauge annotation = field.getAnnotation(Gauge.class);
-				final MetricName metricName = Util.forGauge(targetClass, field, annotation, scope);
+				final String metricName = Util.forGauge(targetClass, field, annotation);
 
-				metrics.newGauge(metricName, new com.yammer.metrics.core.Gauge<Object>() {
+				metrics.register(metricName, new com.yammer.metrics.Gauge<Object>() {
 					@Override
 					public Object getValue() {
 						Object value = ReflectionUtils.getField(field, bean);
-						if (value instanceof com.yammer.metrics.core.Gauge) {
-							value = ((com.yammer.metrics.core.Gauge<?>) value).getValue();
+						if (value instanceof com.yammer.metrics.Gauge) {
+							value = ((com.yammer.metrics.Gauge<?>) value).getValue();
 						}
 						return value;
 					}
@@ -87,9 +84,9 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				}
 
 				final Gauge annotation = method.getAnnotation(Gauge.class);
-				final MetricName metricName = Util.forGauge(targetClass, method, annotation, scope);
+				final String metricName = Util.forGauge(targetClass, method, annotation);
 
-				metrics.newGauge(metricName, new com.yammer.metrics.core.Gauge<Object>() {
+				metrics.register(metricName, new com.yammer.metrics.Gauge<Object>() {
 					@Override
 					public Object getValue() {
 						return ReflectionUtils.invokeMethod(method, bean);

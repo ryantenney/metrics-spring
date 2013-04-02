@@ -17,9 +17,9 @@
 package com.ryantenney.metrics.spring;
 
 import static org.junit.Assert.*;
+import static com.ryantenney.metrics.spring.TestUtil.*;
 
-import java.util.Map;
-
+import com.yammer.metrics.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +30,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.yammer.metrics.annotation.ExceptionMetered;
 import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.Gauge;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
-import com.yammer.metrics.core.Timer;
-import com.yammer.metrics.util.ToggleGauge;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -45,37 +38,20 @@ public class MeteredClassTest {
 	@Autowired
 	MeteredClass meteredClass;
 
+    MetricRegistry metricRegistry;
+
 	@Autowired
-	MetricsRegistry metricsRegistry;
-
-	Gauge<Object> gaugedField;
-	Gauge<Object> gaugedMethod;
-	Gauge<?> gaugedGaugeField;
-	Timer timedMethod;
-	Meter meteredMethod;
-	Meter exceptionMeteredMethod;
-	Timer triple_Timed;
-	Meter triple_Metered;
-	Meter triple_ExceptionMetered;
-
-	@Before
-	@SuppressWarnings("unchecked")
-	public void init() {
-		Map<MetricName, Metric> metrics = metricsRegistry.getAllMetrics();
-
-		gaugedField = (Gauge<Object>) metrics.get(new MetricName(MeteredClass.class, "gaugedField"));
-		gaugedMethod = (Gauge<Object>) metrics.get(new MetricName(MeteredClass.class, "gaugedMethod"));
-		gaugedGaugeField = (Gauge<?>) metrics.get(new MetricName(MeteredClass.class, "gaugedGaugeField"));
-		timedMethod = (Timer) metrics.get(new MetricName(MeteredClass.class, "timedMethod"));
-		meteredMethod = (Meter) metrics.get(new MetricName(MeteredClass.class, "meteredMethod"));
-		exceptionMeteredMethod = (Meter) metrics.get(new MetricName(MeteredClass.class, "exceptionMeteredMethodExceptions"));
-		triple_Timed = (Timer) metrics.get(new MetricName(MeteredClass.class, "triplyMeteredMethod-timed"));
-		triple_Metered = (Meter) metrics.get(new MetricName(MeteredClass.class, "triplyMeteredMethod-metered"));
-		triple_ExceptionMetered = (Meter) metrics.get(new MetricName(MeteredClass.class, "triplyMeteredMethod-exceptionMetered"));
-	}
+    public void setMetricRegistry(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
+        this.metricRegistry.addListener(new LoggingMetricRegistryListener());
+    }
 
 	@Test
 	public void gauges() {
+        Gauge<?> gaugedField = forGaugeField(metricRegistry, MeteredClass.class, "gaugedField");
+        Gauge<?> gaugedMethod = forGaugeMethod(metricRegistry, MeteredClass.class, "gaugedMethod");
+        Gauge<?> gaugedGaugeField = forGaugeField(metricRegistry, MeteredClass.class, "gaugedGaugeField");
+
 		assertEquals(999, gaugedField.getValue());
 		assertEquals(999, gaugedMethod.getValue());
 
@@ -84,12 +60,14 @@ public class MeteredClassTest {
 		assertEquals(1000, gaugedField.getValue());
 		assertEquals(1000, gaugedMethod.getValue());
 
-		assertEquals(1, gaugedGaugeField.getValue());
+		assertEquals(0.5, gaugedGaugeField.getValue());
 	}
 
 	@Test
 	public void timedMethod() throws Throwable {
-		assertEquals(0, timedMethod.getCount());
+        Timer timedMethod = forTimedMethod(metricRegistry, MeteredClass.class, "timedMethod");
+
+        assertEquals(0, timedMethod.getCount());
 
 		meteredClass.timedMethod(false);
 		assertEquals(1, timedMethod.getCount());
@@ -106,6 +84,8 @@ public class MeteredClassTest {
 
 	@Test
 	public void meteredMethod() throws Throwable {
+        Meter meteredMethod = forMeteredMethod(metricRegistry, MeteredClass.class, "meteredMethod");
+
 		assertEquals(0, meteredMethod.getCount());
 
 		meteredClass.meteredMethod();
@@ -114,6 +94,8 @@ public class MeteredClassTest {
 
 	@Test
 	public void exceptionMeteredMethod() throws Throwable {
+        Meter exceptionMeteredMethod = forExceptionMeteredMethod(metricRegistry, MeteredClass.class, "exceptionMeteredMethod");
+
 		assertEquals(0, exceptionMeteredMethod.getCount());
 
 		// doesn't throw an exception
@@ -141,6 +123,10 @@ public class MeteredClassTest {
 
 	@Test
 	public void triplyMeteredMethod() throws Throwable {
+        Timer triple_Timed = forTimedMethod(metricRegistry, MeteredClass.class, "triplyMeteredMethod");
+        Meter triple_Metered = forMeteredMethod(metricRegistry, MeteredClass.class, "triplyMeteredMethod");
+        Meter triple_ExceptionMetered = forExceptionMeteredMethod(metricRegistry, MeteredClass.class, "triplyMeteredMethod");
+
 		assertEquals(0, triple_Metered.getCount());
 		assertEquals(0, triple_Timed.getCount());
 		assertEquals(0, triple_ExceptionMetered.getCount());
@@ -170,7 +156,12 @@ public class MeteredClassTest {
 		private int gaugedField = 999;
 
 		@com.yammer.metrics.annotation.Gauge
-		private ToggleGauge gaugedGaugeField = new ToggleGauge();
+		private RatioGauge gaugedGaugeField = new RatioGauge() {
+            @Override
+            protected Ratio getRatio() {
+                return Ratio.of(1, 2);
+            }
+        };
 
 		@com.yammer.metrics.annotation.Gauge
 		public int gaugedMethod() {

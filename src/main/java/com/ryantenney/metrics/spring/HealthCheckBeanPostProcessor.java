@@ -16,14 +16,14 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.yammer.metrics.health.HealthCheckRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 
-import com.yammer.metrics.core.HealthCheck;
-import com.yammer.metrics.core.HealthCheckRegistry;
+import com.yammer.metrics.health.HealthCheck;
 
 public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
 
@@ -43,7 +43,7 @@ public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof HealthCheck) {
-			healthChecks.register((HealthCheck) bean);
+			healthChecks.register(beanName, (HealthCheck)bean);
 
 			log.debug("Registering HealthCheck bean {}", beanName);
 		}

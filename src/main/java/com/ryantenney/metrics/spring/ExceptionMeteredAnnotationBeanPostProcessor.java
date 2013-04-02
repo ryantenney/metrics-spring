@@ -22,19 +22,17 @@ import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
 import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.core.MetricsRegistry;
+import com.yammer.metrics.MetricRegistry;
 
 public class ExceptionMeteredAnnotationBeanPostProcessor extends AbstractProxyingBeanPostProcessor {
 
 	private static final long serialVersionUID = -1967025297766933304L;
 
 	private final Pointcut pointcut = new AnnotationMatchingPointcut(null, ExceptionMetered.class);
-	private final MetricsRegistry metrics;
-	private final String scope;
+	private final MetricRegistry metrics;
 
-	public ExceptionMeteredAnnotationBeanPostProcessor(final MetricsRegistry metrics, final ProxyConfig config, final String scope) {
+	public ExceptionMeteredAnnotationBeanPostProcessor(final MetricRegistry metrics, final ProxyConfig config) {
 		this.metrics = metrics;
-		this.scope = scope;
 
 		this.copyFrom(config);
 	}
@@ -46,7 +44,7 @@ public class ExceptionMeteredAnnotationBeanPostProcessor extends AbstractProxyin
 
 	@Override
 	public MethodInterceptor getMethodInterceptor(Class<?> targetClass) {
-		return new ExceptionMeteredMethodInterceptor(metrics, targetClass, scope);
+		return new ExceptionMeteredMethodInterceptor(metrics, targetClass);
 	}
 
 }
