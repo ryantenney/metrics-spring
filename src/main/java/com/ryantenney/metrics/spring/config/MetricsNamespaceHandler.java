@@ -25,7 +25,7 @@ class MetricsNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
 		registerBeanDefinitionParser("metric-registry", new MetricRegistryBeanDefinitionParser());
 		registerBeanDefinitionParser("health-check-registry", new HealthCheckRegistryBeanDefinitionParser());
-		registerBeanDefinitionParser("reporter", new JmxReporterBeanDefinitionParser());
+		//registerBeanDefinitionParser("reporter", new ReporterBeanDefinitionParser());
 	}
 
 }
