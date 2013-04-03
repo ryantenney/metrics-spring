@@ -11,6 +11,6 @@
 
 	<metrics:annotation-driven />
 
-	<bean class="com.ryantenney.metrics.spring.InjectedMetricTest.Target" />
+	<bean class="com.ryantenney.metrics.spring.InjectMetricTest.Target" />
 
 </beans>

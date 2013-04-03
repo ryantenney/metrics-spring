@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
-import com.ryantenney.metrics.spring.InjectedMetricAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.InjectMetricAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
 
@@ -94,8 +94,8 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public InjectedMetricAnnotationBeanPostProcessor injectedMetricAnnotationBeanPostProcessor() {
-		return new InjectedMetricAnnotationBeanPostProcessor(getMetricRegistry());
+	public InjectMetricAnnotationBeanPostProcessor injectedMetricAnnotationBeanPostProcessor() {
+		return new InjectMetricAnnotationBeanPostProcessor(getMetricRegistry());
 	}
 
 	@Bean

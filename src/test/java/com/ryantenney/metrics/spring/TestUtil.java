@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ryantenney.metrics.annotation.InjectedMetric;
+import com.ryantenney.metrics.annotation.InjectMetric;
 import com.yammer.metrics.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,9 +75,9 @@ class TestUtil extends Util {
 		return metricsRegistry.getMeters().get(metricName);
 	}
 
-    public static Metric forInjectedMetricField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+    public static Metric forInjectMetricField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
         Field field = findField(clazz, fieldName);
-        String metricName = forInjectedMetricField(clazz, field, field.getAnnotation(InjectedMetric.class));
+        String metricName = forInjectMetricField(clazz, field, field.getAnnotation(InjectMetric.class));
         log.info("Looking up injected metric field named '{}'", metricName);
         Class<?> type = field.getType();
         if (type.isAssignableFrom(Meter.class)) {
@@ -85,9 +85,6 @@ class TestUtil extends Util {
         }
         else if (type.isAssignableFrom(Timer.class)) {
             return metricsRegistry.getTimers().get(metricName);
-        }
-        else if (type.isAssignableFrom(Gauge.class)) {
-            return metricsRegistry.getGauges().get(metricName);
         }
         else if (type.isAssignableFrom(Counter.class)) {
             return metricsRegistry.getCounters().get(metricName);

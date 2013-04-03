@@ -16,6 +16,7 @@
  */
 package com.ryantenney.metrics.spring.config;
 
+import com.ryantenney.metrics.spring.*;
 import com.yammer.metrics.MetricRegistry;
 import com.yammer.metrics.health.HealthCheckRegistry;
 import org.springframework.aop.framework.ProxyConfig;
@@ -28,12 +29,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
-import com.ryantenney.metrics.spring.InjectedMetricAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.InjectMetricAnnotationBeanPostProcessor;
 
 import static org.springframework.beans.factory.config.BeanDefinition.*;
 
@@ -85,7 +81,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,
-				build(InjectedMetricAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(InjectMetricAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
 					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,

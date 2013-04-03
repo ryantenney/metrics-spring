@@ -18,9 +18,8 @@ package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Member;
 
-import com.ryantenney.metrics.annotation.InjectedMetric;
+import com.ryantenney.metrics.annotation.InjectMetric;
 import com.yammer.metrics.annotation.*;
-import org.slf4j.LoggerFactory;
 
 import static com.yammer.metrics.MetricRegistry.name;
 
@@ -42,7 +41,7 @@ class Util {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member, ExceptionMetered.DEFAULT_NAME_SUFFIX);
 	}
 
-	public static String forInjectedMetricField(Class<?> klass, Member member, InjectedMetric annotation) {
+	public static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
