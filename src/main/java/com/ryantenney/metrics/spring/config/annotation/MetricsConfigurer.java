@@ -33,7 +33,7 @@ public interface MetricsConfigurer {
 	 * Configure reporters.
 	 * @param metricsRegistry
 	 */
-	public void configureMetricsReporters(MetricRegistry metricsRegistry);
+	public void configureReporters(MetricRegistry metricsRegistry);
 
 	/**
 	 * Override this method to provide a custom {@code MetricRegistry}.

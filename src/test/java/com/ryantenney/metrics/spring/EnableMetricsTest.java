@@ -65,8 +65,8 @@ public class EnableMetricsTest {
 		assertSame(metricRegistry, applicationContext.getBean(MetricRegistry.class));
 		assertSame(healthCheckRegistry, applicationContext.getBean(HealthCheckRegistry.class));
 
-		// Verify that the configureMetricsReporters method was invoked
-		assertThat(MetricsConfig.isConfigureMetricsReportersInvoked, is(true));
+		// Verify that the configureReporters method was invoked
+		assertThat(MetricsConfig.isConfigureReportersInvoked, is(true));
 
 		// Assert that the bean has been proxied
 		TestBean testBean = applicationContext.getBean(TestBean.class);
@@ -111,7 +111,7 @@ public class EnableMetricsTest {
 	@EnableMetrics
 	public static class MetricsConfig implements MetricsConfigurer {
 
-		public static boolean isConfigureMetricsReportersInvoked = false;
+		public static boolean isConfigureReportersInvoked = false;
 
 		@Bean
 		public TestBean testBean() {
@@ -129,8 +129,8 @@ public class EnableMetricsTest {
 		}
 
 		@Override
-		public void configureMetricsReporters(MetricRegistry metricRegistry) {
-			isConfigureMetricsReportersInvoked = true;
+		public void configureReporters(MetricRegistry metricRegistry) {
+			isConfigureReportersInvoked = true;
 		}
 
 	}

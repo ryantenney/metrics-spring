@@ -48,8 +48,8 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 	}
 
 	@Override
-	public void configureMetricsReporters(final MetricRegistry metricsRegistry) {
-		this.delegates.configureMetricsReporters(metricRegistry);
+	public void configureReporters(final MetricRegistry metricsRegistry) {
+		this.delegates.configureReporters(metricRegistry);
 	}
 
 	@Bean
@@ -57,7 +57,7 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 	public MetricRegistry getMetricRegistry() {
 		if (this.metricRegistry == null) {
 			this.metricRegistry = this.delegates.getMetricRegistry();
-			this.configureMetricsReporters(this.metricRegistry);
+			this.configureReporters(this.metricRegistry);
 		}
 		return this.metricRegistry;
 	}

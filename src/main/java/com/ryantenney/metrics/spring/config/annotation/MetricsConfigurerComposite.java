@@ -40,9 +40,9 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 	}
 
 	@Override
-	public void configureMetricsReporters(final MetricRegistry metricRegistry) {
+	public void configureReporters(final MetricRegistry metricRegistry) {
 		for (MetricsConfigurer configurer : this.configurers) {
-			configurer.configureMetricsReporters(metricRegistry);
+			configurer.configureReporters(metricRegistry);
 		}
 	}
 
