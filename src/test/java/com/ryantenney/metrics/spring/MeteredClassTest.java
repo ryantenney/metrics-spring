@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import static com.ryantenney.metrics.spring.TestUtil.*;
 
 import com.yammer.metrics.*;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,6 +148,113 @@ public class MeteredClassTest {
 		assertEquals(1, triple_ExceptionMetered.getCount());
 	}
 
+	@Test
+	public void overloadedTimedMethod() {
+		Timer overloaded = metricRegistry.getTimers().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-timed"));
+		Timer overloaded_param = metricRegistry.getTimers().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-timed-param"));
+
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		meteredClass.overloadedTimedMethod();
+
+		assertEquals(1, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		meteredClass.overloadedTimedMethod(1);
+
+		assertEquals(1, overloaded.getCount());
+		assertEquals(1, overloaded_param.getCount());
+
+		meteredClass.overloadedTimedMethod(1);
+
+		assertEquals(1, overloaded.getCount());
+		assertEquals(2, overloaded_param.getCount());
+	}
+
+	@Test
+	public void overloadedMeteredMethod() {
+		Meter overloaded = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-metered"));
+		Meter overloaded_param = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-metered-param"));
+
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		meteredClass.overloadedMeteredMethod();
+
+		assertEquals(1, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		meteredClass.overloadedMeteredMethod(1);
+
+		assertEquals(1, overloaded.getCount());
+		assertEquals(1, overloaded_param.getCount());
+
+		meteredClass.overloadedMeteredMethod(1);
+
+		assertEquals(1, overloaded.getCount());
+		assertEquals(2, overloaded_param.getCount());
+	}
+
+	@Test
+	public void overloadedExceptionMeteredMethod() throws Throwable {
+		Meter overloaded = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-exception-metered"));
+		Meter overloaded_param = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-exception-metered-param"));
+
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		// doesn't throw an exception
+		meteredClass.overloadedExceptionMeteredMethod(null);
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		// throws the wrong exception
+		try {
+			meteredClass.overloadedExceptionMeteredMethod(RuntimeException.class);
+			fail();
+		} catch (Throwable t) {
+			assertTrue(t instanceof RuntimeException);
+		}
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		// throws the right exception
+		try {
+			meteredClass.overloadedExceptionMeteredMethod(BogusException.class);
+			fail();
+		} catch (Throwable t) {
+			assertTrue(t instanceof BogusException);
+		}
+		assertEquals(1, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		// doesn't throw an exception
+		meteredClass.overloadedExceptionMeteredMethod(null, 1);
+		assertEquals(1, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		// throws the wrong exception
+		try {
+			meteredClass.overloadedExceptionMeteredMethod(RuntimeException.class, 1);
+			fail();
+		} catch (Throwable t) {
+			assertTrue(t instanceof RuntimeException);
+		}
+		assertEquals(1, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		// throws the right exception
+		try {
+			meteredClass.overloadedExceptionMeteredMethod(BogusException.class, 1);
+			fail();
+		} catch (Throwable t) {
+			assertTrue(t instanceof BogusException);
+		}
+		assertEquals(1, overloaded.getCount());
+		assertEquals(1, overloaded_param.getCount());
+	}
+
 
 	public static class MeteredClass {
 
@@ -190,6 +296,32 @@ public class MeteredClassTest {
 		@ExceptionMetered(name="triplyMeteredMethod-exceptionMetered", cause=BogusException.class)
 		public void triplyMeteredMethod(boolean doThrow) throws Throwable {
 			if (doThrow) throw new BogusException();
+		}
+
+		@Timed(name="overloaded-timed")
+		public void overloadedTimedMethod() {
+		}
+
+		@Timed(name="overloaded-timed-param")
+		public void overloadedTimedMethod(int param) {
+		}
+
+		@Metered(name="overloaded-metered")
+		public void overloadedMeteredMethod() {
+		}
+
+		@Metered(name="overloaded-metered-param")
+		public void overloadedMeteredMethod(int param) {
+		}
+
+		@ExceptionMetered(name="overloaded-exception-metered", cause=BogusException.class)
+		public <T extends Throwable> void overloadedExceptionMeteredMethod(Class<T> clazz) throws Throwable {
+			if (clazz != null) throw clazz.newInstance();
+		}
+
+		@ExceptionMetered(name="overloaded-exception-metered-param", cause=BogusException.class)
+		public <T extends Throwable> void overloadedExceptionMeteredMethod(Class<T> clazz, int param) throws Throwable {
+			if (clazz != null) throw clazz.newInstance();
 		}
 
 	}
