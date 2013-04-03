@@ -52,10 +52,7 @@ class TestUtil extends Util {
 	}
 
 	public static Timer forTimedMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
-        System.out.println(clazz);
-        System.out.println(methodName);
 		Method method = findMethod(clazz, methodName);
-        System.out.println(method);
 		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class));
         log.info("Looking up timed method named '{}'", metricName);
 		return metricsRegistry.getTimers().get(metricName);
