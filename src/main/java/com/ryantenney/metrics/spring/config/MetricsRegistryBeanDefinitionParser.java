@@ -16,9 +16,7 @@
  */
 package com.ryantenney.metrics.spring.config;
 
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 import com.yammer.metrics.MetricRegistry;
@@ -28,11 +26,6 @@ class MetricRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionPar
 	@Override
 	protected Class<?> getBeanClass(Element element) {
 		return MetricRegistry.class;
-	}
-
-	@Override
-	protected void doParse(Element element, BeanDefinitionBuilder builder) {
-		builder.addConstructorArgValue("FOOBAR"); // TODO
 	}
 
 }

@@ -106,7 +106,7 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	protected synchronized MetricRegistry getMetricRegistry() {
 		if (metricRegistry == null) {
-            metricRegistry = new MetricRegistry(""); // TODO: MetricRegistry name was removed
+            metricRegistry = new MetricRegistry();
         }
         return metricRegistry;
 	}

@@ -57,7 +57,7 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 		}
 		MetricRegistry instance = selectSingleInstance(candidates, MetricRegistry.class);
         if (instance == null) {
-            instance = new MetricRegistry(""); // TODO
+            instance = new MetricRegistry();
         }
         return instance;
 	}

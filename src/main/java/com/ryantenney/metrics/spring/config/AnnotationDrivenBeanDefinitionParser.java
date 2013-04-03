@@ -47,7 +47,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		String metricsBeanName = element.getAttribute("metric-registry");
 		if (!StringUtils.hasText(metricsBeanName)) {
-			metricsBeanName = registerComponent(parserContext, build(MetricRegistry.class, source, ROLE_APPLICATION).addConstructorArgValue("FOOBAR")); // TODO
+			metricsBeanName = registerComponent(parserContext, build(MetricRegistry.class, source, ROLE_APPLICATION));
 		}
 
 		String healthCheckBeanName = element.getAttribute("health-check-registry");

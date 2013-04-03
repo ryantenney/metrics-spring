@@ -45,14 +45,14 @@ import static com.ryantenney.metrics.spring.TestUtil.*;
 @SuppressWarnings("unchecked")
 public class EnableMetricsTest {
 
-    private static final Logger log = LoggerFactory.getLogger(EnableMetricsTest.class);
+	private static final Logger log = LoggerFactory.getLogger(EnableMetricsTest.class);
 
-    private static final MetricRegistry metricRegistry = new MetricRegistry("EnableMetricsTestRegistry"); // TODO
+	private static final MetricRegistry metricRegistry = new MetricRegistry();
 	private static final HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
 
-    static {
-        metricRegistry.addListener(new LoggingMetricRegistryListener());
-    }
+	static {
+		metricRegistry.addListener(new LoggingMetricRegistryListener());
+	}
 
 	@Test
 	public void metricsConfigTest() throws Throwable {
