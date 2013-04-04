@@ -40,14 +40,14 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 
 	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
-	private final Map<String, Meter> meters;
-	private final Map<String, Class<? extends Throwable>> causes;
+	private final Map<Method, Meter> meters;
+	private final Map<Method, Class<? extends Throwable>> causes;
 
 	public ExceptionMeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
-		this.meters = new HashMap<String, Meter>();
-		this.causes = new HashMap<String, Class<? extends Throwable>>();
+		this.meters = new HashMap<Method, Meter>();
+		this.causes = new HashMap<Method, Class<? extends Throwable>>();
 
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @ExceptionMetered annotated methods");
@@ -60,11 +60,10 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		try {
 			return invocation.proceed();
 		} catch (Throwable t) {
-			final String name = invocation.getMethod().getName();
-			final Class<?> cause = causes.get(name);
+			final Class<?> cause = causes.get(invocation.getMethod());
 			if (cause != null && cause.isAssignableFrom(t.getClass())) {
 				// it may be safe to infer that `meter` is non-null if `cause` is non-null
-				Meter meter = meters.get(name);
+				Meter meter = meters.get(invocation.getMethod());
 				if (meter != null) {
 					meter.mark();
 				}
@@ -79,11 +78,10 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		final String metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation);
 		final Meter meter = metrics.meter(metricName);
 
-		final String methodName = method.getName();
-		meters.put(methodName, meter);
-		causes.put(methodName, annotation.cause());
+		meters.put(method, meter);
+		causes.put(method, annotation.cause());
 
-		log.debug("Created metric {} for method {}", metricName, methodName);
+		log.debug("Created metric {} for method {}", metricName, method.getName());
 	}
 
 	@Override
