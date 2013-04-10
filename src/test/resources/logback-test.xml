@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.ryantenney.metrics.spring" level="DEBUG"/>
+    <logger name="com.ryantenney.metrics.spring" level="WARN" />
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />
