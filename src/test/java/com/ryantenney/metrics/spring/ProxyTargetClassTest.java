@@ -16,7 +16,7 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.annotation.Timed;
+import com.codahale.metrics.annotation.Timed;
 
 import org.junit.Assert;
 import org.junit.Test;

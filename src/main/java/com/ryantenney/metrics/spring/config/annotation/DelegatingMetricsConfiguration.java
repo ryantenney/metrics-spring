@@ -18,8 +18,8 @@ package com.ryantenney.metrics.spring.config.annotation;
 
 import java.util.List;
 
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

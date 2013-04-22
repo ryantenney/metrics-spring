@@ -16,13 +16,13 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.MetricRegistry;
+import com.codahale.metrics.MetricRegistry;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
-import com.yammer.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Metered;
 
 public class MeteredAnnotationBeanPostProcessor extends AbstractProxyingBeanPostProcessor {
 

@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ryantenney.metrics.annotation.InjectMetric;
-import com.yammer.metrics.*;
+import com.codahale.metrics.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.annotation.Timed;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * This exists in part to get access to the Util class in testing.
@@ -39,14 +39,14 @@ class TestUtil extends Util {
 
 	public static Gauge<?> forGaugeField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
 		Field field = findField(clazz, fieldName);
-		String metricName = forGauge(clazz, field, field.getAnnotation(com.yammer.metrics.annotation.Gauge.class));
+		String metricName = forGauge(clazz, field, field.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
         log.info("Looking up gauge field named '{}'", metricName);
 		return metricsRegistry.getGauges().get(metricName);
 	}
 
 	public static Gauge<?> forGaugeMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
-		String metricName = forGauge(clazz, method, method.getAnnotation(com.yammer.metrics.annotation.Gauge.class));
+		String metricName = forGauge(clazz, method, method.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
         log.info("Looking up gauge method named '{}'", metricName);
 		return metricsRegistry.getGauges().get(metricName);
 	}

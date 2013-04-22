@@ -16,9 +16,9 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.Timer;
-import com.yammer.metrics.annotation.Timed;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.annotation.Timed;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		final Timer timer = timers.get(invocation.getMethod());
-		final com.yammer.metrics.Timer.Context timerCtx = timer != null ? timer.time() : null;
+		final com.codahale.metrics.Timer.Context timerCtx = timer != null ? timer.time() : null;
 		try {
 			return invocation.proceed();
 		} finally {

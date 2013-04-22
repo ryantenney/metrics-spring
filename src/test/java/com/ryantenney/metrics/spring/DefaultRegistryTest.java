@@ -20,8 +20,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 
 public class DefaultRegistryTest {
 

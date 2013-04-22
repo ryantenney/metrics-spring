@@ -16,14 +16,14 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 
-import com.yammer.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheck;
 
 public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
 

@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;

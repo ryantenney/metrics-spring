@@ -19,9 +19,9 @@ package com.ryantenney.metrics.spring;
 import java.lang.reflect.Member;
 
 import com.ryantenney.metrics.annotation.InjectMetric;
-import com.yammer.metrics.annotation.*;
+import com.codahale.metrics.annotation.*;
 
-import static com.yammer.metrics.MetricRegistry.name;
+import static com.codahale.metrics.MetricRegistry.name;
 
 class Util {
 

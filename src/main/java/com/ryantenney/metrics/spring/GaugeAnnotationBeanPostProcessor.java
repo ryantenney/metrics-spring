@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.annotation.Gauge;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.Gauge;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +61,12 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				final Gauge annotation = field.getAnnotation(Gauge.class);
 				final String metricName = Util.forGauge(targetClass, field, annotation);
 
-				metrics.register(metricName, new com.yammer.metrics.Gauge<Object>() {
+				metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 					@Override
 					public Object getValue() {
 						Object value = ReflectionUtils.getField(field, bean);
-						if (value instanceof com.yammer.metrics.Gauge) {
-							value = ((com.yammer.metrics.Gauge<?>) value).getValue();
+						if (value instanceof com.codahale.metrics.Gauge) {
+							value = ((com.codahale.metrics.Gauge<?>) value).getValue();
 						}
 						return value;
 					}
@@ -86,7 +86,7 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				final Gauge annotation = method.getAnnotation(Gauge.class);
 				final String metricName = Util.forGauge(targetClass, method, annotation);
 
-				metrics.register(metricName, new com.yammer.metrics.Gauge<Object>() {
+				metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 					@Override
 					public Object getValue() {
 						return ReflectionUtils.invokeMethod(method, bean);

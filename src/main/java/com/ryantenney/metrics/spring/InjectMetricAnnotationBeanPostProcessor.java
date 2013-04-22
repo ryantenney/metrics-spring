@@ -17,7 +17,7 @@
 package com.ryantenney.metrics.spring;
 
 import com.ryantenney.metrics.annotation.InjectMetric;
-import com.yammer.metrics.*;
+import com.codahale.metrics.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

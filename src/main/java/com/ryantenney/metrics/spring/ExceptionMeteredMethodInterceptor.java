@@ -16,9 +16,9 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.Meter;
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.ExceptionMetered;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;

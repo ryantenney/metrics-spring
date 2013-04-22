@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.yammer.metrics.health.HealthCheckRegistry;
-import com.yammer.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.MetricRegistry;
 
 /**
  * Defines callback methods to customize the Java-based configuration

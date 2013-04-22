@@ -16,7 +16,7 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.yammer.metrics.*;
+import com.codahale.metrics.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +27,10 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -137,10 +137,10 @@ public class EnableMetricsTest {
 
 	public static class TestBean {
 
-		@com.yammer.metrics.annotation.Gauge
+		@com.codahale.metrics.annotation.Gauge
 		private int intGaugeField = 5;
 
-		@com.yammer.metrics.annotation.Gauge
+		@com.codahale.metrics.annotation.Gauge
 		public int intGaugeMethod() {
 			return 6;
 		}

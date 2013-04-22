@@ -19,16 +19,16 @@ package com.ryantenney.metrics.spring;
 import static org.junit.Assert.*;
 import static com.ryantenney.metrics.spring.TestUtil.*;
 
-import com.yammer.metrics.*;
+import com.codahale.metrics.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.annotation.Timed;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -258,10 +258,10 @@ public class MeteredClassTest {
 
 	public static class MeteredClass {
 
-		@com.yammer.metrics.annotation.Gauge
+		@com.codahale.metrics.annotation.Gauge
 		private int gaugedField = 999;
 
-		@com.yammer.metrics.annotation.Gauge
+		@com.codahale.metrics.annotation.Gauge
 		private RatioGauge gaugedGaugeField = new RatioGauge() {
             @Override
             protected Ratio getRatio() {
@@ -269,7 +269,7 @@ public class MeteredClassTest {
             }
         };
 
-		@com.yammer.metrics.annotation.Gauge
+		@com.codahale.metrics.annotation.Gauge
 		public int gaugedMethod() {
 			return this.gaugedField;
 		}

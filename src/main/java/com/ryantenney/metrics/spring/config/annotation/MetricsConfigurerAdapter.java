@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 
 /**
  * An implementation of {@link MetricsConfigurer} with empty methods allowing

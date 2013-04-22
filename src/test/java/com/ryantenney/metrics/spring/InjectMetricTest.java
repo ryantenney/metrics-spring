@@ -26,11 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.yammer.metrics.Counter;
-import com.yammer.metrics.Histogram;
-import com.yammer.metrics.Meter;
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.Timer;
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Histogram;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:injected-metrics.xml")

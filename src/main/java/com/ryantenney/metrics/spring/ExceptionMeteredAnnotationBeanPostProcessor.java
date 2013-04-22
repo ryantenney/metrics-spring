@@ -21,8 +21,8 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.MetricRegistry;
 
 public class ExceptionMeteredAnnotationBeanPostProcessor extends AbstractProxyingBeanPostProcessor {
 

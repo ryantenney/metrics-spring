@@ -9,8 +9,8 @@
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
 			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<bean id="metrics" class="com.yammer.metrics.MetricRegistry" />
-    <bean id="health" class="com.yammer.metrics.health.HealthCheckRegistry" />
+	<bean id="metrics" class="com.codahale.metrics.MetricRegistry" />
+    <bean id="health" class="com.codahale.metrics.health.HealthCheckRegistry" />
 
 	<metrics:annotation-driven metric-registry="metrics" health-check-registry="health" />
 

@@ -15,7 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <metrics.version>3.0.0-BETA2-SNAPSHOT</metrics.version>
+        <metrics.version>3.0.0-BETA2</metrics.version>
         <spring.version>3.2.0.RELEASE</spring.version>
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
@@ -70,17 +70,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>${metrics.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-healthchecks</artifactId>
             <version>${metrics.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-annotation</artifactId>
             <version>${metrics.version}</version>
         </dependency>
