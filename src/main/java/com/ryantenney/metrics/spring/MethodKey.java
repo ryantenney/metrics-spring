@@ -7,7 +7,6 @@ public class MethodKey {
   private final String name;
   private final Class<?> returnType;
   private final Class<?>[] parameterTypes;
-  private final Class<?>[] exceptionTypes;
 
   public static MethodKey forMethod(Method method) {
     return new MethodKey(method);
@@ -17,14 +16,12 @@ public class MethodKey {
     this.name = method.getName();
     this.returnType = method.getReturnType();
     this.parameterTypes = method.getParameterTypes();
-    this.exceptionTypes = method.getExceptionTypes();
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + Arrays.hashCode(exceptionTypes);
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + Arrays.hashCode(parameterTypes);
     result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
@@ -40,8 +37,6 @@ public class MethodKey {
     if (getClass() != obj.getClass())
       return false;
     MethodKey other = (MethodKey) obj;
-    if (!Arrays.equals(exceptionTypes, other.exceptionTypes))
-      return false;
     if (name == null) {
       if (other.name != null)
         return false;
