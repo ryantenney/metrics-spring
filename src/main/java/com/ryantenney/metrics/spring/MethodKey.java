@@ -3,7 +3,7 @@ package com.ryantenney.metrics.spring;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class MethodKey {
+class MethodKey {
   private final String name;
   private final Class<?> returnType;
   private final Class<?>[] parameterTypes;
