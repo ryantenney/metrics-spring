@@ -40,12 +40,12 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 
 	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
-	private final Map<Method, Timer> timers;
+	private final Map<MethodKey, Timer> timers;
 
 	public TimedMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
-		this.timers = new HashMap<Method, Timer>();
+		this.timers = new HashMap<MethodKey, Timer>();
 
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @Timed annotated methods");
@@ -55,7 +55,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		final Timer timer = timers.get(invocation.getMethod());
+		final Timer timer = timers.get(MethodKey.forMethod(invocation.getMethod()));
 		final com.codahale.metrics.Timer.Context timerCtx = timer != null ? timer.time() : null;
 		try {
 			return invocation.proceed();
@@ -72,7 +72,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 		final String metricName = Util.forTimedMethod(targetClass, method, annotation);
 		final Timer timer = metrics.timer(metricName);
 
-		timers.put(method, timer);
+		timers.put(MethodKey.forMethod(method), timer);
 
 		log.debug("Created metric {} for method {}", metricName, method.getName());
 	}

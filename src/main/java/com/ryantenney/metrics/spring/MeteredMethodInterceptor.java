@@ -39,12 +39,12 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 	protected final MetricRegistry metrics;
 	protected final Class<?> targetClass;
-	protected final Map<Method, Meter> meters;
+	protected final Map<MethodKey, Meter> meters;
 
 	public MeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
-		this.meters = new HashMap<Method, Meter>();
+		this.meters = new HashMap<MethodKey, Meter>();
 
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @Metered annotated methods");
@@ -54,7 +54,7 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		Meter meter = meters.get(invocation.getMethod());
+		Meter meter = meters.get(MethodKey.forMethod(invocation.getMethod()));
 		if (meter != null) {
 			meter.mark();
 		}
@@ -67,7 +67,7 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 		final String metricName = Util.forMeteredMethod(targetClass, method, annotation);
 		final Meter meter = metrics.meter(metricName);
 
-		meters.put(method, meter);
+		meters.put(MethodKey.forMethod(method), meter);
 
 		log.debug("Created metric {} for method {}", metricName, method.getName());
 	}
