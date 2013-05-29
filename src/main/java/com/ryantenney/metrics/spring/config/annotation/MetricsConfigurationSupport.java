@@ -47,6 +47,8 @@ import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
  */
 public class MetricsConfigurationSupport implements ImportAware {
 
+	private final Object lock = new Object();
+
 	private MetricRegistry metricRegistry;
 	private HealthCheckRegistry healthCheckRegistry;
 
@@ -104,16 +106,24 @@ public class MetricsConfigurationSupport implements ImportAware {
 		return new HealthCheckBeanPostProcessor(getHealthCheckRegistry());
 	}
 
-	protected synchronized MetricRegistry getMetricRegistry() {
+	protected MetricRegistry getMetricRegistry() {
 		if (metricRegistry == null) {
-			metricRegistry = new MetricRegistry();
+			synchronized (lock) {
+				if (metricRegistry == null) {
+					metricRegistry = new MetricRegistry();
+				}
+			}
 		}
 		return metricRegistry;
 	}
 
-	protected synchronized HealthCheckRegistry getHealthCheckRegistry() {
+	protected HealthCheckRegistry getHealthCheckRegistry() {
 		if (healthCheckRegistry == null) {
-			healthCheckRegistry = new HealthCheckRegistry();
+			synchronized (lock) {
+				if (healthCheckRegistry == null) {
+					healthCheckRegistry = new HealthCheckRegistry();
+				}
+			}
 		}
 		return healthCheckRegistry;
 	}
