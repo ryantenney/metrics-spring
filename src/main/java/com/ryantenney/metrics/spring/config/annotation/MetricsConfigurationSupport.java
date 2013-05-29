@@ -53,7 +53,6 @@ public class MetricsConfigurationSupport implements ImportAware {
 	private HealthCheckRegistry healthCheckRegistry;
 
 	protected ProxyConfig config;
-	protected String scope;
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
@@ -63,11 +62,6 @@ public class MetricsConfigurationSupport implements ImportAware {
 		this.config = new ProxyConfig();
 		this.config.setExposeProxy(enableMetrics.getBoolean("exposeProxy"));
 		this.config.setProxyTargetClass(enableMetrics.getBoolean("proxyTargetClass"));
-
-		this.scope = enableMetrics.getString("scope");
-		if (!StringUtils.hasText(this.scope)) {
-			this.scope = null;
-		}
 	}
 
 	@Bean
