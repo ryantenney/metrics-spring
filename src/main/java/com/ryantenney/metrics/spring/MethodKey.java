@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 class MethodKey {
+
 	private final String name;
 	private final Class<?> returnType;
 	private final Class<?>[] parameterTypes;
@@ -66,6 +67,26 @@ class MethodKey {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(64);
+		sb.append(returnType.getSimpleName());
+		sb.append(' ');
+		sb.append(name);
+		sb.append('(');
+		boolean firstParam = true;
+		for (Class<?> parameterType : parameterTypes) {
+			if (firstParam) {
+				firstParam = false;
+			} else {
+				sb.append(", ");
+			}
+			sb.append(parameterType.getSimpleName());
+		}
+		sb.append(')');
+		return sb.toString();
 	}
 
 }
