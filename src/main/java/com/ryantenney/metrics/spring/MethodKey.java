@@ -7,6 +7,7 @@ class MethodKey {
 	private final String name;
 	private final Class<?> returnType;
 	private final Class<?>[] parameterTypes;
+	private final int hashCode;
 
 	public static MethodKey forMethod(Method method) {
 		return new MethodKey(method);
@@ -16,10 +17,15 @@ class MethodKey {
 		this.name = method.getName();
 		this.returnType = method.getReturnType();
 		this.parameterTypes = method.getParameterTypes();
+		this.hashCode = computeHashCode();
 	}
 
 	@Override
 	public int hashCode() {
+		return hashCode;
+	}
+
+	private int computeHashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (name == null ? 0 : name.hashCode());
