@@ -29,9 +29,9 @@ class MethodKey {
 	private int computeHashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (name == null ? 0 : name.hashCode());
+		result = prime * result + name.hashCode();
 		result = prime * result + Arrays.hashCode(parameterTypes);
-		result = prime * result + (returnType == null ? 0 : returnType.hashCode());
+		result = prime * result + returnType.hashCode();
 		return result;
 	}
 
@@ -47,26 +47,9 @@ class MethodKey {
 			return false;
 		}
 		MethodKey other = (MethodKey) obj;
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		}
-		else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (!Arrays.equals(parameterTypes, other.parameterTypes)) {
-			return false;
-		}
-		if (returnType == null) {
-			if (other.returnType != null) {
-				return false;
-			}
-		}
-		else if (!returnType.equals(other.returnType)) {
-			return false;
-		}
-		return true;
+		return name.equals(other.name)
+			&& returnType.equals(other.returnType)
+			&& Arrays.equals(parameterTypes, other.parameterTypes);
 	}
 
 	@Override
