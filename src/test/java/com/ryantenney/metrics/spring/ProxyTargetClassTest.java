@@ -16,13 +16,13 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.annotation.Timed;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * Purpose of test:
@@ -39,15 +39,14 @@ public class ProxyTargetClassTest {
 	public void positiveContextLoadingTest() {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:proxy-target-class-enabled.xml");
 		Assert.assertNotNull("Expected to be able to get ProxyTargetClass by class.", ctx.getBean(ProxyTargetClass.class));
-		Assert.assertNotNull("Expected to be able to get ProxyTargetClass from AutowiredCollaborator.", ctx.getBean(AutowiredCollaborator.class).getDependency());
+		Assert.assertNotNull("Expected to be able to get ProxyTargetClass from AutowiredCollaborator.", ctx.getBean(AutowiredCollaborator.class)
+				.getDependency());
 	}
-
 
 	/**
 	 * Empty interface to trick Spring.
 	 */
 	public interface UselessInterface {}
-
 
 	public static class ProxyTargetClass implements UselessInterface {
 
@@ -55,7 +54,6 @@ public class ProxyTargetClassTest {
 		public void timed() {}
 
 	}
-
 
 	public static class AutowiredCollaborator {
 
@@ -67,6 +65,5 @@ public class ProxyTargetClassTest {
 		}
 
 	}
-
 
 }

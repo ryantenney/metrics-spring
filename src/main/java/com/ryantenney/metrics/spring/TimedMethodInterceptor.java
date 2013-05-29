@@ -16,9 +16,10 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Timed;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.annotation.Timed;
 
 class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
 
@@ -59,7 +60,8 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 		final com.codahale.metrics.Timer.Context timerCtx = timer != null ? timer.time() : null;
 		try {
 			return invocation.proceed();
-		} finally {
+		}
+		finally {
 			if (timerCtx != null) {
 				timerCtx.stop();
 			}

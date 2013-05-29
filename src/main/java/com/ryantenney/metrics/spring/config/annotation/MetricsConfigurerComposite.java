@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 
 /**
  * A {@link MetricsConfigurer} implementation that delegates to other {@link MetricsConfigurer} instances.
@@ -56,10 +56,10 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 			}
 		}
 		MetricRegistry instance = selectSingleInstance(candidates, MetricRegistry.class);
-        if (instance == null) {
-            instance = new MetricRegistry();
-        }
-        return instance;
+		if (instance == null) {
+			instance = new MetricRegistry();
+		}
+		return instance;
 	}
 
 	@Override
@@ -72,18 +72,20 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 			}
 		}
 		HealthCheckRegistry instance = selectSingleInstance(candidates, HealthCheckRegistry.class);
-        if (instance == null) {
-            instance = new HealthCheckRegistry();
-        }
-        return instance;
+		if (instance == null) {
+			instance = new HealthCheckRegistry();
+		}
+		return instance;
 	}
 
 	private <T> T selectSingleInstance(final List<T> instances, final Class<T> instanceType) {
 		if (instances.size() > 1) {
 			throw new IllegalStateException("Only one [" + instanceType + "] was expected but multiple instances were provided: " + instances);
-		} else if (instances.size() == 1) {
+		}
+		else if (instances.size() == 1) {
 			return instances.get(0);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}

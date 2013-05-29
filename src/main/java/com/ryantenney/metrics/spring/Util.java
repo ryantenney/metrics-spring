@@ -16,25 +16,28 @@
  */
 package com.ryantenney.metrics.spring;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 import java.lang.reflect.Member;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Gauge;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.InjectMetric;
-import com.codahale.metrics.annotation.*;
-
-import static com.codahale.metrics.MetricRegistry.name;
 
 class Util {
 
 	public static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
-        return chooseName(annotation.name(), annotation.absolute(), klass, member);
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
 	public static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
-        return chooseName(annotation.name(), annotation.absolute(), klass, member);
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
 	public static String forGauge(Class<?> klass, Member member, Gauge annotation) {
-        return chooseName(annotation.name(), annotation.absolute(), klass, member);
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
 	public static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
@@ -45,12 +48,14 @@ class Util {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-    private static String chooseName(String explicitName, boolean absolute, Class<?> klass, Member member, String... suffixes) {
-        if (explicitName != null && !explicitName.isEmpty()) {
-            if (absolute) return explicitName;
-            return name(klass.getCanonicalName(), explicitName);
-        }
-        return name(name(klass.getCanonicalName(), member.getName()), suffixes);
-    }
+	private static String chooseName(String explicitName, boolean absolute, Class<?> klass, Member member, String... suffixes) {
+		if (explicitName != null && !explicitName.isEmpty()) {
+			if (absolute) {
+				return explicitName;
+			}
+			return name(klass.getCanonicalName(), explicitName);
+		}
+		return name(name(klass.getCanonicalName(), member.getName()), suffixes);
+	}
 
 }

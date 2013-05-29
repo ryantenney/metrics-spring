@@ -16,9 +16,9 @@
  */
 package com.ryantenney.metrics.spring.config;
 
-import com.ryantenney.metrics.spring.*;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_APPLICATION;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
+
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -29,12 +29,18 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
 import com.ryantenney.metrics.spring.InjectMetricAnnotationBeanPostProcessor;
-
-import static org.springframework.beans.factory.config.BeanDefinition.*;
+import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
 
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
+	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		final Object source = parserContext.extractSource(element);
 

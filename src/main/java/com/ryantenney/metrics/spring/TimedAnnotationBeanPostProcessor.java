@@ -16,12 +16,12 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.MetricRegistry;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Timed;
 
 public class TimedAnnotationBeanPostProcessor extends AbstractProxyingBeanPostProcessor {

@@ -69,5 +69,5 @@ public @interface EnableMetrics {
 	 * @see org.springframework.aop.TargetSource#getTargetClass()
 	 */
 	boolean proxyTargetClass() default false;
-	
+
 }

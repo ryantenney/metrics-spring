@@ -16,8 +16,6 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +26,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
 import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
@@ -47,8 +47,8 @@ import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
  */
 public class MetricsConfigurationSupport implements ImportAware {
 
-    private MetricRegistry metricRegistry;
-    private HealthCheckRegistry healthCheckRegistry;
+	private MetricRegistry metricRegistry;
+	private HealthCheckRegistry healthCheckRegistry;
 
 	protected ProxyConfig config;
 	protected String scope;
@@ -106,15 +106,15 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	protected synchronized MetricRegistry getMetricRegistry() {
 		if (metricRegistry == null) {
-            metricRegistry = new MetricRegistry();
-        }
-        return metricRegistry;
+			metricRegistry = new MetricRegistry();
+		}
+		return metricRegistry;
 	}
 
 	protected synchronized HealthCheckRegistry getHealthCheckRegistry() {
-        if (healthCheckRegistry == null) {
-            healthCheckRegistry = new HealthCheckRegistry();
-        }
+		if (healthCheckRegistry == null) {
+			healthCheckRegistry = new HealthCheckRegistry();
+		}
 		return healthCheckRegistry;
 	}
 

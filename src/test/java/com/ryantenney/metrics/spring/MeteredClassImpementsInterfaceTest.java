@@ -33,9 +33,6 @@ import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
-import com.ryantenney.metrics.spring.MeteredClassTest.MeteredClass;
-import com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterface;
-import com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterfaceImpl;
 
 /**
  * Purpose of test:
@@ -45,10 +42,8 @@ import com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterfaceImpl;
  */
 public class MeteredClassImpementsInterfaceTest {
 
-  
-  
-  MeteredClassInterface meteredClass;
-  
+	MeteredClassInterface meteredClass;
+
 	ClassPathXmlApplicationContext ctx;
 	MetricRegistry metricRegistry;
 
@@ -71,95 +66,88 @@ public class MeteredClassImpementsInterfaceTest {
 
 	@Test
 	public void testMeteredClassInterface() {
-	  MeteredClassInterface mi = ctx.getBean(MeteredClassInterface.class);
+		MeteredClassInterface mi = ctx.getBean(MeteredClassInterface.class);
 		Assert.assertNotNull("Expected to be able to get MeteredInterface by interface and not by class.", mi);
 	}
 
-	@Test(expected=NoSuchBeanDefinitionException.class)
+	@Test(expected = NoSuchBeanDefinitionException.class)
 	public void testMeteredInterfaceImpl() {
-	  MeteredClassInterface mc = ctx.getBean(MeteredClassImpl.class);
+		MeteredClassInterface mc = ctx.getBean(MeteredClassImpl.class);
 		Assert.assertNull("Expected to be unable to get MeteredInterfaceImpl by class.", mc);
 	}
 
 	@Test
 	public void testTimedMethod() {
 		ctx.getBean(MeteredClassInterface.class).timedMethod();
-        Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
 	}
 
 	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredClassInterface.class).meteredMethod();
-        Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
 	}
 
-	@Test(expected=BogusException.class)
+	@Test(expected = BogusException.class)
 	public void testExceptionMeteredMethod() throws Throwable {
 		try {
 			ctx.getBean(MeteredClassInterface.class).exceptionMeteredMethod();
-		} catch (Throwable t) {
-            Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		}
+		catch (Throwable t) {
+			Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
 			throw t;
 		}
 	}
-	
+
 	@Test
-  public void timedMethod() throws Throwable {
-    Timer timedMethod = forTimedMethod(metricRegistry, MeteredClassImpl.class, "timedMethod");
+	public void timedMethod() throws Throwable {
+		Timer timedMethod = forTimedMethod(metricRegistry, MeteredClassImpl.class, "timedMethod");
 
-    assertEquals(0, timedMethod.getCount());
+		assertEquals(0, timedMethod.getCount());
 
-    meteredClass.timedMethod();
-    assertEquals(1, timedMethod.getCount());
+		meteredClass.timedMethod();
+		assertEquals(1, timedMethod.getCount());
 	}
-	
+
 	@Test
-  public void meteredMethod() throws Throwable {
-    Meter meteredMethod = forMeteredMethod(metricRegistry, MeteredClassImpl.class, "meteredMethod");
+	public void meteredMethod() throws Throwable {
+		Meter meteredMethod = forMeteredMethod(metricRegistry, MeteredClassImpl.class, "meteredMethod");
 
-    assertEquals(0, meteredMethod.getCount());
+		assertEquals(0, meteredMethod.getCount());
 
-    meteredClass.meteredMethod();
-    assertEquals(1, meteredMethod.getCount());
-  }
+		meteredClass.meteredMethod();
+		assertEquals(1, meteredMethod.getCount());
+	}
 
+	public interface MeteredClassInterface {
 
+		public void timedMethod();
 
-	 public interface MeteredClassInterface {
+		public void meteredMethod();
 
-	    
-	    public void timedMethod();
+		public void exceptionMeteredMethod() throws Throwable;
 
-	    
-	    public void meteredMethod();
+	}
 
-	    
-	    public void exceptionMeteredMethod() throws Throwable;
+	public static class MeteredClassImpl implements MeteredClassInterface {
 
-	  }
+		@Override
+		@Timed
+		public void timedMethod() {}
 
+		@Override
+		@Metered
+		public void meteredMethod() {}
 
-	  public static class MeteredClassImpl implements MeteredClassInterface {
+		@Override
+		@ExceptionMetered
+		public void exceptionMeteredMethod() throws Throwable {
+			throw new BogusException();
+		}
 
-	    @Override
-	    @Timed
-	    public void timedMethod() {}
-
-	    @Override
-	    @Metered
-	    public void meteredMethod() {}
-
-	    @Override
-	    @ExceptionMetered
-	    public void exceptionMeteredMethod() throws Throwable {
-	      throw new BogusException();
-	    }
-
-	  }
-
+	}
 
 	@SuppressWarnings("serial")
 	public static class BogusException extends Throwable {}
-
 
 }

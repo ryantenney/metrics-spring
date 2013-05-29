@@ -16,10 +16,10 @@
  */
 package com.ryantenney.metrics.spring;
 
-import static org.junit.Assert.*;
-import static com.ryantenney.metrics.spring.TestUtil.*;
+import static com.ryantenney.metrics.spring.TestUtil.forInjectMetricField;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
-import com.ryantenney.metrics.annotation.InjectMetric;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,7 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.ryantenney.metrics.annotation.InjectMetric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:injected-metrics.xml")
@@ -51,7 +52,7 @@ public class InjectMetricTest {
 		assertSame(target.theNameForTheMeter, meter);
 
 		assertNotNull(target.timer);
-        Timer timer = (Timer) forInjectMetricField(metricRegistry, InjectMetricTest.Target.class, "timer");
+		Timer timer = (Timer) forInjectMetricField(metricRegistry, InjectMetricTest.Target.class, "timer");
 		assertSame(target.timer, timer);
 
 		assertNotNull(target.counter);

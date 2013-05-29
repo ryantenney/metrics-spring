@@ -16,9 +16,10 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.ExceptionMetered;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.ExceptionMetered;
 
 class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
 
@@ -59,8 +60,9 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		try {
 			return invocation.proceed();
-		} catch (Throwable t) {
-		  MethodKey key = MethodKey.forMethod(invocation.getMethod());
+		}
+		catch (Throwable t) {
+			MethodKey key = MethodKey.forMethod(invocation.getMethod());
 			final Class<?> cause = causes.get(key);
 			if (cause != null && cause.isAssignableFrom(t.getClass())) {
 				// it may be safe to infer that `meter` is non-null if `cause` is non-null

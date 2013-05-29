@@ -16,8 +16,8 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Gauge;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.Gauge;
 
 public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 

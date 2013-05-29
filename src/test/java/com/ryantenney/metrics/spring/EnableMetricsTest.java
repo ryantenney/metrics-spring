@@ -16,7 +16,16 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.*;
+import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
+import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
+import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
+import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
+import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +34,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
-import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static com.ryantenney.metrics.spring.TestUtil.*;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
 
 /**
  * Tests use of {@link EnableMetrics @EnableMetrics} on {@code @Configuration} classes.
@@ -70,40 +79,41 @@ public class EnableMetricsTest {
 
 		// Assert that the bean has been proxied
 		TestBean testBean = applicationContext.getBean(TestBean.class);
-        assertNotNull(testBean);
+		assertNotNull(testBean);
 		assertThat(AopUtils.isAopProxy(testBean), is(true));
 
 		// Verify that the Gauge field's value is returned
 		Gauge<Integer> fieldGauge = (Gauge<Integer>) forGaugeField(metricRegistry, TestBean.class, "intGaugeField");
-        assertNotNull(fieldGauge);
+		assertNotNull(fieldGauge);
 		assertThat(fieldGauge.getValue(), is(5));
 
 		// Verify that the Gauge method's value is returned
 		Gauge<Integer> methodGauge = (Gauge<Integer>) forGaugeMethod(metricRegistry, TestBean.class, "intGaugeMethod");
-        assertNotNull(methodGauge);
+		assertNotNull(methodGauge);
 		assertThat(methodGauge.getValue(), is(6));
 
 		// Verify that the Timer's counter is incremented on method invocation
 		Timer timedMethodTimer = forTimedMethod(metricRegistry, TestBean.class, "timedMethod");
-        assertNotNull(timedMethodTimer);
+		assertNotNull(timedMethodTimer);
 		assertThat(timedMethodTimer.getCount(), is(0L));
 		testBean.timedMethod();
 		assertThat(timedMethodTimer.getCount(), is(1L));
 
 		// Verify that the Meter's counter is incremented on method invocation
 		Meter meteredMethodMeter = forMeteredMethod(metricRegistry, TestBean.class, "meteredMethod");
-        assertNotNull(meteredMethodMeter);
+		assertNotNull(meteredMethodMeter);
 		assertThat(meteredMethodMeter.getCount(), is(0L));
 		testBean.meteredMethod();
 		assertThat(meteredMethodMeter.getCount(), is(1L));
 
 		// Verify that the Meter's counter is incremented on method invocation
 		Meter exceptionMeteredMethodMeter = forExceptionMeteredMethod(metricRegistry, TestBean.class, "exceptionMeteredMethod");
-        assertNotNull(exceptionMeteredMethodMeter);
+		assertNotNull(exceptionMeteredMethodMeter);
 		assertThat(exceptionMeteredMethodMeter.getCount(), is(0L));
 		try {
 			testBean.exceptionMeteredMethod();
-		} catch (Throwable t) {}
+		}
+		catch (Throwable t) {}
 		assertThat(exceptionMeteredMethodMeter.getCount(), is(1L));
 	}
 

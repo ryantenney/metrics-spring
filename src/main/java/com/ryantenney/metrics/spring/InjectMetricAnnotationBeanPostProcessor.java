@@ -16,8 +16,7 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.ryantenney.metrics.annotation.InjectMetric;
-import com.codahale.metrics.*;
+import java.lang.reflect.Field;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,14 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
-import java.lang.reflect.Field;
+
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Histogram;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.ryantenney.metrics.annotation.InjectMetric;
 
 public class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
@@ -60,18 +66,22 @@ public class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcesso
 				Metric metric = null;
 				if (Meter.class == type) {
 					metric = metrics.meter(metricName);
-				} else if (Timer.class == type) {
+				}
+				else if (Timer.class == type) {
 					metric = metrics.timer(metricName);
-				} else if (Counter.class == type) {
+				}
+				else if (Counter.class == type) {
 					metric = metrics.counter(metricName);
-				} else if (Histogram.class == type) {
+				}
+				else if (Histogram.class == type) {
 					metric = metrics.histogram(metricName);
-				} else {
+				}
+				else {
 					throw new IllegalStateException("Cannot inject a metric of type " + type.getCanonicalName());
 				}
 
 				ReflectionUtils.makeAccessible(field);
-                ReflectionUtils.setField(field, bean, metric);
+				ReflectionUtils.setField(field, bean, metric);
 
 				log.debug("Injected metric {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
 			}

@@ -16,12 +16,12 @@
  */
 package com.ryantenney.metrics.spring;
 
-import org.springframework.util.ReflectionUtils.FieldFilter;
-import org.springframework.util.ReflectionUtils.MethodFilter;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import org.springframework.util.ReflectionUtils.FieldFilter;
+import org.springframework.util.ReflectionUtils.MethodFilter;
 
 class AnnotationFilter implements MethodFilter, FieldFilter {
 

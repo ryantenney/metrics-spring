@@ -16,7 +16,6 @@
  */
 package com.ryantenney.metrics.spring;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheckRegistry;
 
 public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
 
@@ -43,7 +43,7 @@ public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof HealthCheck) {
-			healthChecks.register(beanName, (HealthCheck)bean);
+			healthChecks.register(beanName, (HealthCheck) bean);
 
 			log.debug("Registering HealthCheck bean {}", beanName);
 		}
