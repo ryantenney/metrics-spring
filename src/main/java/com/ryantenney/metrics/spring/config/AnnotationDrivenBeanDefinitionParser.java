@@ -31,12 +31,7 @@ import org.w3c.dom.Element;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
-import com.ryantenney.metrics.spring.InjectMetricAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
@@ -68,30 +63,36 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		}
 
 		registerComponent(parserContext,
-				build(ExceptionMeteredAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("exceptionMetered")
 					.addConstructorArgReference(metricsBeanName)
 					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
-				build(MeteredAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("metered")
 					.addConstructorArgReference(metricsBeanName)
 					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
-				build(TimedAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("timed")
 					.addConstructorArgReference(metricsBeanName)
 					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
-				build(GaugeAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("gauge")
 					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,
-				build(InjectMetricAnnotationBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("injectMetric")
 					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,
-				build(HealthCheckBeanPostProcessor.class, source, ROLE_INFRASTRUCTURE)
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("healthCheck")
 					.addConstructorArgReference(healthCheckBeanName));
 
 		parserContext.popAndRegisterContainingComponent();

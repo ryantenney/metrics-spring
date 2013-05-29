@@ -24,6 +24,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
@@ -36,7 +38,8 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 	private static final Logger log = LoggerFactory.getLogger(MeteredMethodInterceptor.class);
 
-	private static final MethodFilter filter = new AnnotationFilter(Metered.class);
+	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, Metered.class);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(Metered.class);
 
 	protected final MetricRegistry metrics;
 	protected final Class<?> targetClass;
@@ -50,7 +53,7 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @Metered annotated methods");
 
-		ReflectionUtils.doWithMethods(targetClass, this, filter);
+		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
 	}
 
 	@Override
@@ -66,11 +69,12 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 		final Metered annotation = method.getAnnotation(Metered.class);
 		final String metricName = Util.forMeteredMethod(targetClass, method, annotation);
+		final MethodKey methodKey = MethodKey.forMethod(method);
 		final Meter meter = metrics.meter(metricName);
 
-		meters.put(MethodKey.forMethod(method), meter);
+		meters.put(methodKey, meter);
 
-		log.debug("Created metric {} for method {}", metricName, method.getName());
+		log.debug("Created Meter {} for method {}", metricName, methodKey);
 	}
 
 }

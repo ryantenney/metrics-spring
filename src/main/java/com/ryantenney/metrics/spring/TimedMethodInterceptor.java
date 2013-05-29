@@ -24,6 +24,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
@@ -37,7 +39,8 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 
 	private static final Logger log = LoggerFactory.getLogger(TimedMethodInterceptor.class);
 
-	private static final MethodFilter filter = new AnnotationFilter(Timed.class);
+	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, Timed.class);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(Timed.class);
 
 	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
@@ -51,7 +54,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @Timed annotated methods");
 
-		ReflectionUtils.doWithMethods(targetClass, this, filter);
+		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
 	}
 
 	@Override
@@ -72,11 +75,12 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 		final Timed annotation = method.getAnnotation(Timed.class);
 		final String metricName = Util.forTimedMethod(targetClass, method, annotation);
+		final MethodKey methodKey = MethodKey.forMethod(method);
 		final Timer timer = metrics.timer(metricName);
 
-		timers.put(MethodKey.forMethod(method), timer);
+		timers.put(methodKey, timer);
 
-		log.debug("Created metric {} for method {}", metricName, method.getName());
+		log.debug("Created Timer {} for method {}", metricName, methodKey);
 	}
 
 	@Override

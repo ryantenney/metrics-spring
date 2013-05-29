@@ -32,7 +32,7 @@ import org.springframework.util.ReflectionUtils.MethodCallback;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Gauge;
 
-public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
+class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private static final Logger log = LoggerFactory.getLogger(GaugeAnnotationBeanPostProcessor.class);
 

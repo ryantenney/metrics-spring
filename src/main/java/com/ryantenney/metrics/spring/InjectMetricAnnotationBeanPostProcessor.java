@@ -35,7 +35,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.ryantenney.metrics.annotation.InjectMetric;
 
-public class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
+class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private static final Logger log = LoggerFactory.getLogger(InjectMetricAnnotationBeanPostProcessor.class);
 

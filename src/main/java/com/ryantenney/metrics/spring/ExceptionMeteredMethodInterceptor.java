@@ -24,6 +24,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
@@ -37,7 +39,8 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 
 	private static final Logger log = LoggerFactory.getLogger(ExceptionMeteredMethodInterceptor.class);
 
-	private static final MethodFilter filter = new AnnotationFilter(ExceptionMetered.class);
+	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ExceptionMetered.class);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ExceptionMetered.class);
 
 	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
@@ -53,7 +56,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		log.debug("Scanning for @ExceptionMetered annotated methods");
 
-		ReflectionUtils.doWithMethods(targetClass, this, filter);
+		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
 	}
 
 	@Override
@@ -62,7 +65,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 			return invocation.proceed();
 		}
 		catch (Throwable t) {
-			MethodKey key = MethodKey.forMethod(invocation.getMethod());
+			final MethodKey key = MethodKey.forMethod(invocation.getMethod());
 			final Class<?> cause = causes.get(key);
 			if (cause != null && cause.isAssignableFrom(t.getClass())) {
 				// it may be safe to infer that `meter` is non-null if `cause` is non-null
@@ -79,12 +82,13 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 		final ExceptionMetered annotation = method.getAnnotation(ExceptionMetered.class);
 		final String metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation);
+		final MethodKey methodKey = MethodKey.forMethod(method);
 		final Meter meter = metrics.meter(metricName);
-		MethodKey key = MethodKey.forMethod(method);
-		meters.put(key, meter);
-		causes.put(key, annotation.cause());
 
-		log.debug("Created metric {} for method {}", metricName, method.getName());
+		meters.put(methodKey, meter);
+		causes.put(methodKey, annotation.cause());
+
+		log.debug("Created Meter {} for method {}", metricName, methodKey);
 	}
 
 	@Override

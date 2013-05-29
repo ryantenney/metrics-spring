@@ -18,22 +18,17 @@ package com.ryantenney.metrics.spring.config.annotation;
 
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.ryantenney.metrics.spring.ExceptionMeteredAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.GaugeAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.HealthCheckBeanPostProcessor;
-import com.ryantenney.metrics.spring.InjectMetricAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.MeteredAnnotationBeanPostProcessor;
-import com.ryantenney.metrics.spring.TimedAnnotationBeanPostProcessor;
+import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 
 /**
  * This is the main class providing the configuration behind the Metrics Java config.
@@ -52,52 +47,52 @@ public class MetricsConfigurationSupport implements ImportAware {
 	private MetricRegistry metricRegistry;
 	private HealthCheckRegistry healthCheckRegistry;
 
-	protected ProxyConfig config;
+	protected ProxyConfig proxyConfig;
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
 		AnnotationAttributes enableMetrics = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(EnableMetrics.class.getName(), false));
 		Assert.notNull(enableMetrics, "@" + EnableMetrics.class.getSimpleName() + " is not present on importing class " + importMetadata.getClassName());
 
-		this.config = new ProxyConfig();
-		this.config.setExposeProxy(enableMetrics.getBoolean("exposeProxy"));
-		this.config.setProxyTargetClass(enableMetrics.getBoolean("proxyTargetClass"));
+		this.proxyConfig = new ProxyConfig();
+		this.proxyConfig.setExposeProxy(enableMetrics.getBoolean("exposeProxy"));
+		this.proxyConfig.setProxyTargetClass(enableMetrics.getBoolean("proxyTargetClass"));
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public ExceptionMeteredAnnotationBeanPostProcessor exceptionMeteredAnnotationBeanPostProcessor() {
-		return new ExceptionMeteredAnnotationBeanPostProcessor(getMetricRegistry(), config);
+	public BeanPostProcessor exceptionMeteredAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.exceptionMetered(getMetricRegistry(), proxyConfig);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public MeteredAnnotationBeanPostProcessor meteredAnnotationBeanPostProcessor() {
-		return new MeteredAnnotationBeanPostProcessor(getMetricRegistry(), config);
+	public BeanPostProcessor meteredAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.metered(getMetricRegistry(), proxyConfig);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public TimedAnnotationBeanPostProcessor timedAnnotationBeanPostProcessor() {
-		return new TimedAnnotationBeanPostProcessor(getMetricRegistry(), config);
+	public BeanPostProcessor timedAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.timed(getMetricRegistry(), proxyConfig);
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public GaugeAnnotationBeanPostProcessor gaugeAnnotationBeanPostProcessor() {
-		return new GaugeAnnotationBeanPostProcessor(getMetricRegistry());
+	public BeanPostProcessor gaugeAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.gauge(getMetricRegistry());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public InjectMetricAnnotationBeanPostProcessor injectedMetricAnnotationBeanPostProcessor() {
-		return new InjectMetricAnnotationBeanPostProcessor(getMetricRegistry());
+	public BeanPostProcessor injectMetricAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.injectMetric(getMetricRegistry());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public HealthCheckBeanPostProcessor healthCheckBeanPostProcessor() {
-		return new HealthCheckBeanPostProcessor(getHealthCheckRegistry());
+	public BeanPostProcessor healthCheckBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.healthCheck(getHealthCheckRegistry());
 	}
 
 	protected MetricRegistry getMetricRegistry() {

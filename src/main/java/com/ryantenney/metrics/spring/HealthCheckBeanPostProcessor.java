@@ -25,7 +25,7 @@ import org.springframework.core.Ordered;
 import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.health.HealthCheckRegistry;
 
-public class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
+class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private static final Logger log = LoggerFactory.getLogger(HealthCheckBeanPostProcessor.class);
 
