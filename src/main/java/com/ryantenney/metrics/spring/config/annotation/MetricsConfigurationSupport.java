@@ -44,8 +44,8 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	private final Object lock = new Object();
 
-	private MetricRegistry metricRegistry;
-	private HealthCheckRegistry healthCheckRegistry;
+	private volatile MetricRegistry metricRegistry;
+	private volatile HealthCheckRegistry healthCheckRegistry;
 
 	protected ProxyConfig proxyConfig;
 
