@@ -46,7 +46,7 @@ class MethodKey {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		MethodKey other = (MethodKey) obj;
+		final MethodKey other = (MethodKey) obj;
 		return name.equals(other.name)
 			&& returnType.equals(other.returnType)
 			&& Arrays.equals(parameterTypes, other.parameterTypes);
@@ -54,7 +54,7 @@ class MethodKey {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(64);
+		final StringBuilder sb = new StringBuilder();
 		sb.append(returnType.getSimpleName());
 		sb.append(' ');
 		sb.append(name);
@@ -63,7 +63,8 @@ class MethodKey {
 		for (Class<?> parameterType : parameterTypes) {
 			if (firstParam) {
 				firstParam = false;
-			} else {
+			}
+			else {
 				sb.append(", ");
 			}
 			sb.append(parameterType.getSimpleName());

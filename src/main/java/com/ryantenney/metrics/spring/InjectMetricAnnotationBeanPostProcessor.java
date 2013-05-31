@@ -21,7 +21,6 @@ import java.lang.reflect.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
@@ -37,9 +36,9 @@ import com.ryantenney.metrics.annotation.InjectMetric;
 
 class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
-	private static final Logger log = LoggerFactory.getLogger(InjectMetricAnnotationBeanPostProcessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(InjectMetricAnnotationBeanPostProcessor.class);
 
-	private static final AnnotationFilter filter = new AnnotationFilter(InjectMetric.class);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(InjectMetric.class);
 
 	private final MetricRegistry metrics;
 
@@ -48,17 +47,17 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(final Object bean, String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
-			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+			public void doWith(Field field) throws IllegalAccessException {
 				final InjectMetric annotation = field.getAnnotation(InjectMetric.class);
 				final String metricName = Util.forInjectMetricField(targetClass, field, annotation);
 
@@ -83,9 +82,9 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 				ReflectionUtils.makeAccessible(field);
 				ReflectionUtils.setField(field, bean, metric);
 
-				log.debug("Injected metric {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
+				LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
 			}
-		}, filter);
+		}, FILTER);
 
 		return bean;
 	}

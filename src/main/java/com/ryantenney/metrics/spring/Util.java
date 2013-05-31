@@ -28,27 +28,30 @@ import com.ryantenney.metrics.annotation.InjectMetric;
 
 class Util {
 
-	public static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
+	private Util() {
+	}
+
+	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	public static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
+	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	public static String forGauge(Class<?> klass, Member member, Gauge annotation) {
+	static String forGauge(Class<?> klass, Member member, Gauge annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	public static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
+	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member, ExceptionMetered.DEFAULT_NAME_SUFFIX);
 	}
 
-	public static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
+	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	private static String chooseName(String explicitName, boolean absolute, Class<?> klass, Member member, String... suffixes) {
+	static String chooseName(String explicitName, boolean absolute, Class<?> klass, Member member, String... suffixes) {
 		if (explicitName != null && !explicitName.isEmpty()) {
 			if (absolute) {
 				return explicitName;
@@ -59,3 +62,4 @@ class Util {
 	}
 
 }
+

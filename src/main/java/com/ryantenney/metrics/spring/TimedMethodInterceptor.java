@@ -37,7 +37,7 @@ import com.codahale.metrics.annotation.Timed;
 
 class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
 
-	private static final Logger log = LoggerFactory.getLogger(TimedMethodInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TimedMethodInterceptor.class);
 
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, Timed.class);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(Timed.class);
@@ -51,8 +51,8 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 		this.targetClass = targetClass;
 		this.timers = new HashMap<MethodKey, Timer>();
 
-		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
-		log.debug("Scanning for @Timed annotated methods");
+		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
+		LOG.debug("Scanning for @Timed annotated methods");
 
 		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
 	}
@@ -72,7 +72,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 	}
 
 	@Override
-	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+	public void doWith(Method method) throws IllegalAccessException {
 		final Timed annotation = method.getAnnotation(Timed.class);
 		final String metricName = Util.forTimedMethod(targetClass, method, annotation);
 		final MethodKey methodKey = MethodKey.forMethod(method);
@@ -80,7 +80,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 
 		timers.put(methodKey, timer);
 
-		log.debug("Created Timer {} for method {}", metricName, methodKey);
+		LOG.debug("Created Timer {} for method {}", metricName, methodKey);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 
 /**
  * A {@link MetricsConfigurer} implementation that delegates to other {@link MetricsConfigurer} instances.
- * 
+ *
  * @author Ryan Tenney
  * @since 3.0
  */
@@ -48,11 +48,11 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 
 	@Override
 	public MetricRegistry getMetricRegistry() {
-		List<MetricRegistry> candidates = new ArrayList<MetricRegistry>();
+		final List<MetricRegistry> candidates = new ArrayList<MetricRegistry>();
 		for (MetricsConfigurer configurer : this.configurers) {
-			MetricRegistry healthCheckRegistry = configurer.getMetricRegistry();
-			if (healthCheckRegistry != null) {
-				candidates.add(healthCheckRegistry);
+			final MetricRegistry metricRegistry = configurer.getMetricRegistry();
+			if (metricRegistry != null) {
+				candidates.add(metricRegistry);
 			}
 		}
 		MetricRegistry instance = selectSingleInstance(candidates, MetricRegistry.class);
@@ -64,9 +64,9 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 
 	@Override
 	public HealthCheckRegistry getHealthCheckRegistry() {
-		List<HealthCheckRegistry> candidates = new ArrayList<HealthCheckRegistry>();
+		final List<HealthCheckRegistry> candidates = new ArrayList<HealthCheckRegistry>();
 		for (MetricsConfigurer configurer : this.configurers) {
-			HealthCheckRegistry healthCheckRegistry = configurer.getHealthCheckRegistry();
+			final HealthCheckRegistry healthCheckRegistry = configurer.getHealthCheckRegistry();
 			if (healthCheckRegistry != null) {
 				candidates.add(healthCheckRegistry);
 			}
@@ -80,7 +80,8 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 
 	private <T> T selectSingleInstance(final List<T> instances, final Class<T> instanceType) {
 		if (instances.size() > 1) {
-			throw new IllegalStateException("Only one [" + instanceType + "] was expected but multiple instances were provided: " + instances);
+			throw new IllegalStateException("Only one [" + instanceType +
+					"] was expected but multiple instances were provided: " + instances);
 		}
 		else if (instances.size() == 1) {
 			return instances.get(0);

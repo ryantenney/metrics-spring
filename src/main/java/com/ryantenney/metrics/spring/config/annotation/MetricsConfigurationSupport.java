@@ -34,7 +34,7 @@ import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
  * This is the main class providing the configuration behind the Metrics Java config.
  * It is typically imported by adding {@link EnableMetrics @EnableMetrics} to an
  * application {@link Configuration @Configuration} class.
- * 
+ *
  * @see MetricsConfigurer
  * @see MetricsConfigurerAdapter
  * @author Ryan Tenney
@@ -47,12 +47,14 @@ public class MetricsConfigurationSupport implements ImportAware {
 	private volatile MetricRegistry metricRegistry;
 	private volatile HealthCheckRegistry healthCheckRegistry;
 
-	protected ProxyConfig proxyConfig;
+	private ProxyConfig proxyConfig;
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
-		AnnotationAttributes enableMetrics = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(EnableMetrics.class.getName(), false));
-		Assert.notNull(enableMetrics, "@" + EnableMetrics.class.getSimpleName() + " is not present on importing class " + importMetadata.getClassName());
+		final AnnotationAttributes enableMetrics = AnnotationAttributes.fromMap(
+				importMetadata.getAnnotationAttributes(EnableMetrics.class.getName(), false));
+		Assert.notNull(enableMetrics, "@" + EnableMetrics.class.getSimpleName() +
+				" is not present on importing class " + importMetadata.getClassName());
 
 		this.proxyConfig = new ProxyConfig();
 		this.proxyConfig.setExposeProxy(enableMetrics.getBoolean("exposeProxy"));
@@ -117,6 +119,7 @@ public class MetricsConfigurationSupport implements ImportAware {
 		return healthCheckRegistry;
 	}
 
-	protected void configureMetricsReporters(MetricRegistry metricsRegistry) {}
+	protected void configureMetricsReporters(MetricRegistry metricsRegistry) {
+	}
 
 }

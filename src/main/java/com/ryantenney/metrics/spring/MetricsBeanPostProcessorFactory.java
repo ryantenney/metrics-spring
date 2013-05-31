@@ -9,6 +9,9 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 
 public class MetricsBeanPostProcessorFactory {
 
+	private MetricsBeanPostProcessorFactory() {
+	}
+
 	public static AdvisingBeanPostProcessor exceptionMetered(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
 		final Pointcut pointcut = ExceptionMeteredMethodInterceptor.POINTCUT;
 		final AdviceFactory adviceFactory = new AdviceFactory() {

@@ -30,7 +30,8 @@ import java.lang.annotation.Target;
  *     public Meter someTimer;
  * </code></pre>
  * <p/>
- * A meter for the defining class with the name {@code someTimer} will be created. It will be up to the user to mark the meter. This annotation can be used on fields of type Meter, Timer, Counter, and Histogram.
+ * A meter for the defining class with the name {@code someTimer} will be created. It will be up to the user
+ * to mark the meter. This annotation can be used on fields of type Meter, Timer, Counter, and Histogram.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

@@ -27,10 +27,10 @@ import org.springframework.context.annotation.Import;
 /**
  * Add this annotation to an {@code @Configuration} class to have the Spring MVC
  * configuration defined in {@link MetricsConfigurationSupport} imported.
- * 
+ *
  * @see MetricsConfigurer
  * @see MetricsConfigurerAdapter
- * 
+ *
  * @author Ryan Tenney
  * @since 3.0
  */

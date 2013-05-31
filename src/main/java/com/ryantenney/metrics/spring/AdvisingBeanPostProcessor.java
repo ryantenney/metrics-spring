@@ -27,13 +27,12 @@ import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.util.ClassUtils;
 
 class AdvisingBeanPostProcessor implements BeanPostProcessor {
 
-	private static final Logger log = LoggerFactory.getLogger(AdvisingBeanPostProcessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AdvisingBeanPostProcessor.class);
 
 	private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -48,12 +47,12 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (bean instanceof AopInfrastructureBean) {
 			return bean;
 		}
@@ -65,14 +64,14 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 			final Advisor advisor = new DefaultPointcutAdvisor(pointcut, advice);
 
 			if (bean instanceof Advised) {
-				log.debug("Bean {} is already proxied, adding Advisor to existing proxy", beanName);
+				LOG.debug("Bean {} is already proxied, adding Advisor to existing proxy", beanName);
 
 				((Advised) bean).addAdvisor(0, advisor);
 
 				return bean;
 			}
 			else {
-				log.debug("Proxying bean {} of type {}", beanName, targetClass.getCanonicalName());
+				LOG.debug("Proxying bean {} of type {}", beanName, targetClass.getCanonicalName());
 
 				final ProxyFactory proxyFactory = new ProxyFactory(bean);
 				if (proxyConfig != null) {
@@ -80,7 +79,7 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 				}
 				proxyFactory.addAdvisor(advisor);
 
-				Object proxy = proxyFactory.getProxy(this.beanClassLoader);
+				final Object proxy = proxyFactory.getProxy(this.beanClassLoader);
 
 				return proxy;
 			}

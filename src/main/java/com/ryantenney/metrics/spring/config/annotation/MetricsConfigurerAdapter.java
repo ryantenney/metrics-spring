@@ -22,7 +22,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 /**
  * An implementation of {@link MetricsConfigurer} with empty methods allowing
  * sub-classes to override only the methods they're interested in.
- * 
+ *
  * @see EnableMetrics
  * @see MetricsConfigurer
  * @author Ryan Tenney
@@ -35,7 +35,8 @@ public abstract class MetricsConfigurerAdapter implements MetricsConfigurer {
 	 * <p>This implementation is empty.
 	 */
 	@Override
-	public void configureReporters(MetricRegistry metricsRegistry) {}
+	public void configureReporters(MetricRegistry metricsRegistry) {
+	}
 
 	/**
 	 * {@inheritDoc}

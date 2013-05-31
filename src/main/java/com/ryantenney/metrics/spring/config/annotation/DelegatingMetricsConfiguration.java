@@ -27,7 +27,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 
 /**
  * This is the class imported by {@link EnableMetrics @EnableMetrics}.
- * 
+ *
  * @see MetricsConfigurer
  * @see MetricsConfigurationSupport
  * @author Ryan Tenney

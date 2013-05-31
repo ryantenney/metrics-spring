@@ -37,7 +37,7 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 
 class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
 
-	private static final Logger log = LoggerFactory.getLogger(ExceptionMeteredMethodInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ExceptionMeteredMethodInterceptor.class);
 
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ExceptionMetered.class);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ExceptionMetered.class);
@@ -53,8 +53,8 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		this.meters = new HashMap<MethodKey, Meter>();
 		this.causes = new HashMap<MethodKey, Class<? extends Throwable>>();
 
-		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
-		log.debug("Scanning for @ExceptionMetered annotated methods");
+		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
+		LOG.debug("Scanning for @ExceptionMetered annotated methods");
 
 		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
 	}
@@ -69,7 +69,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 			final Class<?> cause = causes.get(key);
 			if (cause != null && cause.isAssignableFrom(t.getClass())) {
 				// it may be safe to infer that `meter` is non-null if `cause` is non-null
-				Meter meter = meters.get(key);
+				final Meter meter = meters.get(key);
 				if (meter != null) {
 					meter.mark();
 				}
@@ -79,7 +79,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 	}
 
 	@Override
-	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+	public void doWith(Method method) throws IllegalAccessException {
 		final ExceptionMetered annotation = method.getAnnotation(ExceptionMetered.class);
 		final String metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation);
 		final MethodKey methodKey = MethodKey.forMethod(method);
@@ -88,7 +88,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		meters.put(methodKey, meter);
 		causes.put(methodKey, annotation.cause());
 
-		log.debug("Created Meter {} for method {}", metricName, methodKey);
+		LOG.debug("Created Meter {} for method {}", metricName, methodKey);
 	}
 
 	@Override

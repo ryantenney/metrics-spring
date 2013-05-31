@@ -52,7 +52,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			healthCheckBeanName = registerComponent(parserContext, build(HealthCheckRegistry.class, source, ROLE_APPLICATION));
 		}
 
-		ProxyConfig proxyConfig = new ProxyConfig();
+		final ProxyConfig proxyConfig = new ProxyConfig();
 
 		if (StringUtils.hasText(element.getAttribute("expose-proxy"))) {
 			proxyConfig.setExposeProxy(Boolean.valueOf(element.getAttribute("expose-proxy")));

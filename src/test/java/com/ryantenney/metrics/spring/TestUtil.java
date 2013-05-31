@@ -17,6 +17,7 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,49 +37,66 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.InjectMetric;
 
-/**
- * This exists in part to get access to the Util class in testing.
- */
-class TestUtil extends Util {
+class TestUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
 
-	public static Gauge<?> forGaugeField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
+		return Util.forTimedMethod(klass, member, annotation);
+	}
+
+	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
+		return Util.forMeteredMethod(klass, member, annotation);
+	}
+
+	static String forGauge(Class<?> klass, Member member, com.codahale.metrics.annotation.Gauge annotation) {
+		return Util.forGauge(klass, member, annotation);
+	}
+
+	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
+		return Util.forExceptionMeteredMethod(klass, member, annotation);
+	}
+
+	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
+		return Util.forInjectMetricField(klass, member, annotation);
+	}
+
+	static Gauge<?> forGaugeField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
 		Field field = findField(clazz, fieldName);
 		String metricName = forGauge(clazz, field, field.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge field named '{}'", metricName);
 		return metricsRegistry.getGauges().get(metricName);
 	}
 
-	public static Gauge<?> forGaugeMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Gauge<?> forGaugeMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forGauge(clazz, method, method.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge method named '{}'", metricName);
 		return metricsRegistry.getGauges().get(metricName);
 	}
 
-	public static Timer forTimedMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Timer forTimedMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class));
 		log.info("Looking up timed method named '{}'", metricName);
 		return metricsRegistry.getTimers().get(metricName);
 	}
 
-	public static Meter forMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Meter forMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forMeteredMethod(clazz, method, method.getAnnotation(Metered.class));
 		log.info("Looking up metered method named '{}'", metricName);
 		return metricsRegistry.getMeters().get(metricName);
 	}
 
-	public static Meter forExceptionMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Meter forExceptionMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forExceptionMeteredMethod(clazz, method, method.getAnnotation(ExceptionMetered.class));
 		log.info("Looking up exception metered method named '{}'", metricName);
 		return metricsRegistry.getMeters().get(metricName);
 	}
 
-	public static Metric forInjectMetricField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+	static Metric forInjectMetricField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
 		Field field = findField(clazz, fieldName);
 		String metricName = forInjectMetricField(clazz, field, field.getAnnotation(InjectMetric.class));
 		log.info("Looking up injected metric field named '{}'", metricName);

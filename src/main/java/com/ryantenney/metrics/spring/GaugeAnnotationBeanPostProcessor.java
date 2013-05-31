@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
@@ -34,9 +33,9 @@ import com.codahale.metrics.annotation.Gauge;
 
 class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
-	private static final Logger log = LoggerFactory.getLogger(GaugeAnnotationBeanPostProcessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GaugeAnnotationBeanPostProcessor.class);
 
-	private static final AnnotationFilter filter = new AnnotationFilter(Gauge.class);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(Gauge.class);
 
 	private final MetricRegistry metrics;
 
@@ -45,17 +44,17 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(final Object bean, String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
-			public void doWith(final Field field) throws IllegalArgumentException, IllegalAccessException {
+			public void doWith(final Field field) throws IllegalAccessException {
 				ReflectionUtils.makeAccessible(field);
 
 				final Gauge annotation = field.getAnnotation(Gauge.class);
@@ -72,15 +71,16 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 					}
 				});
 
-				log.debug("Created gauge {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
+				LOG.debug("Created gauge {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
 			}
-		}, filter);
+		}, FILTER);
 
 		ReflectionUtils.doWithMethods(targetClass, new MethodCallback() {
 			@Override
-			public void doWith(final Method method) throws IllegalArgumentException, IllegalAccessException {
+			public void doWith(final Method method) throws IllegalAccessException {
 				if (method.getParameterTypes().length > 0) {
-					throw new IllegalStateException("Method " + method.getName() + " is annotated with @Gauge but requires parameters.");
+					throw new IllegalStateException("Method " + method.getName() +
+						" is annotated with @Gauge but requires parameters.");
 				}
 
 				final Gauge annotation = method.getAnnotation(Gauge.class);
@@ -93,9 +93,9 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 					}
 				});
 
-				log.debug("Created gauge {} for method {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), method.getName() });
+				LOG.debug("Created gauge {} for method {}.{}", metricName, targetClass.getCanonicalName(), method.getName());
 			}
-		}, filter);
+		}, FILTER);
 
 		return bean;
 	}

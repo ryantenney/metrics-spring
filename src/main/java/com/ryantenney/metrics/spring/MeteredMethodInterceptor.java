@@ -36,29 +36,29 @@ import com.codahale.metrics.annotation.Metered;
 
 class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
-	private static final Logger log = LoggerFactory.getLogger(MeteredMethodInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MeteredMethodInterceptor.class);
 
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, Metered.class);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(Metered.class);
 
-	protected final MetricRegistry metrics;
-	protected final Class<?> targetClass;
-	protected final Map<MethodKey, Meter> meters;
+	private final MetricRegistry metrics;
+	private final Class<?> targetClass;
+	private final Map<MethodKey, Meter> meters;
 
 	public MeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
 		this.meters = new HashMap<MethodKey, Meter>();
 
-		log.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
-		log.debug("Scanning for @Metered annotated methods");
+		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
+		LOG.debug("Scanning for @Metered annotated methods");
 
 		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
 	}
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		Meter meter = meters.get(MethodKey.forMethod(invocation.getMethod()));
+		final Meter meter = meters.get(MethodKey.forMethod(invocation.getMethod()));
 		if (meter != null) {
 			meter.mark();
 		}
@@ -66,7 +66,7 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 	}
 
 	@Override
-	public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+	public void doWith(Method method) throws IllegalAccessException {
 		final Metered annotation = method.getAnnotation(Metered.class);
 		final String metricName = Util.forMeteredMethod(targetClass, method, annotation);
 		final MethodKey methodKey = MethodKey.forMethod(method);
@@ -74,7 +74,7 @@ class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
 
 		meters.put(methodKey, meter);
 
-		log.debug("Created Meter {} for method {}", metricName, methodKey);
+		LOG.debug("Created Meter {} for method {}", metricName, methodKey);
 	}
 
 }

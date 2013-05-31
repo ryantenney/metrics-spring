@@ -22,7 +22,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 /**
  * Defines callback methods to customize the Java-based configuration
  * for Spring Metrics enabled via {@link EnableMetrics @EnableMetrics}.
- * 
+ *
  * @see EnableMetrics
  * @author Ryan Tenney
  * @since 3.0
@@ -33,18 +33,18 @@ public interface MetricsConfigurer {
 	 * Configure reporters.
 	 * @param metricsRegistry
 	 */
-	public void configureReporters(MetricRegistry metricsRegistry);
+	void configureReporters(MetricRegistry metricsRegistry);
 
 	/**
 	 * Override this method to provide a custom {@code MetricRegistry}.
 	 * @return
 	 */
-	public MetricRegistry getMetricRegistry();
+	MetricRegistry getMetricRegistry();
 
 	/**
 	 * Override this method to provide a custom {@code HealthCheckRegistry}.
 	 * @return
 	 */
-	public HealthCheckRegistry getHealthCheckRegistry();
+	HealthCheckRegistry getHealthCheckRegistry();
 
 }
