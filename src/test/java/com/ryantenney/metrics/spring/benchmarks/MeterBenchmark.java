@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Configuration;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metered;
-import com.google.caliper.Runner;
-import com.google.caliper.SimpleBenchmark;
+import com.google.caliper.Benchmark;
+import com.google.caliper.runner.CaliperMain;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 
-public class MeterBenchmark extends SimpleBenchmark {
+public class MeterBenchmark extends Benchmark {
 
 	public static void main(String[] args) throws Exception {
-		new Runner().run(MeterBenchmark.class.getName());
+		CaliperMain.main(MeterBenchmark.class, args);
 	}
 
 	private AnnotationConfigApplicationContext ctx;
