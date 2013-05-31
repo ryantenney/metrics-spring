@@ -55,10 +55,6 @@
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sf.net/config_sizes.html -->
     <module name="FileLength"/>
-    
-    <!-- Checks for whitespace                               -->
-    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
-    <module name="FileTabCharacter"/>
 
     <!-- Miscellaneous other checks.                   -->
     <!-- See http://checkstyle.sf.net/config_misc.html -->
@@ -72,7 +68,7 @@
     <module name="TreeWalker">
 
         <!-- Checks for Javadoc comments.                     -->
-        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html
         <module name="JavadocMethod">
             <property name="scope" value="protected"/>
         </module>
@@ -84,7 +80,7 @@
         </module>
         <module name="JavadocStyle">
             <property name="checkEmptyJavadoc" value="true"/>
-        </module>
+        </module -->
 
 
         <!-- Checks for Naming Conventions.                  -->
@@ -166,7 +162,9 @@
         <module name="EmptyBlock"/>
         <module name="LeftCurly"/>
         <module name="NeedBraces"/>
-        <module name="RightCurly"/>
+        <module name="RightCurly">
+		<property name="option" value="alone"/>
+	</module>
 
 
         <!-- Checks for common coding problems               -->
