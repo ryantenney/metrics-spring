@@ -66,7 +66,7 @@ class TimedMethodInterceptor implements MethodInterceptor, MethodCallback, Order
 		}
 		finally {
 			if (timerCtx != null) {
-				timerCtx.stop();
+				timerCtx.close();
 			}
 		}
 	}

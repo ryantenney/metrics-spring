@@ -27,16 +27,32 @@ public class DefaultRegistryTest {
 
 	@Test
 	public void testDefaultRegistries() {
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:default-registries.xml");
-		Assert.assertNotNull("Should be a MetricRegistry.", ctx.getBean(MetricRegistry.class));
-		Assert.assertNotNull("Should be HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
+		ClassPathXmlApplicationContext ctx = null;
+		try {
+			ctx = new ClassPathXmlApplicationContext("classpath:default-registries.xml");
+			Assert.assertNotNull("Should be a MetricRegistry.", ctx.getBean(MetricRegistry.class));
+			Assert.assertNotNull("Should be HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
+		}
+		finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
 	}
 
 	@Test
 	public void testSuppliedRegistries() {
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:supplied-registries.xml");
-		Assert.assertNotSame("Should have provided MetricRegistry.", ctx.getBean(MetricRegistry.class));
-		Assert.assertNotSame("Should have provided HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
+		ClassPathXmlApplicationContext ctx = null;
+		try {
+			ctx = new ClassPathXmlApplicationContext("classpath:supplied-registries.xml");
+			Assert.assertNotSame("Should have provided MetricRegistry.", ctx.getBean(MetricRegistry.class));
+			Assert.assertNotSame("Should have provided HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
+		}
+		finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
 	}
 
 }

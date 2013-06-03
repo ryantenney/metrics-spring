@@ -32,15 +32,32 @@ public class ProxyTargetClassTest {
 
 	@Test(expected = BeanCreationException.class)
 	public void negativeContextLoadingTest() {
-		new ClassPathXmlApplicationContext("classpath:proxy-target-class-disabled.xml");
+		ClassPathXmlApplicationContext ctx = null;
+		try {
+			ctx = new ClassPathXmlApplicationContext("classpath:proxy-target-class-disabled.xml");
+			Assert.fail();
+		}
+		finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
 	}
 
 	@Test
 	public void positiveContextLoadingTest() {
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:proxy-target-class-enabled.xml");
-		Assert.assertNotNull("Expected to be able to get ProxyTargetClass by class.", ctx.getBean(ProxyTargetClass.class));
-		Assert.assertNotNull("Expected to be able to get ProxyTargetClass from AutowiredCollaborator.", ctx.getBean(AutowiredCollaborator.class)
-				.getDependency());
+		ClassPathXmlApplicationContext ctx = null;
+		try {
+			ctx = new ClassPathXmlApplicationContext("classpath:proxy-target-class-enabled.xml");
+			Assert.assertNotNull("Expected to be able to get ProxyTargetClass by class.", ctx.getBean(ProxyTargetClass.class));
+			Assert.assertNotNull("Expected to be able to get ProxyTargetClass from AutowiredCollaborator.",
+					ctx.getBean(AutowiredCollaborator.class).getDependency());
+		}
+		finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
 	}
 
 	/**

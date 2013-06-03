@@ -38,14 +38,12 @@ public class MeterBenchmark extends Benchmark {
 		ctx.stop();
 	}
 
-	@SuppressWarnings("unused")
 	public void timeBean(int reps) {
 		for (int i = 0; i < reps; i++) {
 			targetBean.mark();
 		}
 	}
 
-	@SuppressWarnings("unused")
 	public void timeNormal(int reps) {
 		for (int i = 0; i < reps; i++) {
 			meter.mark();

@@ -27,8 +27,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -54,8 +52,6 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
 @SuppressWarnings("unchecked")
 public class EnableMetricsTest {
 
-	private static final Logger log = LoggerFactory.getLogger(EnableMetricsTest.class);
-
 	private static final MetricRegistry metricRegistry = new MetricRegistry();
 	private static final HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
 
@@ -66,55 +62,63 @@ public class EnableMetricsTest {
 	@Test
 	public void metricsConfigTest() throws Throwable {
 		// Initialize the context
-		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-		applicationContext.register(MetricsConfig.class);
-		applicationContext.refresh();
-
-		// Assert that the custom registries were used
-		assertSame(metricRegistry, applicationContext.getBean(MetricRegistry.class));
-		assertSame(healthCheckRegistry, applicationContext.getBean(HealthCheckRegistry.class));
-
-		// Verify that the configureReporters method was invoked
-		assertThat(MetricsConfig.isConfigureReportersInvoked, is(true));
-
-		// Assert that the bean has been proxied
-		TestBean testBean = applicationContext.getBean(TestBean.class);
-		assertNotNull(testBean);
-		assertThat(AopUtils.isAopProxy(testBean), is(true));
-
-		// Verify that the Gauge field's value is returned
-		Gauge<Integer> fieldGauge = (Gauge<Integer>) forGaugeField(metricRegistry, TestBean.class, "intGaugeField");
-		assertNotNull(fieldGauge);
-		assertThat(fieldGauge.getValue(), is(5));
-
-		// Verify that the Gauge method's value is returned
-		Gauge<Integer> methodGauge = (Gauge<Integer>) forGaugeMethod(metricRegistry, TestBean.class, "intGaugeMethod");
-		assertNotNull(methodGauge);
-		assertThat(methodGauge.getValue(), is(6));
-
-		// Verify that the Timer's counter is incremented on method invocation
-		Timer timedMethodTimer = forTimedMethod(metricRegistry, TestBean.class, "timedMethod");
-		assertNotNull(timedMethodTimer);
-		assertThat(timedMethodTimer.getCount(), is(0L));
-		testBean.timedMethod();
-		assertThat(timedMethodTimer.getCount(), is(1L));
-
-		// Verify that the Meter's counter is incremented on method invocation
-		Meter meteredMethodMeter = forMeteredMethod(metricRegistry, TestBean.class, "meteredMethod");
-		assertNotNull(meteredMethodMeter);
-		assertThat(meteredMethodMeter.getCount(), is(0L));
-		testBean.meteredMethod();
-		assertThat(meteredMethodMeter.getCount(), is(1L));
-
-		// Verify that the Meter's counter is incremented on method invocation
-		Meter exceptionMeteredMethodMeter = forExceptionMeteredMethod(metricRegistry, TestBean.class, "exceptionMeteredMethod");
-		assertNotNull(exceptionMeteredMethodMeter);
-		assertThat(exceptionMeteredMethodMeter.getCount(), is(0L));
+		AnnotationConfigApplicationContext applicationContext = null;
 		try {
-			testBean.exceptionMeteredMethod();
+			applicationContext = new AnnotationConfigApplicationContext();
+			applicationContext.register(MetricsConfig.class);
+			applicationContext.refresh();
+	
+			// Assert that the custom registries were used
+			assertSame(metricRegistry, applicationContext.getBean(MetricRegistry.class));
+			assertSame(healthCheckRegistry, applicationContext.getBean(HealthCheckRegistry.class));
+	
+			// Verify that the configureReporters method was invoked
+			assertThat(MetricsConfig.isConfigureReportersInvoked, is(true));
+	
+			// Assert that the bean has been proxied
+			TestBean testBean = applicationContext.getBean(TestBean.class);
+			assertNotNull(testBean);
+			assertThat(AopUtils.isAopProxy(testBean), is(true));
+	
+			// Verify that the Gauge field's value is returned
+			Gauge<Integer> fieldGauge = (Gauge<Integer>) forGaugeField(metricRegistry, TestBean.class, "intGaugeField");
+			assertNotNull(fieldGauge);
+			assertThat(fieldGauge.getValue(), is(5));
+	
+			// Verify that the Gauge method's value is returned
+			Gauge<Integer> methodGauge = (Gauge<Integer>) forGaugeMethod(metricRegistry, TestBean.class, "intGaugeMethod");
+			assertNotNull(methodGauge);
+			assertThat(methodGauge.getValue(), is(6));
+	
+			// Verify that the Timer's counter is incremented on method invocation
+			Timer timedMethodTimer = forTimedMethod(metricRegistry, TestBean.class, "timedMethod");
+			assertNotNull(timedMethodTimer);
+			assertThat(timedMethodTimer.getCount(), is(0L));
+			testBean.timedMethod();
+			assertThat(timedMethodTimer.getCount(), is(1L));
+	
+			// Verify that the Meter's counter is incremented on method invocation
+			Meter meteredMethodMeter = forMeteredMethod(metricRegistry, TestBean.class, "meteredMethod");
+			assertNotNull(meteredMethodMeter);
+			assertThat(meteredMethodMeter.getCount(), is(0L));
+			testBean.meteredMethod();
+			assertThat(meteredMethodMeter.getCount(), is(1L));
+	
+			// Verify that the Meter's counter is incremented on method invocation
+			Meter exceptionMeteredMethodMeter = forExceptionMeteredMethod(metricRegistry, TestBean.class, "exceptionMeteredMethod");
+			assertNotNull(exceptionMeteredMethodMeter);
+			assertThat(exceptionMeteredMethodMeter.getCount(), is(0L));
+			try {
+				testBean.exceptionMeteredMethod();
+			}
+			catch (Throwable t) {}
+			assertThat(exceptionMeteredMethodMeter.getCount(), is(1L));
 		}
-		catch (Throwable t) {}
-		assertThat(exceptionMeteredMethodMeter.getCount(), is(1L));
+		finally {
+			if (applicationContext != null) {
+				applicationContext.close();
+			}
+		}
 	}
 
 	@Configuration
