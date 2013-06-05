@@ -62,6 +62,8 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			proxyConfig.setProxyTargetClass(Boolean.valueOf(element.getAttribute("proxy-target-class")));
 		}
 
+		//@formatter:off
+
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("exceptionMetered")
@@ -94,6 +96,8 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("healthCheck")
 					.addConstructorArgReference(healthCheckBeanName));
+
+		//@formatter:on
 
 		parserContext.popAndRegisterContainingComponent();
 
