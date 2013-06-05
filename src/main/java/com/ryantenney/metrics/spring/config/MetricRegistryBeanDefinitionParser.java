@@ -37,16 +37,13 @@ class MetricRegistryBeanDefinitionParser extends AbstractBeanDefinitionParser {
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
 		final Object source = parserContext.extractSource(element);
 		final String name = element.getAttribute("name");
-		System.out.println(name);
 		if (StringUtils.hasText(name)) {
-			System.out.println("getOrCreate");
 			final BeanDefinitionBuilder beanDefBuilder = build(SharedMetricRegistries.class, source);
 			beanDefBuilder.setFactoryMethod("getOrCreate");
 			beanDefBuilder.addConstructorArgValue(name);
 			return beanDefBuilder.getBeanDefinition();
 		}
 		else {
-			System.out.println("new");
 			return build(MetricRegistry.class, source).getBeanDefinition();
 		}
 	}
