@@ -16,6 +16,13 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="metric-registry">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:string" use="optional"/>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:element name="reporter">
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:string" use="optional"/>
