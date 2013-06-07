@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
+
+	<metrics:metric-registry id="metrics" name="reporterTestRegistry" />
+
+	<bean id="printStream" class="com.ryantenney.metrics.spring.ReporterTest" factory-method="testPrintStream" />
+	<bean id="mbeanServer" class="java.lang.management.ManagementFactory" factory-method="getPlatformMBeanServer" />
+
+	<metrics:reporter type="console" metric-registry="metrics" period="100ms" output-ref="printStream" />
+	<metrics:reporter type="slf4j" metric-registry="metrics" period="100ms" marker="foobar" logger="com.foo.bar" />
+	<metrics:reporter type="ganglia" metric-registry="metrics" period="100ms" group="localhost" port="5555" udp-mode="UNICAST" ttl="100" />
+	<metrics:reporter type="graphite" metric-registry="metrics" period="100ms" host="localhost" port="6666" />
+	<metrics:reporter type="jmx" metric-registry="metrics" domain="com.foo" mbean-server-ref="mbeanServer" />
+
+</beans>
