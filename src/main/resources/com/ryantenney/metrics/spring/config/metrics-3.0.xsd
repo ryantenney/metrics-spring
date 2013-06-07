@@ -26,9 +26,9 @@
 	<xsd:element name="reporter">
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:string" use="optional"/>
-            <xsd:attribute name="class" type="xsd:string" use="optional"/>
             <xsd:attribute name="type" type="xsd:string" use="optional"/>
 			<xsd:attribute name="metric-registry" type="xsd:string" use="required"/>
+            <xsd:anyAttribute processContents="lax"/>
 		</xsd:complexType>
 	</xsd:element>
 

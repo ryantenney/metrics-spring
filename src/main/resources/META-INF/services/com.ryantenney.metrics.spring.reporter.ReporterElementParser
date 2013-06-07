@@ -1,0 +1,5 @@
+com.ryantenney.metrics.spring.reporter.JmxReporterElementParser
+com.ryantenney.metrics.spring.reporter.Slf4jReporterElementParser
+com.ryantenney.metrics.spring.reporter.ConsoleReporterElementParser
+com.ryantenney.metrics.spring.reporter.GraphiteReporterElementParser
+com.ryantenney.metrics.spring.reporter.GangliaReporterElementParser
