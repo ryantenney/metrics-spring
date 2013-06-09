@@ -11,6 +11,6 @@
 
 	<metrics:annotation-driven />
 
-	<bean id="metered-interface" class="com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterfaceImpl" />
+	<bean id="coveriant-return-type" class="com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterfaceImpl" />
 
 </beans>

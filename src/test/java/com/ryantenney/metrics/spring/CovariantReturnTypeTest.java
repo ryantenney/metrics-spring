@@ -12,14 +12,14 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 
-public class CovariantMeteredInterfaceTest {
+public class CovariantReturnTypeTest {
 
 	ClassPathXmlApplicationContext ctx;
 	MetricRegistry metricRegistry;
 
 	@Before
 	public void init() {
-		this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface.xml");
+		this.ctx = new ClassPathXmlApplicationContext("classpath:covariant-return-type.xml");
 		this.metricRegistry = this.ctx.getBean(MetricRegistry.class);
 	}
 
