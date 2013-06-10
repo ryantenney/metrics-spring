@@ -44,14 +44,12 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 
 	private final MetricRegistry metrics;
 	private final Class<?> targetClass;
-	private final Map<MethodKey, Meter> meters;
-	private final Map<MethodKey, Class<? extends Throwable>> causes;
+	private final Map<MethodKey, ExceptionMeter> meters;
 
 	public ExceptionMeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
 		this.metrics = metrics;
 		this.targetClass = targetClass;
-		this.meters = new HashMap<MethodKey, Meter>();
-		this.causes = new HashMap<MethodKey, Class<? extends Throwable>>();
+		this.meters = new HashMap<MethodKey, ExceptionMeter>();
 
 		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		LOG.debug("Scanning for @ExceptionMetered annotated methods");
@@ -66,13 +64,9 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		}
 		catch (Throwable t) {
 			final MethodKey key = MethodKey.forMethod(invocation.getMethod());
-			final Class<?> cause = causes.get(key);
-			if (cause != null && cause.isAssignableFrom(t.getClass())) {
-				// it may be safe to infer that `meter` is non-null if `cause` is non-null
-				final Meter meter = meters.get(key);
-				if (meter != null) {
-					meter.mark();
-				}
+			final ExceptionMeter exceptionMeter = meters.get(key);
+			if (exceptionMeter != null && exceptionMeter.getCause().isAssignableFrom(t.getClass())) {
+				exceptionMeter.getMeter().mark();
 			}
 			throw t;
 		}
@@ -85,8 +79,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		final MethodKey methodKey = MethodKey.forMethod(method);
 		final Meter meter = metrics.meter(metricName);
 
-		meters.put(methodKey, meter);
-		causes.put(methodKey, annotation.cause());
+		meters.put(methodKey, new ExceptionMeter(meter, annotation.cause()));
 
 		LOG.debug("Created Meter {} for method {}", metricName, methodKey);
 	}
@@ -94,6 +87,26 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 	@Override
 	public int getOrder() {
 		return HIGHEST_PRECEDENCE;
+	}
+
+	private static class ExceptionMeter {
+
+		private final Meter meter;
+		private final Class<? extends Throwable> cause;
+
+		public ExceptionMeter(final Meter meter, final Class<? extends Throwable> cause) {
+			this.meter = meter;
+			this.cause = cause;
+		}
+
+		public Meter getMeter() {
+			return meter;
+		}
+
+		public Class<? extends Throwable> getCause() {
+			return cause;
+		}
+
 	}
 
 }
