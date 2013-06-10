@@ -19,7 +19,7 @@ public class CovariantMeteredInterfaceTest {
 
 	@Before
 	public void init() {
-		this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface.xml");
+		this.ctx = new ClassPathXmlApplicationContext("classpath:covariant-metered-interface.xml");
 		this.metricRegistry = this.ctx.getBean(MetricRegistry.class);
 	}
 
