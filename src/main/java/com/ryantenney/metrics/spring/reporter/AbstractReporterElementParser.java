@@ -16,13 +16,17 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -119,9 +123,11 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 
 		private String lastKey;
 		private final Map<String, String> properties;
+		private final Set<String> allowedProperties;
 
 		public ValidationContext(Map<String, String> properties) {
 			this.properties = properties;
+			this.allowedProperties = new HashSet<String>();
 		}
 
 		protected boolean has(String key) {
@@ -159,11 +165,16 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 
 		protected String require(String key, String pattern, String message) {
 			final String value = get(key);
-			if (value == null) {
+			if (!StringUtils.hasText(value)) {
 				reject(key, message);
 			}
 			check(key, value, pattern, message);
+			allowedProperties.add(key);
 			return value;
+		}
+
+		protected boolean optional(String key) {
+			return optional(key, null, null);
 		}
 
 		protected boolean optional(String key, String pattern) {
@@ -172,11 +183,21 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 
 		protected boolean optional(String key, String pattern, String message) {
 			final String value = get(key);
-			if (value != null) {
+			if (StringUtils.hasText(value)) {
 				check(key, value, pattern, message);
+				allowedProperties.add(key);
 				return true;
 			}
 			return false;
+		}
+
+		protected void rejectUnmatchedProperties() {
+			if (!allowedProperties.containsAll(properties.keySet())) {
+				final Set<String> unmatchedProperties = new HashSet<String>(properties.keySet());
+				unmatchedProperties.removeAll(allowedProperties);
+				throw new ValidationException("Properties " + Arrays.toString(unmatchedProperties.toArray()) +
+						" are not permitted on this element.");
+			}
 		}
 
 		private String errorMessage(String key, String message) {
