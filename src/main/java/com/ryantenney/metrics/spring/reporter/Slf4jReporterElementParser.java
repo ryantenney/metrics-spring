@@ -37,13 +37,23 @@ public class Slf4jReporterElementParser extends AbstractReporterElementParser {
 	@Override
 	protected void validate(ValidationContext c) {
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
+		c.optional(MARKER);
+		c.optional(LOGGER);
 
-		if (c.has(RATE_UNIT)) {
+		if (c.optional(RATE_UNIT)) {
 			TimeUnit.valueOf(c.get(RATE_UNIT));
 		}
-		if (c.has(DURATION_UNIT)) {
+		if (c.optional(DURATION_UNIT)) {
 			TimeUnit.valueOf(c.get(DURATION_UNIT));
 		}
+
+		c.optional(FILTER_PATTERN);
+		c.optional(FILTER_REF);
+		if (c.has(FILTER_PATTERN) && c.has(FILTER_REF)) {
+			c.reject(FILTER_REF, "Reporter element not specify both the 'filter' and 'filter-ref' attributes");
+		}
+
+		c.rejectUnmatchedProperties();
 	}
 
 }

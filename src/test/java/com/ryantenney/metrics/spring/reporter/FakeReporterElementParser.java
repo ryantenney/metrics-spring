@@ -35,9 +35,11 @@ public class FakeReporterElementParser extends AbstractReporterElementParser {
 	@Override
 	protected void validate(ValidationContext c) {
 		c.require(PERIOD);
-		c.require(DURATION_UNIT);
 		TimeUnit.valueOf(c.require(DURATION_UNIT));
 		TimeUnit.valueOf(c.require(RATE_UNIT));
+		c.optional(FILTER_PATTERN);
+		c.optional(FILTER_REF);
+		c.rejectUnmatchedProperties();
 	}
 
 }
