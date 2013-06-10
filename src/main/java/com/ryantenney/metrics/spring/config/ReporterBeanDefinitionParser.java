@@ -36,17 +36,15 @@ class ReporterBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-		final Object source = parserContext.extractSource(element);
-
 		final String metricRegistryRef = element.getAttribute("metric-registry");
 		if (!StringUtils.hasText(metricRegistryRef)) {
-			parserContext.getReaderContext().error("Metric-registry id required for element '" + element.getLocalName() + "'", source);
+			parserContext.getReaderContext().error("Metric-registry id required for element '" + element.getLocalName() + "'", element);
 			return null;
 		}
 
 		final String type = element.getAttribute("type");
 		if (!StringUtils.hasText(type)) {
-			parserContext.getReaderContext().error("Type required for element '" + element.getLocalName() + "'", source);
+			parserContext.getReaderContext().error("Type required for element '" + element.getLocalName() + "'", element);
 			return null;
 		}
 
@@ -58,11 +56,11 @@ class ReporterBeanDefinitionParser extends AbstractBeanDefinitionParser {
 			}
 		}
 		catch (ServiceConfigurationError ex) {
-			parserContext.getReaderContext().error("Error loading ReporterElementParsers", source, ex);
+			parserContext.getReaderContext().error("Error loading ReporterElementParsers", element, ex);
 			return null;
 		}
 
-		parserContext.getReaderContext().error("No ReporterElementParser found for reporter type '" + type + "'", source);
+		parserContext.getReaderContext().error("No ReporterElementParser found for reporter type '" + type + "'", element);
 		return null;
 	}
 

@@ -66,7 +66,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			return beanDefBuilder.getBeanDefinition();
 		}
 		catch (Exception ex) {
-			parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex);
+			parserContext.getReaderContext().error(ex.getMessage(), element, ex);
 			return null;
 		}
 	}
