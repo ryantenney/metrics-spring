@@ -26,7 +26,7 @@ import org.springframework.context.Lifecycle;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.Slf4jReporter;
 
-public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBean<Slf4jReporter> implements Lifecycle, DisposableBean {
+public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBean<Slf4jReporter> {
 
 	// Required
 	public static final String PERIOD = "period";

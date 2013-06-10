@@ -27,7 +27,7 @@ import org.springframework.context.Lifecycle;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.ganglia.GangliaReporter;
 
-public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactoryBean<GangliaReporter> implements Lifecycle, DisposableBean {
+public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactoryBean<GangliaReporter> {
 
 	// Required
 	public static final String GROUP = "group";

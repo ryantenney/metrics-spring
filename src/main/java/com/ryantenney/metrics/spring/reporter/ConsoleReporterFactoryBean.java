@@ -26,7 +26,7 @@ import com.codahale.metrics.Clock;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricFilter;
 
-public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactoryBean<ConsoleReporter> implements Lifecycle, DisposableBean {
+public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactoryBean<ConsoleReporter> {
 
 	// Required
 	public static final String PERIOD = "period";
