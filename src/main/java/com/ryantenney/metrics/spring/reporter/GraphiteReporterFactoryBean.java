@@ -19,9 +19,6 @@ package com.ryantenney.metrics.spring.reporter;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.Lifecycle;
-
 import com.codahale.metrics.Clock;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.graphite.Graphite;

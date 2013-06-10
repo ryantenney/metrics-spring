@@ -21,9 +21,6 @@ import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
 
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.Lifecycle;
-
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.ganglia.GangliaReporter;
 

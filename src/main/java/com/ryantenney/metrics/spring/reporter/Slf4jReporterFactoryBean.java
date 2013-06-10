@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.Lifecycle;
 
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.Slf4jReporter;
