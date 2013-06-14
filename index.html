@@ -1,41 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>metrics-spring by ryantenney</title>
 
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <title>metrics-spring by ryantenney</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
+    <div class="wrapper">
+      <header>
         <h1>metrics-spring</h1>
-        <h2>Spring integration for Yammer's Metrics library</h2>
-        <a href="https://github.com/ryantenney/metrics-spring" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
+        <p>Spring integration for Yammer's Metrics library</p>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>Metrics for Spring <a href="http://travis-ci.org/ryantenney/metrics-spring"><img src="https://secure.travis-ci.org/ryantenney/metrics-spring.png?branch=master" alt="Build Status"></a>
+        <p class="view"><a href="https://github.com/ryantenney/metrics-spring">View the Project on GitHub <small>ryantenney/metrics-spring</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ryantenney/metrics-spring/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ryantenney/metrics-spring/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ryantenney/metrics-spring">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="metrics-for-spring-" class="anchor" href="#metrics-for-spring-"><span class="octicon octicon-link"></span></a>Metrics for Spring <a href="http://travis-ci.org/ryantenney/metrics-spring"><img src="https://secure.travis-ci.org/ryantenney/metrics-spring.png" alt="Build Status"></a>
 </h1>
 
-<h1></h1>
+<h2>
+<a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About</h2>
 
-<h2>About</h2>
-
-<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Yammer Metrics</a> with Spring AOP, complete with simple XML configuration.</p>
+<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Yammer Metrics</a> with Spring AOP, and provides XML and Java configuration.</p>
 
 <p>This module does the following things:</p>
 
@@ -44,117 +44,149 @@
 </li>
 <li>Registers a <code>Gauge</code> for beans which have members annotated with <code>@Gauge</code>
 </li>
+<li>Autowires Timers, Meters, Counters and Histograms into fields annotated with <code>@InjectMetric</code>
+</li>
 <li>Registers with the <code>HealthCheckRegistry</code> any beans which extend the class <code>HealthCheck</code>
 </li>
-</ul><h3>Maven</h3>
+<li>Creates reporters and binds them to the Spring lifecycle</li>
+</ul><h3>
+<a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h3>
 
-<pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;com.ryantenney.metrics&lt;/groupId&gt;
-    &lt;artifactId&gt;metrics-spring&lt;/artifactId&gt;
-    &lt;version&gt;2.1.4&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
+<p>Current version is 3.0.0-RC1, which is compatible with Metrics 3.0</p>
+
+<div class="highlight"><pre><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.ryantenney.metrics<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>metrics-spring<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.0-RC1<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
 
 <p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Yammer Metrics repository</a>.</p>
 
-<h3>Basic Usage</h3>
+<h3>
+<a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
+
+<p><strong>Pull requests to improve or expand this documentation would be most welcome.</strong></p>
 
 <p>Spring Context XML:</p>
 
-<pre><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
-       xsi:schemaLocation="
-            http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-            http://www.ryantenney.com/schema/metrics
-            http://www.ryantenney.com/schema/metrics/metrics-2.1.xsd"&gt;
+<div class="highlight"><pre><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xmlns:metrics=</span><span class="s">"http://www.ryantenney.com/schema/metrics"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"</span>
+<span class="s">            http://www.springframework.org/schema/beans</span>
+<span class="s">            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span>
+<span class="s">            http://www.ryantenney.com/schema/metrics</span>
+<span class="s">            http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd"</span><span class="nt">&gt;</span>
 
-    &lt;metrics:annotation-driven /&gt;
+    <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;metrics:reporter</span> <span class="na">type=</span><span class="s">"console"</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="na">period=</span><span class="s">"1m"</span> <span class="nt">/&gt;</span>
 
-    &lt;!-- beans --&gt;
+    <span class="c">&lt;!-- beans --&gt;</span>
 
-&lt;/beans&gt;
-</code></pre>
+<span class="nt">&lt;/beans&gt;</span>
+</pre></div>
 
-<p>Alternate, XML-less config:</p>
+<p>Java Annotation Config:</p>
 
-<pre><code>import org.springframework.context.annotation.Configuration;
-import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ryantenney.metrics.spring.config.annotation.EnableMetrics</span><span class="o">;</span>
 
-@Configuration
-@EnableMetrics
-public class SpringConfiguringClass {
-    // ...
-}
-</code></pre>
+<span class="nd">@Configuration</span>
+<span class="nd">@EnableMetrics</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringConfiguringClass</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
 
-<h3>XML Config</h3>
+<h3>
+<a name="xml-config" class="anchor" href="#xml-config"><span class="octicon octicon-link"></span></a>XML Config</h3>
 
-<p>The <code>&lt;metrics:annotation-driven /&gt;</code> element is required, and has 5 optional arguments:</p>
+<p>The <code>&lt;metrics:annotation-driven /&gt;</code> element is required, and has 4 optional arguments:</p>
 
 <ul>
 <li>
-<code>metrics-registry</code> - the id of the <code>MetricsRegsitry</code> bean with which the generated metrics should be registered. If omitted, this defaults to registry provided by <code>Metrics.defaultRegistry()</code>.</li>
+<code>metric-registry</code> - the id of the <code>MetricRegsitry</code> bean with which the generated metrics should be registered. If omitted a new <code>MetricRegistry</code> bean is created.</li>
 <li>
-<code>health-check-registry</code> - the id of the <code>HealthCheckRegsitry</code> bean with which to register any beans which extend the class <code>HealthCheck</code>. If omitted, this defaults to the registry provided by <code>HealthChecks.defaultRegistry()</code>.</li>
-<li>
-<code>scope</code> - sets the scope for each of the metrics.</li>
+<code>health-check-registry</code> - the id of the <code>HealthCheckRegsitry</code> bean with which to register any beans which extend the class <code>HealthCheck</code>. If omitted a new <code>HealthCheckRegistry</code> bean is created.</li>
 <li>
 <code>proxy-target-class</code> - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This <em>may</em> be necessary if you use class-based autowiring.</li>
 <li>
 <code>expose-proxy</code> - if set to true, the target can access the proxy which wraps it by calling <code>AopContext.currentProxy()</code>.</li>
-</ul><p>The elements <code>&lt;metrics:metrics-registry /&gt;</code> and <code>&lt;metrics:health-check-registry /&gt;</code> are present as a convenience for creating new registry beans.</p>
+</ul><p>The <code>&lt;metrics:metric-registry /&gt;</code> element constructs a new MetricRegistry or retrieves a shared registry:</p>
 
-<p>The element <code>&lt;metrics:jmx-reporter /&gt;</code> creates a JMX Reporter for the specified metrics registry. A JMX Reporter is automatically created for the default metrics registry.</p>
+<ul>
+<li>
+<code>id</code> - the bean name with which to register the MetricRegistry bean</li>
+<li>
+<code>name</code> - the name of the MetricRegistry, if present, this calls SharedMetricRegistries.getOrCreate(name)</li>
+</ul><p>The <code>&lt;metrics:health-check-registry /&gt;</code> element constructs a new HealthCheckRegistry:</p>
 
-<h3>A Note on the Limitations of Spring AOP</h3>
+<ul>
+<li>
+<code>id</code> - the bean name with which to register the HealthCheckRegistry bean</li>
+</ul><p>The <code>&lt;metrics:reporter /&gt;</code> element creates and starts a reporter.</p>
+
+<ul>
+<li>
+<code>id</code> - </li>
+<li>
+<code>metric-registry</code> - the id of the <code>MetricRegsitry</code> bean for which the reporter should retrieve metrics</li>
+<li>
+<code>type</code> - the type of the reporter. Additional types may be registered through SPI (more on this later).
+
+<ul>
+<li>
+<code>console</code>: ConsoleReporter</li>
+<li>
+<code>jmx</code>: JmxReporter</li>
+<li>
+<code>slf4j</code>: Slf4jReporter</li>
+<li>
+<code>ganglia</code>: GangliaReporter (requires metrics-ganglia)</li>
+<li>
+<code>graphite</code>: GraphiteReporter (requires metrics-graphite)</li>
+</ul>
+</li>
+</ul><h3>
+<a name="a-note-on-the-limitations-of-spring-aop" class="anchor" href="#a-note-on-the-limitations-of-spring-aop"><span class="octicon octicon-link"></span></a>A Note on the Limitations of Spring AOP</h3>
 
 <p>Due to limitations of Spring AOP only public methods can be proxied, so <code>@Timed</code>, <code>@Metered</code>, and <code>@ExceptionMetered</code> have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.</p>
 
-<pre><code>public class Foo {
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
 
-    @Timed
-    public void bar() { /* … */ }
+    <span class="nd">@Timed</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span> <span class="cm">/* … */</span> <span class="o">}</span>
 
-    public void baz() {
-        this.bar(); // doesn't pass through the proxy
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">bar</span><span class="o">();</span> <span class="c1">// doesn't pass through the proxy</span>
 
-        // fix: reengineer
-        // workaround: enable `expose-proxy` and change to:
-        ((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
-    }
-}
-</code></pre>
+        <span class="c1">// fix: reengineer</span>
+        <span class="c1">// workaround: enable `expose-proxy` and change to:</span>
+        <span class="o">((</span><span class="n">Foo</span><span class="o">)</span> <span class="n">AopContext</span><span class="o">.</span><span class="na">currentProxy</span><span class="o">()).</span><span class="na">bar</span><span class="o">();</span> <span class="c1">// hideous, but it works</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
 
-<p>As <code>@Gauge</code> doesn’t involve a proxy, it is possible to use this annotation on private fields and methods.</p>
+<p>As <code>@Gauge</code> doesn’t involve a proxy, it may be used on non-public fields and methods.
+Additionally, <code>@InjectMetric</code> may be used on non-public, non-final fields.</p>
 
-<h2>License</h2>
+<hr><h3>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
 
-<h1></h1>
-
-<p>Copyright (c) 2012 Ryan Tenney, Martello Technologies</p>
+<p>Copyright (c) 2012-2013 Ryan Tenney, Martello Technologies</p>
 
 <p>Published under Apache Software License 2.0, see LICENSE</p>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/ryantenney/metrics-spring/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/ryantenney/metrics-spring/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/ryantenney/metrics-spring"></a> is maintained by <a href="https://github.com/ryantenney">ryantenney</a>.</p>
-
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+<p><a href="http://rochestermade.com"><img src="http://rochestermade.com/media/images/rochester-made-dark-on-light.png" alt="Rochester Made"></a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ryantenney">ryantenney</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-
-  
+    <script src="javascripts/scale.fix.js"></script>
+    
   </body>
 </html>
