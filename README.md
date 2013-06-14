@@ -1,5 +1,4 @@
 #Metrics for Spring [![Build Status](https://secure.travis-ci.org/ryantenney/metrics-spring.png)](http://travis-ci.org/ryantenney/metrics-spring)
-=================================
 
 ##About
 
@@ -11,32 +10,17 @@ This module does the following things:
 * Registers a `Gauge` for beans which have members annotated with `@Gauge`
 * Autowires Timers, Meters, Counters and Histograms into fields annotated with `@InjectMetric`
 * Registers with the `HealthCheckRegistry` any beans which extend the class `HealthCheck`
+* Creates reporters and binds them to the Spring lifecycle
 
 ###Maven
 
-Current release version is 2.1.4, which works with Metrics 2.x.
+Current version is 3.0.0-RC1, which is compatible with Metrics 3.0
 
 ```xml
 <dependency>
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>2.1.4</version>
-</dependency>
-```
-
-Currently working on 3.0.0-SNAPSHOT for Metrics 3 compatibility.
-
-```xml
-<repository>
-	<id>sonatype-nexus-snapshots</id>
-	<name>Sonatype Nexus Snapshots</name>
-	<url>http://oss.sonatype.org/content/repositories/snapshots</url>
-</repository>
-
-<dependency>
-	<groupId>com.ryantenney.metrics</groupId>
-	<artifactId>metrics-spring</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.0-RC1</version>
 </dependency>
 ```
 
@@ -58,14 +42,16 @@ Spring Context XML:
 			http://www.ryantenney.com/schema/metrics
 			http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<metrics:annotation-driven />
+	<metrics:metric-registry id="registry" />
+	<metrics:annotation-driven metric-registry="registry" />
+	<metrics:reporter type="console" metric-registry="registry" period="1m" />
 
 	<!-- beans -->
 
 </beans>
 ```
 
-Java Config (available in 3.0.0-SNAPSHOT):
+Java Annotation Config:
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -87,7 +73,26 @@ The `<metrics:annotation-driven />` element is required, and has 4 optional argu
 * `proxy-target-class` - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This *may* be necessary if you use class-based autowiring.
 * `expose-proxy` - if set to true, the target can access the proxy which wraps it by calling `AopContext.currentProxy()`.
 
-The element `<metrics:reporter />` currently doesn't do a damn thing, but it will soon!
+The `<metrics:metric-registry />` element constructs a new MetricRegistry or retrieves a shared registry:
+
+* `id` - the bean name with which to register the MetricRegistry bean
+* `name` - the name of the MetricRegistry, if present, this calls SharedMetricRegistries.getOrCreate(name)
+
+The `<metrics:health-check-registry />` element constructs a new HealthCheckRegistry:
+
+* `id` - the bean name with which to register the HealthCheckRegistry bean
+
+The `<metrics:reporter />` element creates and starts a reporter.
+
+* `id` - 
+* `metric-registry` - the id of the `MetricRegsitry` bean for which the reporter should retrieve metrics
+* `type` - the type of the reporter. Additional types may be registered through SPI (more on this later).
+ * `console`: ConsoleReporter
+ * `jmx`: JmxReporter
+ * `slf4j`: Slf4jReporter
+ * `ganglia`: GangliaReporter (requires metrics-ganglia)
+ * `graphite`: GraphiteReporter (requires metrics-graphite)
+
 
 ###A Note on the Limitations of Spring AOP
 
@@ -116,7 +121,7 @@ Additionally, `@InjectMetric` may be used on non-public, non-final fields.
 
 ### License
 
-Copyright (c) 2012 Ryan Tenney, Martello Technologies
+Copyright (c) 2012-2013 Ryan Tenney, Martello Technologies
 
 Published under Apache Software License 2.0, see LICENSE
 
