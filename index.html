@@ -79,7 +79,7 @@
 <span class="s">            http://www.ryantenney.com/schema/metrics</span>
 <span class="s">            http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd"</span><span class="nt">&gt;</span>
 
-    <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"registry"</span> <span class="na">name=</span><span class="s">"springMetrics"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;metrics:reporter</span> <span class="na">type=</span><span class="s">"console"</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="na">period=</span><span class="s">"1m"</span> <span class="nt">/&gt;</span>
 
@@ -90,13 +90,31 @@
 
 <p>Java Annotation Config:</p>
 
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.codahale.metrics.ConsoleReporter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.codahale.metrics.MetricRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.codahale.metrics.SharedMetricRegistries</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.ryantenney.metrics.spring.config.annotation.EnableMetrics</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter</span><span class="o">;</span>
 
 <span class="nd">@Configuration</span>
 <span class="nd">@EnableMetrics</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringConfiguringClass</span> <span class="o">{</span>
-    <span class="c1">// ...</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringConfiguringClass</span> <span class="kd">extends</span> <span class="n">MetricsConfigurerAdapter</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">MetricRegistry</span> <span class="nf">getMetricRegistry</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">SharedMetricRegistries</span><span class="o">.</span><span class="na">getOrCreate</span><span class="o">(</span><span class="s">"springMetrics"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">configureReporters</span><span class="o">(</span><span class="n">MetricRegistry</span> <span class="n">metricRegistry</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">ConsoleReporter</span><span class="o">.</span><span class="na">forRegistry</span><span class="o">(</span><span class="n">registry</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">outputTo</span><span class="o">(</span><span class="n">output</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">start</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MINUTES</span><span class="o">);</span>
+    <span class="o">}</span>
+
 <span class="o">}</span>
 </pre></div>
 
