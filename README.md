@@ -42,7 +42,7 @@ Spring Context XML:
 			http://www.ryantenney.com/schema/metrics
 			http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<metrics:metric-registry id="registry" />
+	<metrics:metric-registry id="registry" name="springMetrics" />
 	<metrics:annotation-driven metric-registry="registry" />
 	<metrics:reporter type="console" metric-registry="registry" period="1m" />
 
@@ -54,13 +54,31 @@ Spring Context XML:
 Java Annotation Config:
 
 ```java
+import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Configuration;
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 
 @Configuration
 @EnableMetrics
-public class SpringConfiguringClass {
-	// ...
+public class SpringConfiguringClass extends MetricsConfigurerAdapter {
+
+	@Override
+	public MetricRegistry getMetricRegistry() {
+		return SharedMetricRegistries.getOrCreate("springMetrics");
+	}
+
+	@Override
+	public void configureReporters(MetricRegistry metricRegistry) {
+		ConsoleReporter.forRegistry(registry)
+			.outputTo(output)
+			.build()
+			.start(1, TimeUnit.MINUTES);
+	}
+
 }
 ```
 
