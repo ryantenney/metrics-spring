@@ -16,7 +16,6 @@
  */
 package com.ryantenney.metrics.spring.config;
 
-import static org.springframework.beans.factory.config.BeanDefinition.ROLE_APPLICATION;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
 import org.springframework.aop.framework.ProxyConfig;
@@ -29,8 +28,6 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
 import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
@@ -41,16 +38,6 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		final CompositeComponentDefinition compDefinition = new CompositeComponentDefinition(element.getTagName(), source);
 		parserContext.pushContainingComponent(compDefinition);
-
-		String metricsBeanName = element.getAttribute("metric-registry");
-		if (!StringUtils.hasText(metricsBeanName)) {
-			metricsBeanName = registerComponent(parserContext, build(MetricRegistry.class, source, ROLE_APPLICATION));
-		}
-
-		String healthCheckBeanName = element.getAttribute("health-check-registry");
-		if (!StringUtils.hasText(healthCheckBeanName)) {
-			healthCheckBeanName = registerComponent(parserContext, build(HealthCheckRegistry.class, source, ROLE_APPLICATION));
-		}
 
 		final ProxyConfig proxyConfig = new ProxyConfig();
 
@@ -64,38 +51,44 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		//@formatter:off
 
-		registerComponent(parserContext,
-				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
-					.setFactoryMethod("exceptionMetered")
-					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+		final String metricsBeanName = element.getAttribute("metric-registry");
+		if (StringUtils.hasText(metricsBeanName)) {
+			registerComponent(parserContext,
+					build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+						.setFactoryMethod("exceptionMetered")
+						.addConstructorArgReference(metricsBeanName)
+						.addConstructorArgValue(proxyConfig));
 
-		registerComponent(parserContext,
-				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
-					.setFactoryMethod("metered")
-					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+			registerComponent(parserContext,
+					build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+						.setFactoryMethod("metered")
+						.addConstructorArgReference(metricsBeanName)
+						.addConstructorArgValue(proxyConfig));
 
-		registerComponent(parserContext,
-				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
-					.setFactoryMethod("timed")
-					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+			registerComponent(parserContext,
+					build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+						.setFactoryMethod("timed")
+						.addConstructorArgReference(metricsBeanName)
+						.addConstructorArgValue(proxyConfig));
 
-		registerComponent(parserContext,
-				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
-					.setFactoryMethod("gauge")
-					.addConstructorArgReference(metricsBeanName));
+			registerComponent(parserContext,
+					build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+						.setFactoryMethod("gauge")
+						.addConstructorArgReference(metricsBeanName));
 
-		registerComponent(parserContext,
-				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
-					.setFactoryMethod("injectMetric")
-					.addConstructorArgReference(metricsBeanName));
+			registerComponent(parserContext,
+					build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+						.setFactoryMethod("injectMetric")
+						.addConstructorArgReference(metricsBeanName));
+		}
 
-		registerComponent(parserContext,
-				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
-					.setFactoryMethod("healthCheck")
-					.addConstructorArgReference(healthCheckBeanName));
+		final String healthCheckBeanName = element.getAttribute("health-check-registry");
+		if (StringUtils.hasText(healthCheckBeanName)) {
+			registerComponent(parserContext,
+					build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+						.setFactoryMethod("healthCheck")
+						.addConstructorArgReference(healthCheckBeanName));
+		}
 
 		//@formatter:on
 

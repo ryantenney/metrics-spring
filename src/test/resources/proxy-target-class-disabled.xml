@@ -11,7 +11,8 @@
 
 	<context:annotation-config />
 
-	<metrics:annotation-driven proxy-target-class="false" />
+	<metrics:metric-registry id="metrics" />
+	<metrics:annotation-driven metric-registry="metrics" proxy-target-class="false" />
 
 	<bean class="com.ryantenney.metrics.spring.ProxyTargetClassTest.ProxyTargetClass" />
 	<bean class="com.ryantenney.metrics.spring.ProxyTargetClassTest.AutowiredCollaborator" />

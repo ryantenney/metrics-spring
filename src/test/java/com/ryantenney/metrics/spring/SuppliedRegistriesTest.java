@@ -23,22 +23,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 
-public class DefaultRegistryTest {
-
-	@Test
-	public void testDefaultRegistries() {
-		ClassPathXmlApplicationContext ctx = null;
-		try {
-			ctx = new ClassPathXmlApplicationContext("classpath:default-registries.xml");
-			Assert.assertNotNull("Should be a MetricRegistry.", ctx.getBean(MetricRegistry.class));
-			Assert.assertNotNull("Should be HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
-		}
-		finally {
-			if (ctx != null) {
-				ctx.close();
-			}
-		}
-	}
+public class SuppliedRegistriesTest {
 
 	@Test
 	public void testSuppliedRegistries() {
