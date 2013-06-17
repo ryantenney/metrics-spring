@@ -9,9 +9,9 @@
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
 			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<metrics:metric-registry id="metrics" />
 	<metrics:health-check-registry id="health" />
+	<metrics:annotation-driven health-check-registry="health" />
 
-	<metrics:annotation-driven metric-registry="metrics" health-check-registry="health" />
+	<bean id="myHealthCheckClass" class="com.ryantenney.metrics.spring.HealthCheckTest.HealthCheckClass" />
 
 </beans>

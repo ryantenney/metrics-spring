@@ -23,6 +23,12 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="health-check-registry">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:element name="reporter">
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:string" use="optional"/>
