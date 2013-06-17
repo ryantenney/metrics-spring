@@ -16,16 +16,21 @@
  */
 package com.ryantenney.metrics.spring.config;
 
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
+import org.w3c.dom.Element;
 
-class MetricsNamespaceHandler extends NamespaceHandlerSupport {
+import com.codahale.metrics.health.HealthCheckRegistry;
+
+class HealthCheckRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
-	public void init() {
-		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
-		registerBeanDefinitionParser("metric-registry", new MetricRegistryBeanDefinitionParser());
-		registerBeanDefinitionParser("health-check-registry", new HealthCheckRegistryBeanDefinitionParser());
-		registerBeanDefinitionParser("reporter", new ReporterBeanDefinitionParser());
+	protected Class<?> getBeanClass(Element element) {
+		return HealthCheckRegistry.class;
+	}
+
+	@Override
+	protected boolean shouldGenerateIdAsFallback() {
+		return true;
 	}
 
 }
