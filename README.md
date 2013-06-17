@@ -135,6 +135,10 @@ public class Foo {
 As `@Gauge` doesn’t involve a proxy, it may be used on non-public fields and methods.
 Additionally, `@InjectMetric` may be used on non-public, non-final fields.
 
+###Users of the Maven Shade plugin
+
+Please see the [Shade Readme](SHADE-README.md)
+
 ---
 
 ### License
