@@ -16,17 +16,15 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.management.MBeanServer;
-
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.Lifecycle;
-
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricFilter;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.SmartLifecycle;
 
-public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxReporter> implements Lifecycle, DisposableBean {
+import javax.management.MBeanServer;
+import java.util.concurrent.TimeUnit;
+
+public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxReporter> implements SmartLifecycle, DisposableBean {
 
 	// Optional
 	public static final String DOMAIN = "domain";
@@ -99,4 +97,19 @@ public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxRepor
 		stop();
 	}
 
+    @Override
+    public boolean isAutoStartup() {
+        return true;
+    }
+
+    @Override
+    public void stop(Runnable runnable) {
+        stop();
+        runnable.run();
+    }
+
+    @Override
+    public int getPhase() {
+        return 0;
+    }
 }

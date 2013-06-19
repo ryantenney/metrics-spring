@@ -16,16 +16,15 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
+import com.codahale.metrics.ScheduledReporter;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.SmartLifecycle;
+
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.Lifecycle;
-
-import com.codahale.metrics.ScheduledReporter;
-
-public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledReporter> extends AbstractReporterFactoryBean<T> implements Lifecycle,
+public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledReporter> extends AbstractReporterFactoryBean<T> implements SmartLifecycle,
 		DisposableBean {
 
 	private static final Pattern DURATION_STRING_PATTERN = Pattern.compile("^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$");
@@ -103,4 +102,19 @@ public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledRe
 		return sourceUnit.toNanos(sourceDuration);
 	}
 
+    @Override
+    public int getPhase() {
+        return 0;
+    }
+
+    @Override
+    public void stop(Runnable callback) {
+        stop();
+        callback.run();
+    }
+
+    @Override
+    public boolean isAutoStartup() {
+        return true;
+    }
 }
