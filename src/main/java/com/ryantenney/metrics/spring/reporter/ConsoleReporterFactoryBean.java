@@ -17,6 +17,8 @@
 package com.ryantenney.metrics.spring.reporter;
 
 import java.io.PrintStream;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import com.codahale.metrics.Clock;
@@ -31,6 +33,8 @@ public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactory
 	// Optional
 	public static final String CLOCK_REF = "clock-ref";
 	public static final String OUTPUT_REF = "output-ref";
+	public static final String LOCALE = "locale";
+	public static final String TIMEZONE = "timezone";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
 	public static final String FILTER_PATTERN = "filter";
@@ -68,11 +72,29 @@ public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.outputTo(getPropertyRef(OUTPUT_REF, PrintStream.class));
 		}
 
+		if (hasProperty(LOCALE)) {
+			reporter.formattedFor(parseLocale(getProperty(LOCALE)));
+		}
+
+		if (hasProperty(TIMEZONE)) {
+			reporter.formattedFor(TimeZone.getTimeZone(getProperty(TIMEZONE)));
+		}
+
 		return reporter.build();
 	}
 
 	protected long getPeriod() {
 		return convertDurationString(getProperty(PERIOD));
+	}
+
+	protected Locale parseLocale(String localeString) {
+		int underscore = localeString.indexOf('_');
+		if (underscore == -1) {
+			return new Locale(localeString);
+		}
+		else {
+			return new Locale(localeString.substring(0, underscore), localeString.substring(underscore + 1));
+		}
 	}
 
 }
