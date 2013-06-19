@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:metrics="http://www.ryantenney.com/schema/metrics"
 
@@ -13,11 +14,13 @@
 
 	<bean id="printStream" class="com.ryantenney.metrics.spring.ReporterTest" factory-method="testPrintStream" />
 	<bean id="mbeanServer" class="java.lang.management.ManagementFactory" factory-method="getPlatformMBeanServer" />
+	<bean id="filter" class="com.ryantenney.metrics.spring.ReporterTest.BarFilter" />
+	<bean id="mockClock" class="org.mockito.Mockito" factory-method="mock" c:classToMock="com.codahale.metrics.Clock" />
 
-	<metrics:reporter type="console" metric-registry="metrics" period="100ms" output-ref="printStream" />
-	<metrics:reporter type="slf4j" metric-registry="metrics" period="100ms" marker="foobar" logger="com.foo.bar" />
-	<metrics:reporter type="ganglia" metric-registry="metrics" period="100ms" group="localhost" port="5555" udp-mode="UNICAST" ttl="100" />
-	<metrics:reporter type="graphite" metric-registry="metrics" period="100ms" host="localhost" port="6666" />
-	<metrics:reporter type="jmx" metric-registry="metrics" domain="com.foo" mbean-server-ref="mbeanServer" />
+	<metrics:reporter type="console" metric-registry="metrics" period="100ms" output-ref="printStream" clock-ref="mockClock" locale="en_GB" timezone="Europe/London" filter="com\..*" rate-unit="HOURS" duration-unit="NANOSECONDS" />
+	<metrics:reporter type="slf4j" metric-registry="metrics" period="100ms" logger="com.foo.bar" marker="foobar" filter-ref="filter" rate-unit="MINUTES" duration-unit="MICROSECONDS" />
+	<metrics:reporter type="ganglia" metric-registry="metrics" period="100ms" group="localhost" port="5555" udp-mode="UNICAST" ttl="100" prefix="test" spoof="foobar" protocol="v3.1" dmax="5" tmax="10" uuid="550e8400-e29b-41d4-a716-446655440000" filter="org\..*" rate-unit="SECONDS" duration-unit="MILLISECONDS" />
+	<metrics:reporter type="graphite" metric-registry="metrics" period="100ms" host="localhost" port="6666" prefix="metrics-test" clock-ref="mockClock" filter-ref="filter" rate-unit="DAYS" duration-unit="HOURS" />
+	<metrics:reporter type="jmx" metric-registry="metrics" domain="com.foo" mbean-server-ref="mbeanServer" filter-ref="filter" rate-unit="MILLISECONDS" duration-unit="DAYS" />
 
 </beans>
