@@ -88,7 +88,7 @@ public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactory
 	}
 
 	protected Locale parseLocale(String localeString) {
-		int underscore = localeString.indexOf('_');
+		final int underscore = localeString.indexOf('_');
 		if (underscore == -1) {
 			return new Locale(localeString);
 		}
