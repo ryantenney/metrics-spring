@@ -23,7 +23,7 @@ import org.springframework.context.Lifecycle;
 
 import com.codahale.metrics.MetricFilter;
 
-public class FakeReporterFactoryBean extends AbstractScheduledReporterFactoryBean<FakeReporter> implements Lifecycle, DisposableBean {
+public class FakeReporterFactoryBean extends AbstractScheduledReporterFactoryBean<FakeReporter> {
 
 	// Required
 	public static final String PERIOD = "period";
