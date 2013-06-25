@@ -119,7 +119,4 @@ public class MetricsConfigurationSupport implements ImportAware {
 		return healthCheckRegistry;
 	}
 
-	protected void configureMetricsReporters(MetricRegistry metricsRegistry) {
-	}
-
 }
