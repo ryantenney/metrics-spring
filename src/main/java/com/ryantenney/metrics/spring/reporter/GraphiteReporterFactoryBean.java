@@ -71,7 +71,8 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 			reporter.filter(getPropertyRef(FILTER_REF, MetricFilter.class));
 		}
 
-		final InetSocketAddress address = InetSocketAddress.createUnresolved(getProperty(HOST), getProperty(PORT, Integer.TYPE));
+        // This resolves the hostname as the Graphite reporter is using the address, not the host
+		final InetSocketAddress address = new InetSocketAddress(getProperty(HOST), getProperty(PORT, Integer.TYPE));
 
 		return reporter.build(new Graphite(address));
 	}
