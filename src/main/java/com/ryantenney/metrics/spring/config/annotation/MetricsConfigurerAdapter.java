@@ -16,6 +16,14 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
+import java.io.Closeable;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 
@@ -28,7 +36,11 @@ import com.codahale.metrics.health.HealthCheckRegistry;
  * @author Ryan Tenney
  * @since 3.0
  */
-public abstract class MetricsConfigurerAdapter implements MetricsConfigurer {
+public abstract class MetricsConfigurerAdapter implements MetricsConfigurer, DisposableBean {
+
+	private static final Logger LOG = LoggerFactory.getLogger(MetricsConfigurerAdapter.class);
+
+	private Set<Closeable> reporters;
 
 	/**
 	 * {@inheritDoc}
@@ -54,6 +66,36 @@ public abstract class MetricsConfigurerAdapter implements MetricsConfigurer {
 	@Override
 	public HealthCheckRegistry getHealthCheckRegistry() {
 		return null;
+	}
+
+	/**
+	 * Called when the Spring context is closed, this method stops reporters.
+	 */
+	@Override
+	public void destroy() throws Exception {
+		if (this.reporters != null) {
+			for (Closeable reporter : this.reporters) {
+				try {
+					reporter.close();
+				}
+				catch (Exception ex) {
+					LOG.warn("Problem stopping reporter", ex);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Registers a reporter for destruction on Spring context close
+	 * @param reporter a reporter which implements Closeable
+	 * @return the reporter
+	 */
+	protected <R extends Closeable> R registerReporter(final R reporter) {
+		if (this.reporters == null) {
+			this.reporters = new HashSet<Closeable>();
+		}
+		this.reporters.add(reporter);
+		return reporter;
 	}
 
 }

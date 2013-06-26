@@ -22,10 +22,15 @@ import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -34,14 +39,17 @@ import org.springframework.context.annotation.Configuration;
 
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
-import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
+import com.ryantenney.metrics.spring.reporter.FakeReporter;
 
 /**
  * Tests use of {@link EnableMetrics @EnableMetrics} on {@code @Configuration} classes.
@@ -52,11 +60,15 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
 @SuppressWarnings("unchecked")
 public class EnableMetricsTest {
 
-	private static final MetricRegistry metricRegistry = new MetricRegistry();
-	private static final HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
+	private static MetricRegistry metricRegistry;
+	private static HealthCheckRegistry healthCheckRegistry;
 
-	static {
+	@Before
+	public void before() {
+		SharedMetricRegistries.clear();
+		metricRegistry = new MetricRegistry();
 		metricRegistry.addListener(new LoggingMetricRegistryListener());
+		healthCheckRegistry = new HealthCheckRegistry();
 	}
 
 	@Test
@@ -64,16 +76,15 @@ public class EnableMetricsTest {
 		// Initialize the context
 		AnnotationConfigApplicationContext applicationContext = null;
 		try {
-			applicationContext = new AnnotationConfigApplicationContext();
-			applicationContext.register(MetricsConfig.class);
-			applicationContext.refresh();
+			applicationContext = new AnnotationConfigApplicationContext(MetricsConfig.class);
+			applicationContext.start();
 	
 			// Assert that the custom registries were used
 			assertSame(metricRegistry, applicationContext.getBean(MetricRegistry.class));
 			assertSame(healthCheckRegistry, applicationContext.getBean(HealthCheckRegistry.class));
 	
-			// Verify that the configureReporters method was invoked
-			assertThat(MetricsConfig.isConfigureReportersInvoked, is(true));
+			// Verify that the fakeReporter method was started
+			assertTrue(MetricsConfig.fakeReporterInstance.isRunning());
 	
 			// Assert that the bean has been proxied
 			TestBean testBean = applicationContext.getBean(TestBean.class);
@@ -116,16 +127,21 @@ public class EnableMetricsTest {
 		}
 		finally {
 			if (applicationContext != null) {
+				applicationContext.stop();
 				applicationContext.close();
 			}
+		}
+
+		if (MetricsConfig.fakeReporterInstance != null) {
+			assertFalse(MetricsConfig.fakeReporterInstance.isRunning());
 		}
 	}
 
 	@Configuration
 	@EnableMetrics
-	public static class MetricsConfig implements MetricsConfigurer {
+	public static class MetricsConfig extends MetricsConfigurerAdapter {
 
-		public static boolean isConfigureReportersInvoked = false;
+		static FakeReporter fakeReporterInstance;
 
 		@Bean
 		public TestBean testBean() {
@@ -144,7 +160,7 @@ public class EnableMetricsTest {
 
 		@Override
 		public void configureReporters(MetricRegistry metricRegistry) {
-			isConfigureReportersInvoked = true;
+			registerReporter(fakeReporterInstance = new FakeReporter(metricRegistry, MetricFilter.ALL, TimeUnit.SECONDS, TimeUnit.MILLISECONDS)).start(1, TimeUnit.SECONDS);
 		}
 
 	}
