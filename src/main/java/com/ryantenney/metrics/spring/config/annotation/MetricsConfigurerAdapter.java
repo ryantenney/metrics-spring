@@ -47,7 +47,7 @@ public abstract class MetricsConfigurerAdapter implements MetricsConfigurer, Dis
 	 * <p>This implementation is empty.
 	 */
 	@Override
-	public void configureReporters(MetricRegistry metricsRegistry) {
+	public void configureReporters(MetricRegistry metricRegistry) {
 	}
 
 	/**

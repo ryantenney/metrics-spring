@@ -31,9 +31,9 @@ public interface MetricsConfigurer {
 
 	/**
 	 * Configure reporters.
-	 * @param metricsRegistry
+	 * @param metricRegistry
 	 */
-	void configureReporters(MetricRegistry metricsRegistry);
+	void configureReporters(MetricRegistry metricRegistry);
 
 	/**
 	 * Override this method to provide a custom {@code MetricRegistry}.

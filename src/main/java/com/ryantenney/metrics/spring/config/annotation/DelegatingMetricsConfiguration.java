@@ -49,7 +49,7 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 	}
 
 	@Override
-	public void configureReporters(final MetricRegistry metricsRegistry) {
+	public void configureReporters(final MetricRegistry metricRegistry) {
 		this.delegates.configureReporters(metricRegistry);
 	}
 

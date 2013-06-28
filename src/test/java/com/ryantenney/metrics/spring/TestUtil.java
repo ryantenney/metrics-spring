@@ -61,57 +61,57 @@ class TestUtil {
 		return Util.forInjectMetricField(klass, member, annotation);
 	}
 
-	static Gauge<?> forGaugeField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+	static Gauge<?> forGaugeField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {
 		Field field = findField(clazz, fieldName);
 		String metricName = forGauge(clazz, field, field.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge field named '{}'", metricName);
-		return metricsRegistry.getGauges().get(metricName);
+		return metricRegistry.getGauges().get(metricName);
 	}
 
-	static Gauge<?> forGaugeMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Gauge<?> forGaugeMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forGauge(clazz, method, method.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge method named '{}'", metricName);
-		return metricsRegistry.getGauges().get(metricName);
+		return metricRegistry.getGauges().get(metricName);
 	}
 
-	static Timer forTimedMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Timer forTimedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class));
 		log.info("Looking up timed method named '{}'", metricName);
-		return metricsRegistry.getTimers().get(metricName);
+		return metricRegistry.getTimers().get(metricName);
 	}
 
-	static Meter forMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Meter forMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forMeteredMethod(clazz, method, method.getAnnotation(Metered.class));
 		log.info("Looking up metered method named '{}'", metricName);
-		return metricsRegistry.getMeters().get(metricName);
+		return metricRegistry.getMeters().get(metricName);
 	}
 
-	static Meter forExceptionMeteredMethod(MetricRegistry metricsRegistry, Class<?> clazz, String methodName) {
+	static Meter forExceptionMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
 		String metricName = forExceptionMeteredMethod(clazz, method, method.getAnnotation(ExceptionMetered.class));
 		log.info("Looking up exception metered method named '{}'", metricName);
-		return metricsRegistry.getMeters().get(metricName);
+		return metricRegistry.getMeters().get(metricName);
 	}
 
-	static Metric forInjectMetricField(MetricRegistry metricsRegistry, Class<?> clazz, String fieldName) {
+	static Metric forInjectMetricField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {
 		Field field = findField(clazz, fieldName);
 		String metricName = forInjectMetricField(clazz, field, field.getAnnotation(InjectMetric.class));
 		log.info("Looking up injected metric field named '{}'", metricName);
 		Class<?> type = field.getType();
 		if (type.isAssignableFrom(Meter.class)) {
-			return metricsRegistry.getMeters().get(metricName);
+			return metricRegistry.getMeters().get(metricName);
 		}
 		else if (type.isAssignableFrom(Timer.class)) {
-			return metricsRegistry.getTimers().get(metricName);
+			return metricRegistry.getTimers().get(metricName);
 		}
 		else if (type.isAssignableFrom(Counter.class)) {
-			return metricsRegistry.getCounters().get(metricName);
+			return metricRegistry.getCounters().get(metricName);
 		}
 		else if (type.isAssignableFrom(Histogram.class)) {
-			return metricsRegistry.getHistograms().get(metricName);
+			return metricRegistry.getHistograms().get(metricName);
 		}
 		return null;
 	}
