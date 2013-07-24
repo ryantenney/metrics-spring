@@ -17,7 +17,9 @@
 package com.ryantenney.metrics.spring.reporter;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
+import javax.net.SocketFactory;
 
 import com.codahale.metrics.Clock;
 import com.codahale.metrics.MetricFilter;
@@ -32,6 +34,7 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 	public static final String PERIOD = "period";
 
 	// Optional
+	public static final String CHARSET = "charset";
 	public static final String PREFIX = "prefix";
 	public static final String CLOCK_REF = "clock-ref";
 	public static final String DURATION_UNIT = "duration-unit";
@@ -71,10 +74,20 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 			reporter.filter(getPropertyRef(FILTER_REF, MetricFilter.class));
 		}
 
-        // This resolves the hostname as the Graphite reporter is using the address, not the host
-		final InetSocketAddress address = new InetSocketAddress(getProperty(HOST), getProperty(PORT, Integer.TYPE));
+		final Charset charset;
+		if (hasProperty(CHARSET)) {
+			charset = Charset.forName(getProperty(CHARSET));
+		}
+		else {
+			charset = Charset.forName("UTF-8");
+		}
 
-		return reporter.build(new Graphite(address));
+		// This resolves the hostname as the Graphite reporter is using the address, not the host
+		final InetSocketAddress address = new InetSocketAddress(getProperty(HOST), getProperty(PORT, Integer.TYPE));
+		final SocketFactory socketFactory = SocketFactory.getDefault();
+		final Graphite graphite = new Graphite(address, socketFactory, charset);
+
+		return reporter.build(graphite);
 	}
 
 	protected long getPeriod() {

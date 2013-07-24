@@ -41,6 +41,8 @@ public class GraphiteReporterElementParser extends AbstractReporterElementParser
 		c.require(PORT, PORT_NUMBER_REGEX, "Port number is required and must be between 1-65536");
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 
+		c.optional(CHARSET);
+
 		c.optional(PREFIX);
 		c.optional(CLOCK_REF);
 
