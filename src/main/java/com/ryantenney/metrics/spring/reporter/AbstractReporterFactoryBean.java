@@ -34,6 +34,9 @@ import com.codahale.metrics.MetricRegistry;
 
 public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, InitializingBean, BeanFactoryAware {
 
+	protected static final String FILTER_PATTERN = "filter";
+	protected static final String FILTER_REF = "filter-ref";
+
 	private MetricRegistry metricRegistry;
 	private BeanFactory beanFactory;
 	private ConversionService conversionService;
@@ -140,6 +143,16 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 			return null;
 		}
 		return this.beanFactory.getBean(value, requiredType);
+	}
+
+	protected MetricFilter getMetricFilter() {
+		if (hasProperty(FILTER_PATTERN)) {
+			return metricFilterPattern(getProperty(FILTER_PATTERN));
+		}
+		else if (hasProperty(FILTER_REF)) {
+			return getPropertyRef(FILTER_REF, MetricFilter.class);
+		}
+		return MetricFilter.ALL;
 	}
 
 	protected MetricFilter metricFilterPattern(String pattern) {
