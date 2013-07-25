@@ -130,40 +130,40 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			this.allowedProperties = new HashSet<String>();
 		}
 
-		protected boolean has(String key) {
+		public boolean has(String key) {
 			return properties.get(key) != null;
 		}
 
-		protected String get(String key) {
+		public String get(String key) {
 			this.lastKey = key;
 			return properties.get(key);
 		}
 
-		protected void reject(String message) {
+		public void reject(String message) {
 			reject(lastKey, message);
 		}
 
-		protected void reject(String message, Throwable cause) {
+		public void reject(String message, Throwable cause) {
 			reject(lastKey, message, cause);
 		}
 
-		protected void reject(String key, String message) {
+		public void reject(String key, String message) {
 			throw new ValidationException(errorMessage(key, message));
 		}
 
-		protected void reject(String key, String message, Throwable cause) {
+		public void reject(String key, String message, Throwable cause) {
 			throw new ValidationException(errorMessage(key, message), cause);
 		}
 
-		protected String require(String key) {
+		public String require(String key) {
 			return require(key, null, null);
 		}
 
-		protected String require(String key, String pattern) {
+		public String require(String key, String pattern) {
 			return require(key, pattern, null);
 		}
 
-		protected String require(String key, String pattern, String message) {
+		public String require(String key, String pattern, String message) {
 			final String value = get(key);
 			if (!StringUtils.hasText(value)) {
 				reject(key, message);
@@ -173,15 +173,15 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			return value;
 		}
 
-		protected boolean optional(String key) {
+		public boolean optional(String key) {
 			return optional(key, null, null);
 		}
 
-		protected boolean optional(String key, String pattern) {
+		public boolean optional(String key, String pattern) {
 			return optional(key, pattern, null);
 		}
 
-		protected boolean optional(String key, String pattern, String message) {
+		public boolean optional(String key, String pattern, String message) {
 			final String value = get(key);
 			if (StringUtils.hasText(value)) {
 				check(key, value, pattern, message);
@@ -191,7 +191,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			return false;
 		}
 
-		protected void rejectUnmatchedProperties() {
+		public void rejectUnmatchedProperties() {
 			if (!allowedProperties.containsAll(properties.keySet())) {
 				final Set<String> unmatchedProperties = new HashSet<String>(properties.keySet());
 				unmatchedProperties.removeAll(allowedProperties);
