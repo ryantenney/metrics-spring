@@ -21,6 +21,7 @@ import java.io.PrintStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.codahale.metrics.ConsoleReporter;
@@ -42,8 +43,7 @@ public class ReporterTest {
 		FakeReporter one = null;
 		FakeReporter two = null;
 		try {
-			MetricRegistry registry = new MetricRegistry();
-			SharedMetricRegistries.add("reporterTestRegistry", registry);
+			final MetricRegistry registry = SharedMetricRegistries.getOrCreate("reporterTestRegistry");
 
 			ctx = new ClassPathXmlApplicationContext("classpath:fake-reporter-test.xml");
 			ctx.start();
@@ -51,7 +51,8 @@ public class ReporterTest {
 			Thread.sleep(1000);
 
 			one = ctx.getBean("fakeReporterOne", FakeReporter.class);
-			Assert.assertEquals(registry, one.getRegistry());
+			Assert.assertFalse(AopUtils.isAopProxy(one.getRegistry()));
+			Assert.assertSame(registry, one.getRegistry());
 			Assert.assertEquals("milliseconds", one.getDurationUnit());
 			Assert.assertEquals("second", one.getRateUnit());
 			Assert.assertEquals(100000000, one.getPeriod());
@@ -60,7 +61,8 @@ public class ReporterTest {
 			Assert.assertTrue(one.isRunning());
 
 			two = ctx.getBean("fakeReporterTwo", FakeReporter.class);
-			Assert.assertEquals(registry, two.getRegistry());
+			Assert.assertFalse(AopUtils.isAopProxy(one.getRegistry()));
+			Assert.assertSame(registry, two.getRegistry());
 			Assert.assertEquals("nanoseconds", two.getDurationUnit());
 			Assert.assertEquals("hour", two.getRateUnit());
 			Assert.assertEquals(100000000, two.getPeriod());
