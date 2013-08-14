@@ -86,7 +86,7 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 			getProperty(PORT, Integer.TYPE),
 			getProperty(UDP_MODE, UDPAddressingMode.class),
 			getProperty(TTL, Integer.TYPE),
-			!hasProperty(PROTOCOL) || getProperty(PROTOCOL).equals("v3.1"),
+			!hasProperty(PROTOCOL) || getProperty(PROTOCOL).contains("3.1"),
 			hasProperty(UUID) ? java.util.UUID.fromString(getProperty(UUID)) : null,
 			getProperty(SPOOF)
 		);
