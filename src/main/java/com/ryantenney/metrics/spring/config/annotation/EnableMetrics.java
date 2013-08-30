@@ -41,11 +41,6 @@ import org.springframework.context.annotation.Import;
 public @interface EnableMetrics {
 
 	/**
-	 * The scope of the {@code Metric}
-	 */
-	String scope() default "";
-
-	/**
 	 * Set whether the proxy should be exposed by the AOP framework as a
 	 * ThreadLocal for retrieval via the AopContext class. This is useful
 	 * if an advised object needs to call another advised method on itself.
