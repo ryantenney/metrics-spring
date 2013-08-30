@@ -14,13 +14,13 @@ This module does the following things:
 
 ###Maven
 
-Current version is 3.0.0-RC1, which is compatible with Metrics 3.0
+Current version is 3.0.0-RC2, which is compatible with Metrics 3.0
 
 ```xml
 <dependency>
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>3.0.0-RC1</version>
+	<version>3.0.0-RC2</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ This module was formerly contained in the [Yammer Metrics repository](https://gi
 
 ###Basic Usage
 
-**Pull requests to improve or expand this documentation would be most welcome.**
+As of version 3, `metrics-spring` may be configured using XML or Java, depending on your personal preference.
 
 Spring Context XML:
 
@@ -42,9 +42,12 @@ Spring Context XML:
 			http://www.ryantenney.com/schema/metrics
 			http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
+	<!-- registry and reporters should be defined in only one context xml file -->
 	<metrics:metric-registry id="registry" name="springMetrics" />
-	<metrics:annotation-driven metric-registry="registry" />
 	<metrics:reporter type="console" metric-registry="registry" period="1m" />
+	
+	<!-- annotation-driven must be included in all context files -->
+	<metrics:annotation-driven metric-registry="registry" />
 
 	<!-- beans -->
 
@@ -82,7 +85,7 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 }
 ```
 
-###XML Config
+###XML Config Documentation
 
 The `<metrics:annotation-driven />` element is required, and has 4 optional arguments:
 
@@ -102,15 +105,27 @@ The `<metrics:health-check-registry />` element constructs a new HealthCheckRegi
 
 The `<metrics:reporter />` element creates and starts a reporter.
 
-* `id` - 
+* `id` - the bean name
 * `metric-registry` - the id of the `MetricRegsitry` bean for which the reporter should retrieve metrics
 * `type` - the type of the reporter. Additional types may be registered through SPI (more on this later).
  * `console`: ConsoleReporter
  * `jmx`: JmxReporter
  * `slf4j`: Slf4jReporter
- * `ganglia`: GangliaReporter (requires metrics-ganglia)
- * `graphite`: GraphiteReporter (requires metrics-graphite)
+ * `ganglia`: GangliaReporter (requires `metrics-ganglia`)
+ * `graphite`: GraphiteReporter (requires `metrics-graphite`)
 
+###Java Config Documentation
+
+A `@Configuration` class annotated with `@EnableMetrics` is functionally equivalent to using the `<metrics:annotation-driven />` element.
+
+* `proxyTargetClass` - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This *may* be necessary if you use class-based autowiring.
+* `exposeProxy` - if set to true, the target can access the proxy which wraps it by calling `AopContext.currentProxy()`.
+
+The class may also implement the interface `MetricsConfigurer`, or extend the abstract class `MetricsConfigurerAdapter`
+
+* `getMetricRegistry()` - return the `MetricRegsitry` instance with which metrics should be registered. If omitted a new `MetricRegistry` instance is created.
+* `getHealthCheckRegistry()` - return the `HealthCheckRegsitry` instance with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` instance is created.
+* `configureReporters(MetricRegistry)` - configure reporters
 
 ###A Note on the Limitations of Spring AOP
 
