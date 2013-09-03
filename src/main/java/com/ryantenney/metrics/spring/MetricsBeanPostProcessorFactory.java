@@ -45,6 +45,17 @@ public class MetricsBeanPostProcessorFactory {
 		return new AdvisingBeanPostProcessor(pointcut, adviceFactory, proxyConfig);
 	}
 
+	public static AdvisingBeanPostProcessor counted(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
+		final Pointcut pointcut = CountedMethodInterceptor.POINTCUT;
+		final AdviceFactory adviceFactory = new AdviceFactory() {
+			@Override
+			public Advice getAdvice(Object bean, Class<?> targetClass) {
+				return new CountedMethodInterceptor(metricRegistry, targetClass);
+			}
+		};
+		return new AdvisingBeanPostProcessor(pointcut, adviceFactory, proxyConfig);
+	}
+
 	public static GaugeAnnotationBeanPostProcessor gauge(final MetricRegistry metricRegistry) {
 		return new GaugeAnnotationBeanPostProcessor(metricRegistry);
 	}
