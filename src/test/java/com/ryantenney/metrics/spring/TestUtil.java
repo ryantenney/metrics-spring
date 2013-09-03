@@ -103,14 +103,9 @@ class TestUtil {
 
 	static Counter forCountedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
-		try {
 		String metricName = forCountedMethod(clazz, method, method.getAnnotation(Counted.class));
 		log.info("Looking up counted method named '{}'", metricName);
 		return metricRegistry.getCounters().get(metricName);
-		} catch (RuntimeException e) {
-			log.error(methodName + ": " + method, e);
-			throw e;
-		}
 	}
 
 	static Metric forInjectMetricField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {
