@@ -16,6 +16,7 @@
  */
 package com.ryantenney.metrics.spring;
 
+import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
 import static org.junit.Assert.assertEquals;
@@ -27,12 +28,14 @@ import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.ryantenney.metrics.annotation.Counted;
 
 /**
  * Purpose of test:
@@ -79,13 +82,19 @@ public class MeteredClassImpementsInterfaceTest {
 	@Test
 	public void testTimedMethod() {
 		ctx.getBean(MeteredClassInterface.class).timedMethod();
-		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getTimers().isEmpty());
 	}
 
 	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredClassInterface.class).meteredMethod();
-		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getMeters().isEmpty());
+	}
+
+	@Test
+	public void testCountedMethod() {
+		ctx.getBean(MeteredClassInterface.class).countedMethod(null);
+		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getCounters().isEmpty());
 	}
 
 	@Test(expected = BogusException.class)
@@ -94,7 +103,7 @@ public class MeteredClassImpementsInterfaceTest {
 			ctx.getBean(MeteredClassInterface.class).exceptionMeteredMethod();
 		}
 		catch (Throwable t) {
-			Assert.assertFalse("Metrics should be registered", this.metricRegistry.getNames().isEmpty());
+			Assert.assertFalse("Metrics should be registered", this.metricRegistry.getMeters().isEmpty());
 			throw t;
 		}
 	}
@@ -119,11 +128,29 @@ public class MeteredClassImpementsInterfaceTest {
 		assertEquals(1, meteredMethod.getCount());
 	}
 
+	@Test
+	public void countedMethod() throws Throwable {
+		final Counter countedMethod = forCountedMethod(metricRegistry, MeteredClassImpl.class, "countedMethod");
+
+		assertEquals(0, countedMethod.getCount());
+
+		meteredClass.countedMethod(new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(1, countedMethod.getCount());
+			}
+		});
+
+		assertEquals(0, countedMethod.getCount());
+	}
+
 	public interface MeteredClassInterface {
 
 		public void timedMethod();
 
 		public void meteredMethod();
+
+		public void countedMethod(Runnable runnable);
 
 		public void exceptionMeteredMethod() throws Throwable;
 
@@ -138,6 +165,12 @@ public class MeteredClassImpementsInterfaceTest {
 		@Override
 		@Metered
 		public void meteredMethod() {}
+
+		@Override
+		@Counted
+		public void countedMethod(Runnable runnable) {
+			if (runnable != null) runnable.run();
+		}
 
 		@Override
 		@ExceptionMetered
