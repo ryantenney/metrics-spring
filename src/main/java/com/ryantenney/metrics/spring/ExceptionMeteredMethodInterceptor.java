@@ -17,71 +17,51 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.core.Ordered;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.ExceptionMetered;
+import com.ryantenney.metrics.spring.ExceptionMeteredMethodInterceptor.ExceptionMeter;
 
-class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCallback, Ordered {
+class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<ExceptionMetered, ExceptionMeter> implements Ordered {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExceptionMeteredMethodInterceptor.class);
+	public static final Class<ExceptionMetered> ANNOTATION = ExceptionMetered.class;
+	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
 
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ExceptionMetered.class);
-	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ExceptionMetered.class);
-
-	private final MetricRegistry metrics;
-	private final Class<?> targetClass;
-	private final Map<MethodKey, ExceptionMeter> meters;
-
-	public ExceptionMeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
-		this.metrics = metrics;
-		this.targetClass = targetClass;
-		this.meters = new HashMap<MethodKey, ExceptionMeter>();
-
-		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
-		LOG.debug("Scanning for @ExceptionMetered annotated methods");
-
-		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
+	public ExceptionMeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
+		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
 	}
 
 	@Override
-	public Object invoke(MethodInvocation invocation) throws Throwable {
+	protected Object invoke(MethodInvocation invocation, ExceptionMeter metric) throws Throwable {
 		try {
 			return invocation.proceed();
 		}
 		catch (Throwable t) {
-			final MethodKey key = MethodKey.forMethod(invocation.getMethod());
-			final ExceptionMeter exceptionMeter = meters.get(key);
-			if (exceptionMeter != null && exceptionMeter.getCause().isAssignableFrom(t.getClass())) {
-				exceptionMeter.getMeter().mark();
+			if (metric != null && metric.getCause().isAssignableFrom(t.getClass())) {
+				metric.getMeter().mark();
 			}
 			throw t;
 		}
 	}
 
 	@Override
-	public void doWith(Method method) throws IllegalAccessException {
-		final ExceptionMetered annotation = method.getAnnotation(ExceptionMetered.class);
-		final String metricName = Util.forExceptionMeteredMethod(targetClass, method, annotation);
-		final MethodKey methodKey = MethodKey.forMethod(method);
-		final Meter meter = metrics.meter(metricName);
-
-		meters.put(methodKey, new ExceptionMeter(meter, annotation.cause()));
-
-		LOG.debug("Created Meter {} for method {}", metricName, methodKey);
+	protected ExceptionMeter buildMetric(MetricRegistry metricRegistry, String metricName, ExceptionMetered annotation) {
+		final Meter meter = metricRegistry.meter(metricName);
+		return new ExceptionMeter(meter, annotation.cause());
+	}
+	
+	@Override
+	protected String buildMetricName(Class<?> targetClass, Method method, ExceptionMetered annotation) {
+		return Util.forExceptionMeteredMethod(targetClass, method, annotation);
 	}
 
 	@Override
@@ -89,7 +69,7 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 		return HIGHEST_PRECEDENCE;
 	}
 
-	private static class ExceptionMeter {
+	static class ExceptionMeter {
 
 		private final Meter meter;
 		private final Class<? extends Throwable> cause;
@@ -107,6 +87,15 @@ class ExceptionMeteredMethodInterceptor implements MethodInterceptor, MethodCall
 			return cause;
 		}
 
+	}
+
+	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+		return new AdviceFactory() {
+			@Override
+			public Advice getAdvice(Object bean, Class<?> targetClass) {
+				return new ExceptionMeteredMethodInterceptor(metricRegistry, targetClass);
+			}
+		};
 	}
 
 }

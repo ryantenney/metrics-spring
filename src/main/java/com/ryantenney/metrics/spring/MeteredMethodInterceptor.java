@@ -17,64 +17,50 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metered;
 
-class MeteredMethodInterceptor implements MethodInterceptor, MethodCallback {
+class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, Meter> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MeteredMethodInterceptor.class);
+	public static final Class<Metered> ANNOTATION = Metered.class;
+	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
 
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, Metered.class);
-	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(Metered.class);
-
-	private final MetricRegistry metrics;
-	private final Class<?> targetClass;
-	private final Map<MethodKey, Meter> meters;
-
-	public MeteredMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
-		this.metrics = metrics;
-		this.targetClass = targetClass;
-		this.meters = new HashMap<MethodKey, Meter>();
-
-		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
-		LOG.debug("Scanning for @Metered annotated methods");
-
-		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
+	public MeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
+		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
 	}
 
 	@Override
-	public Object invoke(MethodInvocation invocation) throws Throwable {
-		final Meter meter = meters.get(MethodKey.forMethod(invocation.getMethod()));
-		if (meter != null) {
-			meter.mark();
-		}
+	protected Object invoke(MethodInvocation invocation, Meter meter) throws Throwable {
+		meter.mark();
 		return invocation.proceed();
 	}
 
 	@Override
-	public void doWith(Method method) throws IllegalAccessException {
-		final Metered annotation = method.getAnnotation(Metered.class);
-		final String metricName = Util.forMeteredMethod(targetClass, method, annotation);
-		final MethodKey methodKey = MethodKey.forMethod(method);
-		final Meter meter = metrics.meter(metricName);
+	protected Meter buildMetric(MetricRegistry metricRegistry, String metricName, Metered annotation) {
+		return metricRegistry.meter(metricName);
+	}
+	
+	@Override
+	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
+		return Util.forMeteredMethod(targetClass, method, annotation);
+	}
 
-		meters.put(methodKey, meter);
-
-		LOG.debug("Created Meter {} for method {}", metricName, methodKey);
+	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+		return new AdviceFactory() {
+			@Override
+			public Advice getAdvice(Object bean, Class<?> targetClass) {
+				return new MeteredMethodInterceptor(metricRegistry, targetClass);
+			}
+		};
 	}
 
 }

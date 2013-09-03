@@ -17,70 +17,55 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 import com.ryantenney.metrics.annotation.Counted;
 
-class CountedMethodInterceptor implements MethodInterceptor, MethodCallback {
+class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, Counter> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CountedMethodInterceptor.class);
+	public static final Class<Counted> ANNOTATION = Counted.class;
+	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
 
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, Counted.class);
-	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(Counted.class);
-
-	private final MetricRegistry metrics;
-	private final Class<?> targetClass;
-	private final Map<MethodKey, Counter> meters;
-
-	public CountedMethodInterceptor(final MetricRegistry metrics, final Class<?> targetClass) {
-		this.metrics = metrics;
-		this.targetClass = targetClass;
-		this.meters = new HashMap<MethodKey, Counter>();
-
-		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
-		LOG.debug("Scanning for @Counted annotated methods");
-
-		ReflectionUtils.doWithMethods(targetClass, this, METHOD_FILTER);
+	public CountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
+		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
 	}
 
 	@Override
-	public Object invoke(MethodInvocation invocation) throws Throwable {
-		final Counter counter = meters.get(MethodKey.forMethod(invocation.getMethod()));
-		if (counter != null) {
-			counter.inc();
-		}
+	protected Object invoke(MethodInvocation invocation, Counter counter) throws Throwable {
 		try {
+			counter.inc();
 			return invocation.proceed();
 		}
 		finally {
-			if (counter != null) {
-				counter.dec();
-			}
+			counter.dec();
 		}
 	}
 
 	@Override
-	public void doWith(Method method) throws IllegalAccessException {
-		final Counted annotation = method.getAnnotation(Counted.class);
-		final String metricName = Util.forCountedMethod(targetClass, method, annotation);
-		final MethodKey methodKey = MethodKey.forMethod(method);
+	protected Counter buildMetric(MetricRegistry metricRegistry, String metricName, Counted annotation) {
+		return metricRegistry.counter(metricName);
+	}
+	
+	@Override
+	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
+		return Util.forCountedMethod(targetClass, method, annotation);
+	}
 
-		meters.put(methodKey, metrics.counter(metricName));
-
-		LOG.debug("Created Counter {} for method {}", metricName, methodKey);
+	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+		return new AdviceFactory() {
+			@Override
+			public Advice getAdvice(Object bean, Class<?> targetClass) {
+				return new CountedMethodInterceptor(metricRegistry, targetClass);
+			}
+		};
 	}
 
 }
