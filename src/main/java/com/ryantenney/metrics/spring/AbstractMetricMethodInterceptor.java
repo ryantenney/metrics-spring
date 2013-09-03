@@ -35,10 +35,10 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
-	protected final MetricRegistry metricRegistry;
-	protected final Class<?> targetClass;
-	protected final Class<A> annotationClass;
-	protected final Map<MethodKey, M> metrics;
+	private final MetricRegistry metricRegistry;
+	private final Class<?> targetClass;
+	private final Class<A> annotationClass;
+	private final Map<MethodKey, M> metrics;
 
 	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final Class<A> annotationClass, final MethodFilter methodFilter) {
 		this.metricRegistry = metricRegistry;
