@@ -35,6 +35,8 @@ import com.codahale.metrics.ganglia.GangliaReporter;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.ryantenney.metrics.spring.reporter.FakeReporter;
 
+import static org.hamcrest.Matchers.*;
+
 public class ReporterTest {
 
 	@Test
@@ -56,7 +58,7 @@ public class ReporterTest {
 			Assert.assertEquals("milliseconds", one.getDurationUnit());
 			Assert.assertEquals("second", one.getRateUnit());
 			Assert.assertEquals(100000000, one.getPeriod());
-			Assert.assertEquals(10, one.getCalls());
+			Assert.assertThat(one.getCalls(), allOf(greaterThanOrEqualTo(9), lessThanOrEqualTo(11)));
 			Assert.assertEquals("[MetricFilter regex=foo]", one.getFilter().toString());
 			Assert.assertTrue(one.isRunning());
 
@@ -66,7 +68,7 @@ public class ReporterTest {
 			Assert.assertEquals("nanoseconds", two.getDurationUnit());
 			Assert.assertEquals("hour", two.getRateUnit());
 			Assert.assertEquals(100000000, two.getPeriod());
-			Assert.assertEquals(10, one.getCalls());
+			Assert.assertThat(two.getCalls(), allOf(greaterThanOrEqualTo(9), lessThanOrEqualTo(11)));
 			Assert.assertEquals(ctx.getBean(BarFilter.class), two.getFilter());
 			Assert.assertTrue(one.isRunning());
 
