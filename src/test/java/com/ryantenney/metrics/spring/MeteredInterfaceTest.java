@@ -27,6 +27,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.ryantenney.metrics.annotation.Counted;
 
 /**
  * Purpose of test:
@@ -90,6 +91,12 @@ public class MeteredInterfaceTest {
 		}
 	}
 
+	@Test
+	public void testCountedMethod() {
+		ctx.getBean(MeteredInterface.class).countedMethod();
+		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+	}
+
 	public interface MeteredInterface {
 
 		@Timed
@@ -100,6 +107,9 @@ public class MeteredInterfaceTest {
 
 		@ExceptionMetered
 		public void exceptionMeteredMethod() throws Throwable;
+
+		@Counted
+		public void countedMethod();
 
 	}
 
@@ -115,6 +125,9 @@ public class MeteredInterfaceTest {
 		public void exceptionMeteredMethod() throws Throwable {
 			throw new BogusException();
 		}
+
+		@Override
+		public void countedMethod() {}
 
 	}
 

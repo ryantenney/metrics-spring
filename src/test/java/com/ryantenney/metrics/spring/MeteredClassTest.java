@@ -16,6 +16,7 @@
  */
 package com.ryantenney.metrics.spring;
 
+import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
 import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
@@ -39,6 +41,7 @@ import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.ryantenney.metrics.annotation.Counted;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -134,32 +137,73 @@ public class MeteredClassTest {
 	}
 
 	@Test
-	public void triplyMeteredMethod() throws Throwable {
-		Timer triple_Timed = forTimedMethod(metricRegistry, MeteredClass.class, "triplyMeteredMethod");
-		Meter triple_Metered = forMeteredMethod(metricRegistry, MeteredClass.class, "triplyMeteredMethod");
-		Meter triple_ExceptionMetered = forExceptionMeteredMethod(metricRegistry, MeteredClass.class, "triplyMeteredMethod");
+	public void countedMethod() throws Throwable {
+		final Counter countedMethod = forCountedMethod(metricRegistry, MeteredClass.class, "countedMethod");
 
-		assertEquals(0, triple_Metered.getCount());
-		assertEquals(0, triple_Timed.getCount());
-		assertEquals(0, triple_ExceptionMetered.getCount());
+		assertEquals(0, countedMethod.getCount());
+
+		meteredClass.countedMethod(new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(1, countedMethod.getCount());
+				
+				meteredClass.countedMethod(new Runnable() {
+					@Override
+					public void run() {
+						assertEquals(2, countedMethod.getCount());
+					}
+				});
+
+				assertEquals(1, countedMethod.getCount());
+			}
+		});
+
+		assertEquals(0, countedMethod.getCount());
+	}
+
+	@Test
+	public void quadruplyMeteredMethod() throws Throwable {
+		Timer quadruple_Timed = forTimedMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
+		Meter quadruple_Metered = forMeteredMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
+		Meter quadruple_ExceptionMetered = forExceptionMeteredMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
+		final Counter quadruple_Counted = forCountedMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
+
+		assertEquals(0, quadruple_Metered.getCount());
+		assertEquals(0, quadruple_Timed.getCount());
+		assertEquals(0, quadruple_ExceptionMetered.getCount());
+		assertEquals(0, quadruple_Counted.getCount());
 
 		// doesn't throw an exception
-		meteredClass.triplyMeteredMethod(false);
-		assertEquals(1, triple_Metered.getCount());
-		assertEquals(1, triple_Timed.getCount());
-		assertEquals(0, triple_ExceptionMetered.getCount());
+		meteredClass.quadruplyMeteredMethod(new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(1, quadruple_Counted.getCount());
+			}
+		});
+
+		assertEquals(1, quadruple_Metered.getCount());
+		assertEquals(1, quadruple_Timed.getCount());
+		assertEquals(0, quadruple_ExceptionMetered.getCount());
+		assertEquals(0, quadruple_Counted.getCount());
 
 		// throws an exception
 		try {
-			meteredClass.triplyMeteredMethod(true);
+			meteredClass.quadruplyMeteredMethod(new Runnable() {
+				@Override
+				public void run() {
+					assertEquals(1, quadruple_Counted.getCount());
+					throw new BogusException();
+				}
+			});
 			fail();
 		}
 		catch (Throwable t) {
 			assertTrue(t instanceof BogusException);
 		}
-		assertEquals(2, triple_Metered.getCount());
-		assertEquals(2, triple_Timed.getCount());
-		assertEquals(1, triple_ExceptionMetered.getCount());
+		assertEquals(2, quadruple_Metered.getCount());
+		assertEquals(2, quadruple_Timed.getCount());
+		assertEquals(1, quadruple_ExceptionMetered.getCount());
+		assertEquals(0, quadruple_Counted.getCount());
 	}
 
 	@Test
@@ -208,6 +252,37 @@ public class MeteredClassTest {
 
 		assertEquals(1, overloaded.getCount());
 		assertEquals(2, overloaded_param.getCount());
+	}
+
+	@Test
+	public void overloadedCountedMethod() {
+		final Counter overloaded = metricRegistry.getCounters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-counted"));
+		final Counter overloaded_param = metricRegistry.getCounters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-counted-param"));
+
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		meteredClass.overloadedCountedMethod(new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(1, overloaded.getCount());
+				assertEquals(0, overloaded_param.getCount());
+			}
+		});
+
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
+
+		meteredClass.overloadedCountedMethod(1, new Runnable() {
+			@Override
+			public void run() {
+				assertEquals(0, overloaded.getCount());
+				assertEquals(1, overloaded_param.getCount());
+			}
+		});
+
+		assertEquals(0, overloaded.getCount());
+		assertEquals(0, overloaded_param.getCount());
 	}
 
 	@Test
@@ -306,6 +381,11 @@ public class MeteredClassTest {
 		@Metered
 		public void meteredMethod() {}
 
+		@Counted
+		public void countedMethod(Runnable runnable) {
+			runnable.run();
+		}
+
 		@ExceptionMetered(cause = BogusException.class)
 		public <T extends Throwable> void exceptionMeteredMethod(Class<T> clazz) throws Throwable {
 			if (clazz != null) {
@@ -313,13 +393,12 @@ public class MeteredClassTest {
 			}
 		}
 
-		@Timed(name = "triplyMeteredMethod-timed")
-		@Metered(name = "triplyMeteredMethod-metered")
-		@ExceptionMetered(name = "triplyMeteredMethod-exceptionMetered", cause = BogusException.class)
-		public void triplyMeteredMethod(boolean doThrow) throws Throwable {
-			if (doThrow) {
-				throw new BogusException();
-			}
+		@Timed(name = "quadruplyMeteredMethod-timed")
+		@Metered(name = "quadruplyMeteredMethod-metered")
+		@Counted(name = "quadruplyMeteredMethod-counted")
+		@ExceptionMetered(name = "quadruplyMeteredMethod-exceptionMetered", cause = BogusException.class)
+		public void quadruplyMeteredMethod(Runnable runnable) throws Throwable {
+			runnable.run();
 		}
 
 		@Timed(name = "overloaded-timed")
@@ -333,6 +412,16 @@ public class MeteredClassTest {
 
 		@Metered(name = "overloaded-metered-param")
 		public void overloadedMeteredMethod(int param) {}
+
+		@Counted(name = "overloaded-counted")
+		public void overloadedCountedMethod(Runnable runnable) {
+			runnable.run();
+		}
+
+		@Counted(name = "overloaded-counted-param")
+		public void overloadedCountedMethod(int param, Runnable runnable) {
+			runnable.run();
+		}
 
 		@ExceptionMetered(name = "overloaded-exception-metered", cause = BogusException.class)
 		public <T extends Throwable> void overloadedExceptionMeteredMethod(Class<T> clazz) throws Throwable {
@@ -351,6 +440,6 @@ public class MeteredClassTest {
 	}
 
 	@SuppressWarnings("serial")
-	public static class BogusException extends Throwable {}
+	public static class BogusException extends RuntimeException {}
 
 }
