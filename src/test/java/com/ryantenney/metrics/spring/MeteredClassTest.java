@@ -20,6 +20,7 @@ import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
 import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
+import static com.ryantenney.metrics.spring.TestUtil.forHistogramMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
 import static org.junit.Assert.assertEquals;
@@ -42,6 +43,7 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.Counted;
+import com.ryantenney.metrics.annotation.Histogram;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -159,6 +161,46 @@ public class MeteredClassTest {
 		});
 
 		assertEquals(0, countedMethod.getCount());
+	}
+
+	@Test
+	public void histogramMethod() throws Throwable {
+		final com.codahale.metrics.Histogram histogram = forHistogramMethod(metricRegistry, MeteredClass.class, "histogramMethod");
+
+		meteredClass.histogramMethod(1);
+		assertEquals(1, histogram.getCount());
+		assertEquals(1, histogram.getSnapshot().getMax());
+		assertEquals(1, histogram.getSnapshot().getMean(), 0.0001);
+		
+		meteredClass.histogramMethod(1);
+		assertEquals(2, histogram.getCount());
+		assertEquals(1, histogram.getSnapshot().getMax());
+		assertEquals(1, histogram.getSnapshot().getMean(), 0.0001);
+		
+		meteredClass.histogramMethod(2);
+		assertEquals(3, histogram.getCount());
+		assertEquals(2, histogram.getSnapshot().getMax());
+		assertEquals(1.3333, histogram.getSnapshot().getMean(), 0.0001);
+		
+		meteredClass.histogramMethod(3);
+		assertEquals(4, histogram.getCount());
+		assertEquals(3, histogram.getSnapshot().getMax());
+		assertEquals(1.75, histogram.getSnapshot().getMean(), 0.0001);
+		
+		meteredClass.histogramMethod(5);
+		assertEquals(5, histogram.getCount());
+		assertEquals(5, histogram.getSnapshot().getMax());
+		assertEquals(2.4, histogram.getSnapshot().getMean(), 0.0001);
+		
+		meteredClass.histogramMethod(8);
+		assertEquals(6, histogram.getCount());
+		assertEquals(8, histogram.getSnapshot().getMax());
+		assertEquals(3.3333, histogram.getSnapshot().getMean(), 0.0001);
+		
+		meteredClass.histogramMethod(13);
+		assertEquals(7, histogram.getCount());
+		assertEquals(13, histogram.getSnapshot().getMax());
+		assertEquals(4.7143, histogram.getSnapshot().getMean(), 0.0001);
 	}
 
 	@Test
@@ -385,6 +427,9 @@ public class MeteredClassTest {
 		public void countedMethod(Runnable runnable) {
 			runnable.run();
 		}
+
+		@Histogram("#{val}")
+		public void histogramMethod(int val) {}
 
 		@ExceptionMetered(cause = BogusException.class)
 		public <T extends Throwable> void exceptionMeteredMethod(Class<T> clazz) throws Throwable {

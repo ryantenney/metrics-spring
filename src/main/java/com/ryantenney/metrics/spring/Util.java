@@ -25,6 +25,7 @@ import com.codahale.metrics.annotation.Gauge;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.Counted;
+import com.ryantenney.metrics.annotation.Histogram;
 import com.ryantenney.metrics.annotation.InjectMetric;
 
 class Util {
@@ -49,6 +50,10 @@ class Util {
 	}
 
 	static String forCountedMethod(Class<?> klass, Member member, Counted annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+	}
+
+	static String forHistogramMethod(Class<?> klass, Member member, Histogram annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 

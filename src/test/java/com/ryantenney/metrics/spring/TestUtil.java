@@ -62,6 +62,10 @@ class TestUtil {
 		return Util.forCountedMethod(klass, member, annotation);
 	}
 
+	static String forHistogramMethod(Class<?> klass, Member member, com.ryantenney.metrics.annotation.Histogram annotation) {
+		return Util.forHistogramMethod(klass, member, annotation);
+	}
+
 	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
 		return Util.forInjectMetricField(klass, member, annotation);
 	}
@@ -111,6 +115,13 @@ class TestUtil {
 			log.error(methodName + ": " + method, e);
 			throw e;
 		}
+	}
+
+	static Histogram forHistogramMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+		Method method = findMethod(clazz, methodName);
+		String metricName = forHistogramMethod(clazz, method, method.getAnnotation(com.ryantenney.metrics.annotation.Histogram.class));
+		log.info("Looking up histogram method named '{}'", metricName);
+		return metricRegistry.getHistograms().get(metricName);
 	}
 
 	static Metric forInjectMetricField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {

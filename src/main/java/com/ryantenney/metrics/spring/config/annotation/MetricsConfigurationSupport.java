@@ -87,6 +87,12 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public BeanPostProcessor histogramAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.histogram(getMetricRegistry(), proxyConfig);
+	}
+
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor gaugeAnnotationBeanPostProcessor() {
 		return MetricsBeanPostProcessorFactory.gauge(getMetricRegistry());
 	}

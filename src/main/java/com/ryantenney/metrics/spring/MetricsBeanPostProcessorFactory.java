@@ -30,6 +30,11 @@ public class MetricsBeanPostProcessorFactory {
 				CountedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
 
+	public static AdvisingBeanPostProcessor histogram(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
+		return new AdvisingBeanPostProcessor(HistogramMethodInterceptor.POINTCUT,
+				HistogramMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+	}
+
 	public static GaugeAnnotationBeanPostProcessor gauge(final MetricRegistry metricRegistry) {
 		return new GaugeAnnotationBeanPostProcessor(metricRegistry);
 	}
