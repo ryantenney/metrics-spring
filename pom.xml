@@ -7,6 +7,8 @@
 	<version>3.0.0-RC3-SNAPSHOT</version>
 	<name>Metrics Spring Integration</name>
 	<packaging>bundle</packaging>
+
+	<inceptionYear>2012</inceptionYear>
 	<description>Spring integration for Yammer's Metrics Library</description>
 	<url>http://github.com/ryantenney/metrics-spring/</url>
 
@@ -38,8 +40,8 @@
 		<connection>scm:git:git://github.com/ryantenney/metrics-spring.git</connection>
 		<developerConnection>scm:git:git@github.com:ryantenney/metrics-spring.git</developerConnection>
 		<url>https://github.com/ryantenney/metrics-spring/</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<issueManagement>
 		<system>github</system>
@@ -219,6 +221,30 @@
 						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+					<properties>
+						<owner>Ryan W Tenney</owner>
+						<email>ryan@10e.us</email>
+					</properties>
+					<includes>
+						<include>src/**/*.java</include>
+						<exclude>src/*/resources/**/*.xml</exclude>
+						<exclude>src/*/resources/**/*.xsd</exclude>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
