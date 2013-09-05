@@ -38,7 +38,7 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	}
 
 	@Override
-	protected Object invoke(MethodInvocation invocation, Meter meter) throws Throwable {
+	protected Object invoke(MethodInvocation invocation, Meter meter, Metered annotation) throws Throwable {
 		meter.mark();
 		return invocation.proceed();
 	}

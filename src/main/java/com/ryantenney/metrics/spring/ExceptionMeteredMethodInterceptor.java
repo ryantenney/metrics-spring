@@ -27,9 +27,8 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.ExceptionMetered;
-import com.ryantenney.metrics.spring.ExceptionMeteredMethodInterceptor.ExceptionMeter;
 
-class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<ExceptionMetered, ExceptionMeter> implements Ordered {
+class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<ExceptionMetered, Meter> implements Ordered {
 
 	public static final Class<ExceptionMetered> ANNOTATION = ExceptionMetered.class;
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
@@ -40,22 +39,21 @@ class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<
 	}
 
 	@Override
-	protected Object invoke(MethodInvocation invocation, ExceptionMeter metric) throws Throwable {
+	protected Object invoke(MethodInvocation invocation, Meter meter, ExceptionMetered annotation) throws Throwable {
 		try {
 			return invocation.proceed();
 		}
 		catch (Throwable t) {
-			if (metric != null && metric.getCause().isAssignableFrom(t.getClass())) {
-				metric.getMeter().mark();
+			if (annotation.cause().isAssignableFrom(t.getClass())) {
+				meter.mark();
 			}
 			throw t;
 		}
 	}
 
 	@Override
-	protected ExceptionMeter buildMetric(MetricRegistry metricRegistry, String metricName, ExceptionMetered annotation) {
-		final Meter meter = metricRegistry.meter(metricName);
-		return new ExceptionMeter(meter, annotation.cause());
+	protected Meter buildMetric(MetricRegistry metricRegistry, String metricName, ExceptionMetered annotation) {
+		return metricRegistry.meter(metricName);
 	}
 	
 	@Override
@@ -66,26 +64,6 @@ class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<
 	@Override
 	public int getOrder() {
 		return HIGHEST_PRECEDENCE;
-	}
-
-	static class ExceptionMeter {
-
-		private final Meter meter;
-		private final Class<? extends Throwable> cause;
-
-		public ExceptionMeter(final Meter meter, final Class<? extends Throwable> cause) {
-			this.meter = meter;
-			this.cause = cause;
-		}
-
-		public Meter getMeter() {
-			return meter;
-		}
-
-		public Class<? extends Throwable> getCause() {
-			return cause;
-		}
-
 	}
 
 	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {

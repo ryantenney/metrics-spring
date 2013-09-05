@@ -38,7 +38,7 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	}
 
 	@Override
-	protected Object invoke(MethodInvocation invocation, Counter counter) throws Throwable {
+	protected Object invoke(MethodInvocation invocation, Counter counter, Counted annotation) throws Throwable {
 		try {
 			counter.inc();
 			return invocation.proceed();

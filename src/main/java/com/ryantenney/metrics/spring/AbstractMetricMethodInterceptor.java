@@ -37,13 +37,13 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	private final MetricRegistry metricRegistry;
 	private final Class<?> targetClass;
 	private final Class<A> annotationClass;
-	private final Map<MethodKey, M> metrics;
+	private final Map<MethodKey, AnnotationMetricPair<A, M>> metrics;
 
 	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final Class<A> annotationClass, final MethodFilter methodFilter) {
 		this.metricRegistry = metricRegistry;
 		this.targetClass = targetClass;
 		this.annotationClass = annotationClass;
-		this.metrics = new HashMap<MethodKey, M>();
+		this.metrics = new HashMap<MethodKey, AnnotationMetricPair<A, M>>();
 
 		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		LOG.debug("Scanning for @{} annotated methods", annotationClass.getSimpleName());
@@ -53,9 +53,9 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		final M metric = metrics.get(MethodKey.forMethod(invocation.getMethod()));
-		if (metric != null) {
-			return invoke(invocation, metric);
+		final AnnotationMetricPair<A, M> annotationMetricPair = metrics.get(MethodKey.forMethod(invocation.getMethod()));
+		if (annotationMetricPair != null) {
+			return invoke(invocation, annotationMetricPair.getMeter(), annotationMetricPair.getAnnotation());
 		}
 		else {
 			return invocation.proceed();
@@ -65,14 +65,18 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	@Override
 	public void doWith(Method method) throws IllegalAccessException {
 		final A annotation = method.getAnnotation(annotationClass);
-		final MethodKey methodKey = MethodKey.forMethod(method);
-		final String metricName = buildMetricName(targetClass, method, annotation);
-		final M metric = buildMetric(metricRegistry, metricName, annotation);
+		if (annotation != null) {
+			final MethodKey methodKey = MethodKey.forMethod(method);
+			final String metricName = buildMetricName(targetClass, method, annotation);
+			final M metric = buildMetric(metricRegistry, metricName, annotation);
 
-		metrics.put(methodKey, metric);
+			if (metric != null) {
+				metrics.put(methodKey, new AnnotationMetricPair<A, M>(annotation, metric));
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Created {} {} for method {}", metric.getClass().getSimpleName(), metricName, methodKey);
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Created {} {} for method {}", metric.getClass().getSimpleName(), metricName, methodKey);
+				}
+			}
 		}
 	}
 
@@ -80,6 +84,26 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	protected abstract M buildMetric(MetricRegistry metricRegistry, String metricName, A annotation);
 
-	protected abstract Object invoke(MethodInvocation invocation, M metric) throws Throwable;
+	protected abstract Object invoke(MethodInvocation invocation, M metric, A annotation) throws Throwable;
+
+	public static final class AnnotationMetricPair<A extends Annotation, M> {
+
+		private final A annotation;
+		private final M meter;
+
+		public AnnotationMetricPair(final A annotation, final M meter) {
+			this.annotation = annotation;
+			this.meter = meter;
+		}
+
+		public A getAnnotation() {
+			return annotation;
+		}
+
+		public M getMeter() {
+			return meter;
+		}
+
+	}
 
 }

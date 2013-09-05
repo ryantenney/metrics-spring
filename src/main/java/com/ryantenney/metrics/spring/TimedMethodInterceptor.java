@@ -40,7 +40,7 @@ class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Time
 	}
 
 	@Override
-	protected Object invoke(MethodInvocation invocation, Timer timer) throws Throwable {
+	protected Object invoke(MethodInvocation invocation, Timer timer, Timed annotation) throws Throwable {
 		final Context timerCtx = timer.time();
 		try {
 			return invocation.proceed();
