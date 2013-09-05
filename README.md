@@ -6,7 +6,7 @@ The `metrics-spring` module integrates [Yammer Metrics](http://metrics.codahale.
 
 This module does the following things:
 
-* Proxies beans which contain methods annotated with `@Timed`, `@Metered`, and `@ExceptionMetered`
+* Proxies beans which contain methods annotated with `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted`
 * Registers a `Gauge` for beans which have members annotated with `@Gauge`
 * Autowires Timers, Meters, Counters and Histograms into fields annotated with `@InjectMetric`
 * Registers with the `HealthCheckRegistry` any beans which extend the class `HealthCheck`
@@ -129,7 +129,7 @@ The class may also implement the interface `MetricsConfigurer`, or extend the ab
 
 ###A Note on the Limitations of Spring AOP
 
-Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`, `@Metered`, and `@ExceptionMetered` have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.
+Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted` have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.
 
 ```java
 public class Foo {
