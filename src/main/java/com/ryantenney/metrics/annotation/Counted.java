@@ -23,8 +23,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Counted {
+
     /**
-     * The name of the timer.
+     * The name of the counter.
      */
     String name() default "";
 
@@ -33,4 +34,13 @@ public @interface Counted {
      * relative to the annotated class.
      */
     boolean absolute() default false;
+
+    /**
+     * If {@code false} (default), counter is decremented when the annotated
+     * method returns, counts current invocations of the annotated method.
+     * If {@code true}, counter increases monotonically, counts total number
+     * of invocations of the annotated method.
+     */
+    boolean monotonic() default false;
+
 }

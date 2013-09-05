@@ -44,7 +44,9 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 			return invocation.proceed();
 		}
 		finally {
-			counter.dec();
+			if (!annotation.monotonic()) {
+				counter.dec();
+			}
 		}
 	}
 
