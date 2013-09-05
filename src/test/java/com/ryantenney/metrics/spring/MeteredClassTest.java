@@ -161,6 +161,19 @@ public class MeteredClassTest {
 	}
 
 	@Test
+	public void monotonicCountedMethod() throws Throwable {
+		final Counter countedMethod = forCountedMethod(metricRegistry, MeteredClass.class, "monotonicCountedMethod");
+
+		assertEquals(0, countedMethod.getCount());
+
+		meteredClass.monotonicCountedMethod();
+		assertEquals(1, countedMethod.getCount());
+
+		meteredClass.monotonicCountedMethod();
+		assertEquals(2, countedMethod.getCount());
+	}
+
+	@Test
 	public void quadruplyMeteredMethod() throws Throwable {
 		Timer quadruple_Timed = forTimedMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
 		Meter quadruple_Metered = forMeteredMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
@@ -384,6 +397,9 @@ public class MeteredClassTest {
 		public void countedMethod(Runnable runnable) {
 			runnable.run();
 		}
+
+		@Counted(monotonic = true)
+		public void monotonicCountedMethod() {}
 
 		@ExceptionMetered(cause = BogusException.class)
 		public <T extends Throwable> void exceptionMeteredMethod(Class<T> clazz) throws Throwable {
