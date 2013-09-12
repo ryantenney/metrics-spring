@@ -16,7 +16,7 @@
     <div class="wrapper">
       <header>
         <h1>metrics-spring</h1>
-        <p>Spring integration for Yammer's Metrics library</p>
+        <p>Spring integration for Yammer&#39;s Metrics library</p>
 
         <p class="view"><a href="https://github.com/ryantenney/metrics-spring">View the Project on GitHub <small>ryantenney/metrics-spring</small></a></p>
 
@@ -40,7 +40,7 @@
 <p>This module does the following things:</p>
 
 <ul>
-<li>Proxies beans which contain methods annotated with <code>@Timed</code>, <code>@Metered</code>, and <code>@ExceptionMetered</code>
+<li>Proxies beans which contain methods annotated with <code>@Timed</code>, <code>@Metered</code>, <code>@ExceptionMetered</code>, and <code>@Counted</code>
 </li>
 <li>Registers a <code>Gauge</code> for beans which have members annotated with <code>@Gauge</code>
 </li>
@@ -52,12 +52,12 @@
 </ul><h3>
 <a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h3>
 
-<p>Current version is 3.0.0-RC1, which is compatible with Metrics 3.0</p>
+<p>Current version is 3.0.0-RC2, which is compatible with Metrics 3.0</p>
 
-<div class="highlight"><pre><span class="nt">&lt;dependency&gt;</span>
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>com.ryantenney.metrics<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>metrics-spring<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.0-RC1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.0-RC2<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 
@@ -66,11 +66,11 @@
 <h3>
 <a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
 
-<p><strong>Pull requests to improve or expand this documentation would be most welcome.</strong></p>
+<p>As of version 3, <code>metrics-spring</code> may be configured using XML or Java, depending on your personal preference.</p>
 
 <p>Spring Context XML:</p>
 
-<div class="highlight"><pre><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
        <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
        <span class="na">xmlns:metrics=</span><span class="s">"http://www.ryantenney.com/schema/metrics"</span>
        <span class="na">xsi:schemaLocation=</span><span class="s">"</span>
@@ -79,9 +79,12 @@
 <span class="s">            http://www.ryantenney.com/schema/metrics</span>
 <span class="s">            http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd"</span><span class="nt">&gt;</span>
 
+    <span class="c">&lt;!-- registry and reporters should be defined in only one context xml file --&gt;</span>
     <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"registry"</span> <span class="na">name=</span><span class="s">"springMetrics"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;metrics:reporter</span> <span class="na">type=</span><span class="s">"console"</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="na">period=</span><span class="s">"1m"</span> <span class="nt">/&gt;</span>
+
+    <span class="c">&lt;!-- annotation-driven must be included in all context files --&gt;</span>
+    <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
 
     <span class="c">&lt;!-- beans --&gt;</span>
 
@@ -90,7 +93,7 @@
 
 <p>Java Annotation Config:</p>
 
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.codahale.metrics.ConsoleReporter</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.codahale.metrics.MetricRegistry</span><span class="o">;</span>
@@ -119,7 +122,7 @@
 </pre></div>
 
 <h3>
-<a name="xml-config" class="anchor" href="#xml-config"><span class="octicon octicon-link"></span></a>XML Config</h3>
+<a name="xml-config-documentation" class="anchor" href="#xml-config-documentation"><span class="octicon octicon-link"></span></a>XML Config Documentation</h3>
 
 <p>The <code>&lt;metrics:annotation-driven /&gt;</code> element is required, and has 4 optional arguments:</p>
 
@@ -148,7 +151,7 @@
 
 <ul>
 <li>
-<code>id</code> - </li>
+<code>id</code> - the bean name</li>
 <li>
 <code>metric-registry</code> - the id of the <code>MetricRegsitry</code> bean for which the reporter should retrieve metrics</li>
 <li>
@@ -162,17 +165,36 @@
 <li>
 <code>slf4j</code>: Slf4jReporter</li>
 <li>
-<code>ganglia</code>: GangliaReporter (requires metrics-ganglia)</li>
+<code>ganglia</code>: GangliaReporter (requires <code>metrics-ganglia</code>)</li>
 <li>
-<code>graphite</code>: GraphiteReporter (requires metrics-graphite)</li>
+<code>graphite</code>: GraphiteReporter (requires <code>metrics-graphite</code>)</li>
 </ul>
 </li>
 </ul><h3>
+<a name="java-config-documentation" class="anchor" href="#java-config-documentation"><span class="octicon octicon-link"></span></a>Java Config Documentation</h3>
+
+<p>A <code>@Configuration</code> class annotated with <code>@EnableMetrics</code> is functionally equivalent to using the <code>&lt;metrics:annotation-driven /&gt;</code> element.</p>
+
+<ul>
+<li>
+<code>proxyTargetClass</code> - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This <em>may</em> be necessary if you use class-based autowiring.</li>
+<li>
+<code>exposeProxy</code> - if set to true, the target can access the proxy which wraps it by calling <code>AopContext.currentProxy()</code>.</li>
+</ul><p>The class may also implement the interface <code>MetricsConfigurer</code>, or extend the abstract class <code>MetricsConfigurerAdapter</code></p>
+
+<ul>
+<li>
+<code>getMetricRegistry()</code> - return the <code>MetricRegsitry</code> instance with which metrics should be registered. If omitted a new <code>MetricRegistry</code> instance is created.</li>
+<li>
+<code>getHealthCheckRegistry()</code> - return the <code>HealthCheckRegsitry</code> instance with which to register any beans which extend the class <code>HealthCheck</code>. If omitted a new <code>HealthCheckRegistry</code> instance is created.</li>
+<li>
+<code>configureReporters(MetricRegistry)</code> - configure reporters</li>
+</ul><h3>
 <a name="a-note-on-the-limitations-of-spring-aop" class="anchor" href="#a-note-on-the-limitations-of-spring-aop"><span class="octicon octicon-link"></span></a>A Note on the Limitations of Spring AOP</h3>
 
-<p>Due to limitations of Spring AOP only public methods can be proxied, so <code>@Timed</code>, <code>@Metered</code>, and <code>@ExceptionMetered</code> have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.</p>
+<p>Due to limitations of Spring AOP only public methods can be proxied, so <code>@Timed</code>, <code>@Metered</code>, <code>@ExceptionMetered</code>, and <code>@Counted</code> have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.</p>
 
-<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
 
     <span class="nd">@Timed</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span> <span class="cm">/* … */</span> <span class="o">}</span>
@@ -210,6 +232,16 @@ Additionally, <code>@InjectMetric</code> may be used on non-public, non-final fi
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-3831117-9");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
