@@ -154,7 +154,9 @@ Additionally, `@InjectMetric` may be used on non-public, non-final fields.
 
 Please see the [Shade Readme](SHADE-README.md)
 
----
+###Documentation
+
+Javadocs are hosted at http://ryantenney.github.io/metrics-spring/docs/
 
 ### License
 
