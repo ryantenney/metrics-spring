@@ -42,8 +42,8 @@ public @interface InjectMetric {
 	String name() default "";
 
 	/**
-	 * The name of the type of events the meter is measuring.
-	 * Applies to Meter
+	 * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
+	 * relative to the annotated class.
 	 */
 	boolean absolute() default false;
 
