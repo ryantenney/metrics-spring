@@ -120,6 +120,12 @@
 			<artifactId>metrics-librato</artifactId>
 			<version>3.0.1.RC1</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
