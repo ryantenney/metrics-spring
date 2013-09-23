@@ -1,0 +1,124 @@
+package com.ryantenney.metrics.spring.reporter;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.util.StringUtils;
+
+import com.codahale.metrics.Clock;
+import com.codahale.metrics.MetricFilter;
+import com.librato.metrics.HttpPoster;
+import com.librato.metrics.LibratoReporter;
+import com.librato.metrics.LibratoReporter.ExpandedMetric;
+import com.librato.metrics.LibratoReporter.MetricExpansionConfig;
+import com.librato.metrics.Sanitizer;
+
+public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactoryBean<LibratoReporter> {
+
+	// Required
+	public static final String USERNAME = "username";
+	public static final String TOKEN = "token";
+	public static final String SOURCE = "source";
+	public static final String PERIOD = "period";
+
+	// Optional
+	public static final String TIMEOUT = "timeout";
+	public static final String NAME = "name";
+	public static final String SANITIZER_REF = "sanitizer-ref";
+	public static final String EXPANSION_CONFIG = "expansion-config";
+	public static final String EXPANSION_CONFIG_REF = "expansion-config-ref";
+	public static final String HTTP_POSTER_REF = "http-poster-ref";
+	public static final String PREFIX = "prefix";
+	public static final String PREFIX_DELIMITER = "prefix-delimiter";
+	public static final String CLOCK_REF = "clock-ref";
+	public static final String DURATION_UNIT = "duration-unit";
+	public static final String RATE_UNIT = "rate-unit";
+	public static final String FILTER_PATTERN = "filter";
+	public static final String FILTER_REF = "filter-ref";
+
+	@Override
+	public Class<LibratoReporter> getObjectType() {
+		return LibratoReporter.class;
+	}
+
+	@Override
+	protected LibratoReporter createInstance() {
+		final String username = getProperty(USERNAME);
+		final String token = getProperty(TOKEN);
+		final String source = getProperty(SOURCE);
+
+		final LibratoReporter.Builder reporter = LibratoReporter.builder(getMetricRegistry(), username, token, source);
+
+		if (hasProperty(TIMEOUT)) {
+			reporter.setTimeout(convertDurationString(getProperty(TIMEOUT)), TimeUnit.NANOSECONDS);
+		}
+
+		if (hasProperty(NAME)) {
+			reporter.setName(getProperty(NAME));
+		}
+
+		if (hasProperty(SANITIZER_REF)) {
+			reporter.setSanitizer(getPropertyRef(SANITIZER_REF, Sanitizer.class));
+		}
+
+		if (hasProperty(EXPANSION_CONFIG)) {
+			String configString = getProperty(EXPANSION_CONFIG).trim().toUpperCase(Locale.ENGLISH);
+			final MetricExpansionConfig config;
+			if ("ALL".equals(configString)) {
+				config = MetricExpansionConfig.ALL;
+			}
+			else {
+				Set<ExpandedMetric> set = new HashSet<ExpandedMetric>();
+				String[] expandedMetricStrs = StringUtils.tokenizeToStringArray(configString, ",", true, true);
+				for (String expandedMetricStr : expandedMetricStrs) {
+					set.add(ExpandedMetric.valueOf(expandedMetricStr));
+				}
+				config = new MetricExpansionConfig(set);
+			}
+			reporter.setExpansionConfig(config);
+		}
+		else if (hasProperty(EXPANSION_CONFIG_REF)) {
+			reporter.setExpansionConfig(getProperty(EXPANSION_CONFIG, MetricExpansionConfig.class));
+		}
+
+		if (hasProperty(HTTP_POSTER_REF)) {
+			reporter.setHttpPoster(getPropertyRef(HTTP_POSTER_REF, HttpPoster.class));
+		}
+
+		if (hasProperty(PREFIX)) {
+			reporter.setPrefix(getProperty(PREFIX));
+		}
+
+		if (hasProperty(PREFIX_DELIMITER)) {
+			reporter.setPrefixDelimiter(getProperty(PREFIX_DELIMITER));
+		}
+
+		if (hasProperty(DURATION_UNIT)) {
+			reporter.setDurationUnit(getProperty(DURATION_UNIT, TimeUnit.class));
+		}
+
+		if (hasProperty(RATE_UNIT)) {
+			reporter.setRateUnit(getProperty(RATE_UNIT, TimeUnit.class));
+		}
+
+		if (hasProperty(CLOCK_REF)) {
+			reporter.setClock(getPropertyRef(CLOCK_REF, Clock.class));
+		}
+
+		if (hasProperty(FILTER_PATTERN)) {
+			reporter.setFilter(metricFilterPattern(getProperty(FILTER_PATTERN)));
+		}
+		else if (hasProperty(FILTER_REF)) {
+			reporter.setFilter(getPropertyRef(FILTER_REF, MetricFilter.class));
+		}
+
+		return reporter.build();
+	}
+
+	protected long getPeriod() {
+		return convertDurationString(getProperty(PERIOD));
+	}
+
+}
