@@ -26,7 +26,6 @@ import com.codahale.metrics.SharedMetricRegistries;
 // @formatter:off
 @SuiteClasses({
 		CovariantReturnTypeTest.class,
-		DefaultRegistryTest.class,
 		EnableMetricsTest.class,
 		HealthCheckTest.class,
 		InjectMetricTest.class,
@@ -34,6 +33,7 @@ import com.codahale.metrics.SharedMetricRegistries;
 		MeteredClassTest.class,
 		MeteredInterfaceTest.class,
 		ProxyTargetClassTest.class,
+		RegistryTest.class,
 		ReporterTest.class,
 		SharedRegistryTest.class
 	})

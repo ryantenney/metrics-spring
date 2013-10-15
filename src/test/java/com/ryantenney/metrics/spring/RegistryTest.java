@@ -22,15 +22,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 
-public class DefaultRegistryTest {
+public class RegistryTest {
 
 	@Test
 	public void testDefaultRegistries() {
 		ClassPathXmlApplicationContext ctx = null;
 		try {
 			ctx = new ClassPathXmlApplicationContext("classpath:default-registries.xml");
-			Assert.assertNotNull("Should be a MetricRegistry.", ctx.getBean(MetricRegistry.class));
-			Assert.assertNotNull("Should be HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
+			Assert.assertNotNull("Should have a MetricRegistry bean.", ctx.getBean(MetricRegistry.class));
+			Assert.assertNotNull("Should have a HealthCheckRegistry bean.", ctx.getBean(HealthCheckRegistry.class));
 		}
 		finally {
 			if (ctx != null) {
@@ -44,8 +44,8 @@ public class DefaultRegistryTest {
 		ClassPathXmlApplicationContext ctx = null;
 		try {
 			ctx = new ClassPathXmlApplicationContext("classpath:supplied-registries.xml");
-			Assert.assertNotSame("Should have provided MetricRegistry.", ctx.getBean(MetricRegistry.class));
-			Assert.assertNotSame("Should have provided HealthCheckRegistry.", ctx.getBean(HealthCheckRegistry.class));
+			Assert.assertNotNull("Should have a MetricRegistry bean.", ctx.getBean("metrics", MetricRegistry.class));
+			Assert.assertNotNull("Should have a HealthCheckRegistry bean.", ctx.getBean("health", HealthCheckRegistry.class));
 		}
 		finally {
 			if (ctx != null) {
@@ -53,5 +53,23 @@ public class DefaultRegistryTest {
 			}
 		}
 	}
+
+	@Test
+	public void testCustomRegistries() {
+		ClassPathXmlApplicationContext ctx = null;
+		try {
+			ctx = new ClassPathXmlApplicationContext("classpath:custom-registries.xml");
+			Assert.assertSame("Should have a custom MetricRegistry bean.", MetricRegistry.class, ctx.getBean("metrics", MetricRegistry.class).getClass().getSuperclass());
+			Assert.assertSame("Should have a custom HealthCheckRegistry bean.", HealthCheckRegistry.class, ctx.getBean("health", HealthCheckRegistry.class).getClass().getSuperclass());
+		}
+		finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
+	}
+
+	public static class CustomMetricRegistry extends MetricRegistry {}
+	public static class CustomHealthCheckRegistry extends HealthCheckRegistry {}
 
 }
