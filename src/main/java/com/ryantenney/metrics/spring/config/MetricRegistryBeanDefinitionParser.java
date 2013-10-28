@@ -24,27 +24,25 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SharedMetricRegistries;
 
 /**
  * Has the side effect of registering 'name' as aliases
  */
-class MetricRegistryBeanDefinitionParser extends AbstractBeanDefinitionParser {
+public class MetricRegistryBeanDefinitionParser extends AbstractBeanDefinitionParser {
+    public final static String DEFAULT_NAME = "springMetrics";
 
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
 		final Object source = parserContext.extractSource(element);
-		final String name = element.getAttribute("name");
-		if (StringUtils.hasText(name)) {
-			final BeanDefinitionBuilder beanDefBuilder = build(SharedMetricRegistries.class, source);
-			beanDefBuilder.setFactoryMethod("getOrCreate");
-			beanDefBuilder.addConstructorArgValue(name);
-			return beanDefBuilder.getBeanDefinition();
+		String name = element.getAttribute("name");
+		if (! StringUtils.hasText(name)) {
+		    name = DEFAULT_NAME;
 		}
-		else {
-			return build(MetricRegistry.class, source).getBeanDefinition();
-		}
+		final BeanDefinitionBuilder beanDefBuilder = build(SharedMetricRegistries.class, source);
+		beanDefBuilder.setFactoryMethod("getOrCreate");
+		beanDefBuilder.addConstructorArgValue(name);
+		return beanDefBuilder.getBeanDefinition();
 	}
 
 	@Override
