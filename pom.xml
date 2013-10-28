@@ -4,7 +4,7 @@
 
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>3.0.0-RC3-SNAPSHOT</version>
+	<version>3.0.0-RC3-SNAPSHOT-EHpatch</version>
 	<name>Metrics Spring Integration</name>
 	<packaging>bundle</packaging>
 
@@ -115,6 +115,12 @@
 			<version>${metrics.version}</version>
 			<optional>true</optional>
 		</dependency>
+        <dependency>
+            <groupId>com.codahale.metrics</groupId>
+            <artifactId>metrics-jersey</artifactId>
+            <version>${metrics.version}</version>
+            <optional>true</optional>
+        </dependency>
 
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -168,8 +174,18 @@
 					<groupId>com.google.guava</groupId>
 					<artifactId>guava</artifactId>
 				</exclusion>
+                <exclusion>
+                    <artifactId>jersey-core</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
 			</exclusions>
 		</dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.17.1</version>
+        </dependency>
+        
 	</dependencies>
 
 	<build>
@@ -388,5 +404,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>
