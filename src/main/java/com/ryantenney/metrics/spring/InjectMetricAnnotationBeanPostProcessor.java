@@ -46,12 +46,7 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) {
-		return bean;
-	}
-
-	@Override
-	public Object postProcessAfterInitialization(final Object bean, String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
@@ -85,6 +80,11 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 			}
 		}, FILTER);
 
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		return bean;
 	}
 
