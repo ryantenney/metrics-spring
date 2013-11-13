@@ -19,12 +19,15 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 class MetricsNamespaceHandler extends NamespaceHandlerSupport {
 
+	public static final String METRICS_NAMESPACE = "http://www.ryantenney.com/schema/metrics";
+
 	@Override
 	public void init() {
 		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
 		registerBeanDefinitionParser("metric-registry", new MetricRegistryBeanDefinitionParser());
 		registerBeanDefinitionParser("health-check-registry", new HealthCheckRegistryBeanDefinitionParser());
 		registerBeanDefinitionParser("reporter", new ReporterBeanDefinitionParser());
+		registerBeanDefinitionParser("register", new RegisterMetricBeanDefinitionParser());
 	}
 
 }
