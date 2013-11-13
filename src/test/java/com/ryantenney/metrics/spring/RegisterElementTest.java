@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Ryan W Tenney (ryan@10e.us)
+ * Copyright (C) 2012 Ryan W Tenney (ryan@10e.us)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.codahale.metrics.MetricRegistry;
 public class RegisterElementTest {
 
 	@Test
-	public void testDefaultRegistries() {
+	public void testRegisterMetrics() {
 		ClassPathXmlApplicationContext ctx = null;
 		try {
 			ctx = new ClassPathXmlApplicationContext("classpath:register-element-test.xml");
