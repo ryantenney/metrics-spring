@@ -25,6 +25,9 @@ class MetricsNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser("metric-registry", new MetricRegistryBeanDefinitionParser());
 		registerBeanDefinitionParser("health-check-registry", new HealthCheckRegistryBeanDefinitionParser());
 		registerBeanDefinitionParser("reporter", new ReporterBeanDefinitionParser());
+        registerBeanDefinitionParser("metric-set", new MetricSetBeanDefinitionParser());
+        
+		
 	}
 
 }

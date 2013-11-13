@@ -55,4 +55,13 @@
 		</xsd:complexType>
 	</xsd:element>
 
+
+    <xsd:element name="metric-set">
+        <xsd:complexType>
+            <xsd:attribute name="id" type="xsd:string" use="optional"/>
+            <xsd:attribute name="name" type="xsd:string" use="optional"/>
+            <xsd:attribute name="ref" type="xsd:string" use="required"/>
+            <xsd:attribute name="metric-registry" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
 </xsd:schema>
