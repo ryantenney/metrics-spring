@@ -204,7 +204,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		}
 
 		private void check(String key, String value, String pattern, String message) {
-			if (pattern != null && !value.matches(pattern)) {
+			if (pattern != null && !(value.matches(pattern) || value.matches("^\\$\\{.*\\}$"))) {
 				reject(key, message);
 				return;
 			}
