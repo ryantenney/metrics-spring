@@ -40,20 +40,22 @@ public class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
-		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
-			@Override
-			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-				final Gauge gauge = field.getAnnotation(Gauge.class);
-				final String group = MetricName.chooseGroup(gauge.group(), targetClass);
-				final String type = MetricName.chooseType(gauge.type(), targetClass);
-				final String name = gauge.name().isEmpty() ? field.getName() : gauge.name();
-				final MetricName metricName = new MetricName(group, type, name, scope);
+		if (!targetClass.isInterface()) {
+			ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
+				@Override
+				public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+					final Gauge gauge = field.getAnnotation(Gauge.class);
+					final String group = MetricName.chooseGroup(gauge.group(), targetClass);
+					final String type = MetricName.chooseType(gauge.type(), targetClass);
+					final String name = gauge.name().isEmpty() ? field.getName() : gauge.name();
+					final MetricName metricName = new MetricName(group, type, name, scope);
 
-				metrics.newGauge(metricName, new GaugeField(bean, field));
+					metrics.newGauge(metricName, new GaugeField(bean, field));
 
-				log.debug("Created gauge {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
-			}
-		}, filter);
+					log.debug("Created gauge {} for field {}.{}", new Object[] { metricName, targetClass.getCanonicalName(), field.getName() });
+				}
+			}, filter);
+		}
 
 		ReflectionUtils.doWithMethods(targetClass, new MethodCallback() {
 			@Override
