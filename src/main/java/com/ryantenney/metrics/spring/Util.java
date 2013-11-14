@@ -23,6 +23,7 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Gauge;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.ryantenney.metrics.annotation.CachedGauge;
 import com.ryantenney.metrics.annotation.Counted;
 import com.ryantenney.metrics.annotation.InjectMetric;
 
@@ -40,6 +41,10 @@ class Util {
 	}
 
 	static String forGauge(Class<?> klass, Member member, Gauge annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+	}
+
+	static String forCachedGauge(Class<?> klass, Member member, CachedGauge annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 

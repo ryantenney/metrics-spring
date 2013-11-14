@@ -15,6 +15,7 @@
  */
 package com.ryantenney.metrics.spring;
 
+import static com.ryantenney.metrics.spring.TestUtil.forCachedGaugeMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
@@ -91,6 +93,11 @@ public class EnableMetricsTest {
 			Gauge<Integer> methodGauge = (Gauge<Integer>) forGaugeMethod(metricRegistry, TestBean.class, "intGaugeMethod");
 			assertNotNull(methodGauge);
 			assertThat(methodGauge.getValue(), is(6));
+
+			// Verify that the Gauge method's value is returned
+			CachedGauge<Integer> methodCachedGauge = (CachedGauge<Integer>) forCachedGaugeMethod(metricRegistry, TestBean.class, "cachedGaugeMethod");
+			assertNotNull(methodCachedGauge);
+			assertThat(methodCachedGauge.getValue(), is(7));
 	
 			// Verify that the Timer's counter is incremented on method invocation
 			Timer timedMethodTimer = forTimedMethod(metricRegistry, TestBean.class, "timedMethod");
@@ -171,6 +178,11 @@ public class EnableMetricsTest {
 		@com.codahale.metrics.annotation.Gauge
 		public int intGaugeMethod() {
 			return 6;
+		}
+
+		@com.ryantenney.metrics.annotation.CachedGauge(timeout=100)
+		public int cachedGaugeMethod() {
+			return 7;
 		}
 
 		@Timed
