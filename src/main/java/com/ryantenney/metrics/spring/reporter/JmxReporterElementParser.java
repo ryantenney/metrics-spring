@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 public class JmxReporterElementParser extends AbstractReporterElementParser {
 
+	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
+
 	@Override
 	public String getType() {
 		return "jmx";
@@ -36,12 +38,8 @@ public class JmxReporterElementParser extends AbstractReporterElementParser {
 		c.optional(DOMAIN);
 		c.optional(MBEAN_SERVER_REF);
 
-		if (c.optional(RATE_UNIT)) {
-			TimeUnit.valueOf(c.get(RATE_UNIT));
-		}
-		if (c.optional(DURATION_UNIT)) {
-			TimeUnit.valueOf(c.get(DURATION_UNIT));
-		}
+		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
+		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);

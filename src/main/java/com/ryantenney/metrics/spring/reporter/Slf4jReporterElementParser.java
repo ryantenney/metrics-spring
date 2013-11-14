@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class Slf4jReporterElementParser extends AbstractReporterElementParser {
 
 	private static final String DURATION_STRING_REGEX = "^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$";
+	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
 
 	@Override
 	public String getType() {
@@ -39,12 +40,8 @@ public class Slf4jReporterElementParser extends AbstractReporterElementParser {
 		c.optional(MARKER);
 		c.optional(LOGGER);
 
-		if (c.optional(RATE_UNIT)) {
-			TimeUnit.valueOf(c.get(RATE_UNIT));
-		}
-		if (c.optional(DURATION_UNIT)) {
-			TimeUnit.valueOf(c.get(DURATION_UNIT));
-		}
+		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
+		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);

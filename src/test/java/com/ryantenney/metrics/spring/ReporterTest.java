@@ -108,6 +108,25 @@ public class ReporterTest {
 		}
 	}
 
+	@Test
+	public void reportersPropertyPlaceholders() throws Throwable {
+		ClassPathXmlApplicationContext ctx = null;
+		try {
+			ctx = new ClassPathXmlApplicationContext("classpath:reporter-placeholder-test.xml");
+
+			FakeReporter reporter = ctx.getBean(FakeReporter.class);
+			Assert.assertEquals("nanoseconds", reporter.getDurationUnit());
+			Assert.assertEquals("hour", reporter.getRateUnit());
+			Assert.assertEquals(100000000, reporter.getPeriod());
+			Assert.assertSame(ctx.getBean(BarFilter.class), reporter.getFilter());
+		}
+		finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
+	}
+
 	public static PrintStream testPrintStream() {
 		return new PrintStream(new ByteArrayOutputStream());
 	}
