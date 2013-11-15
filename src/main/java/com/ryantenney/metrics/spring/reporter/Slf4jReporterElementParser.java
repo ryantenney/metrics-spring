@@ -17,12 +17,7 @@ package com.ryantenney.metrics.spring.reporter;
 
 import static com.ryantenney.metrics.spring.reporter.Slf4jReporterFactoryBean.*;
 
-import java.util.concurrent.TimeUnit;
-
 public class Slf4jReporterElementParser extends AbstractReporterElementParser {
-
-	private static final String DURATION_STRING_REGEX = "^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$";
-	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
 
 	@Override
 	public String getType() {

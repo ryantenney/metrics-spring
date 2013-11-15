@@ -36,6 +36,11 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 	protected static final String TYPE = "type";
 	protected static final String METRIC_REGISTRY_REF = "metric-registry";
 
+	protected static final String DURATION_STRING_REGEX = "^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$";
+	protected static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
+	protected static final String INTEGER_REGEX = "^\\d+$";
+	protected static final String PORT_NUMBER_REGEX = "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
+
 	protected Class<?> getBeanClass() {
 		return null;
 	}

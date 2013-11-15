@@ -17,11 +17,7 @@ package com.ryantenney.metrics.spring.reporter;
 
 import static com.ryantenney.metrics.spring.reporter.JmxReporterFactoryBean.*;
 
-import java.util.concurrent.TimeUnit;
-
 public class JmxReporterElementParser extends AbstractReporterElementParser {
-
-	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
 
 	@Override
 	public String getType() {

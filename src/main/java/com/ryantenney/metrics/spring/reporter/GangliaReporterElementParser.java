@@ -19,14 +19,8 @@ import static com.ryantenney.metrics.spring.reporter.GangliaReporterFactoryBean.
 
 import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
 
-import java.util.concurrent.TimeUnit;
-
 public class GangliaReporterElementParser extends AbstractReporterElementParser {
 
-	private static final String INTEGER_REGEX = "^\\d+$";
-	private static final String PORT_NUMBER_REGEX = "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
-	private static final String DURATION_STRING_REGEX = "^\\d+\\s?(ns|us|ms|s|m|h|d)?$";
-	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
 	private static final String UUID_STRING_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 
 	@Override

@@ -17,13 +17,7 @@ package com.ryantenney.metrics.spring.reporter;
 
 import static com.ryantenney.metrics.spring.reporter.GraphiteReporterFactoryBean.*;
 
-import java.util.concurrent.TimeUnit;
-
 public class GraphiteReporterElementParser extends AbstractReporterElementParser {
-
-	private static final String PORT_NUMBER_REGEX = "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
-	private static final String DURATION_STRING_REGEX = "^\\d+\\s?(ns|us|ms|s|m|h|d)?$";
-	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
 
 	@Override
 	public String getType() {

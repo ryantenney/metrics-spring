@@ -17,13 +17,9 @@ package com.ryantenney.metrics.spring.reporter;
 
 import static com.ryantenney.metrics.spring.reporter.ConsoleReporterFactoryBean.*;
 
-import java.util.concurrent.TimeUnit;
-
 public class ConsoleReporterElementParser extends AbstractReporterElementParser {
 
-	private static final String DURATION_STRING_REGEX = "^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$";
 	private static final String LOCALE_STRING_REGEX = "^[a-z]{2}(_[A-Z]{2})?$";
-	private static final String TIMEUNIT_STRING_REGEX = "^(?:DAY|HOUR|MINUTE|(?:MICRO|MILLI|NANO)?SECOND)S$";
 
 	@Override
 	public String getType() {
