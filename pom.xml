@@ -4,7 +4,7 @@
 
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>3.0.0-RC3</version>
+	<version>3.0.0-RC4-SNAPSHOT</version>
 	<name>Metrics Spring Integration</name>
 	<packaging>bundle</packaging>
 
@@ -41,7 +41,7 @@
 		<connection>scm:git:git://github.com/ryantenney/metrics-spring.git</connection>
 		<developerConnection>scm:git:git@github.com:ryantenney/metrics-spring.git</developerConnection>
 		<url>https://github.com/ryantenney/metrics-spring/</url>
-		<tag>v3.0.0-RC3</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
