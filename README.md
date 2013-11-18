@@ -19,9 +19,9 @@ Current version is 3.0.0-RC3, which is compatible with Metrics 3.0
 
 ```xml
 <dependency>
-	<groupId>com.ryantenney.metrics</groupId>
-	<artifactId>metrics-spring</artifactId>
-	<version>3.0.0-RC3</version>
+    <groupId>com.ryantenney.metrics</groupId>
+    <artifactId>metrics-spring</artifactId>
+    <version>3.0.0-RC3</version>
 </dependency>
 ```
 
@@ -35,32 +35,32 @@ Spring Context XML:
 
 ```xml
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
-	   xsi:schemaLocation="
-			http://www.springframework.org/schema/beans
-			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-			http://www.ryantenney.com/schema/metrics
-			http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.ryantenney.com/schema/metrics
+           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<!-- Registry should be defined in only one context XML file -->
-	<metrics:metric-registry id="metrics" />
+    <!-- Registry should be defined in only one context XML file -->
+    <metrics:metric-registry id="metrics" />
 
-	<!-- annotation-driven must be included in all context files -->
-	<metrics:annotation-driven metric-registry="metrics" />
+    <!-- annotation-driven must be included in all context files -->
+    <metrics:annotation-driven metric-registry="metrics" />
 
-	<!-- (Optional) Registry should be defined in only one context XML file -->
-	<metrics:reporter type="console" metric-registry="metrics" period="1m" />
+    <!-- (Optional) Registry should be defined in only one context XML file -->
+    <metrics:reporter type="console" metric-registry="metrics" period="1m" />
 
-	<!-- (Optional) The metrics in this example require the metrics-jvm jar-->
-        <metrics:register metric-registry="metrics">
-                <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
-                <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet" />
-                <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
-                <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
-        </metrics:register>
+    <!-- (Optional) The metrics in this example require the metrics-jvm jar-->
+    <metrics:register metric-registry="metrics">
+        <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
+        <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet" />
+        <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
+        <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
+    </metrics:register>
 
-	<!-- Beans and other Spring config -->
+    <!-- Beans and other Spring config -->
 
 </beans>
 ```
@@ -80,18 +80,13 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 @EnableMetrics
 public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 
-	@Override
-	public MetricRegistry getMetricRegistry() {
-		return SharedMetricRegistries.getOrCreate("springMetrics");
-	}
-
-	@Override
-	public void configureReporters(MetricRegistry metricRegistry) {
-		ConsoleReporter.forRegistry(registry)
-			.outputTo(output)
-			.build()
-			.start(1, TimeUnit.MINUTES);
-	}
+    @Override
+    public void configureReporters(MetricRegistry metricRegistry) {
+        ConsoleReporter
+            .forRegistry(registry)
+            .build()
+            .start(1, TimeUnit.MINUTES);
+    }
 
 }
 ```
@@ -152,16 +147,16 @@ Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`
 ```java
 public class Foo {
 	
-	@Timed
-	public void bar() { /* … */ }
+    @Timed
+    public void bar() { /* … */ }
 	
-	public void baz() {
-		this.bar(); // doesn't pass through the proxy
+    public void baz() {
+        this.bar(); // doesn't pass through the proxy
 		
-		// fix: reengineer
-		// workaround: enable `expose-proxy` and change to:
-		((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
-	}
+        // fix: reengineer
+        // workaround: enable `expose-proxy` and change to:
+        ((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
+    }
 }
 ```
 
