@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import org.springframework.util.ReflectionUtils.FieldFilter;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
+import static org.springframework.util.ReflectionUtils.COPYABLE_FIELDS;
+import static org.springframework.util.ReflectionUtils.USER_DECLARED_METHODS;
+
 class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	private final Class<? extends Annotation> clazz;
@@ -32,12 +35,12 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	@Override
 	public boolean matches(Method method) {
-		return method.isAnnotationPresent(clazz);
+		return USER_DECLARED_METHODS.matches(method) && method.isAnnotationPresent(clazz);
 	}
 
 	@Override
 	public boolean matches(Field field) {
-		return field.isAnnotationPresent(clazz);
+		return COPYABLE_FIELDS.matches(field) && field.isAnnotationPresent(clazz);
 	}
 
 }
