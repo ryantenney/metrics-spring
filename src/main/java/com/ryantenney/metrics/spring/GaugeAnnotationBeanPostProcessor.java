@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
@@ -43,12 +44,7 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) {
-		return bean;
-	}
-
-	@Override
-	public Object postProcessAfterInitialization(final Object bean, String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
@@ -73,6 +69,13 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 				LOG.debug("Created gauge {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
 			}
 		}, FILTER);
+
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
+		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithMethods(targetClass, new MethodCallback() {
 			@Override
