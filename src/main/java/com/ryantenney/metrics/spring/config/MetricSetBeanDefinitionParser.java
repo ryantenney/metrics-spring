@@ -44,6 +44,9 @@ class MetricSetBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
             bean.addPropertyValue("arg0",name);
             bean.addPropertyReference("arg1",ref);
         }
+        // Unfortunately spring invokes this method more than once
+        // TODO: check if main branch implementation fixes this or not
+        bean.addPropertyValue("failureShouldThrow", false);
      }
 
 	@Override

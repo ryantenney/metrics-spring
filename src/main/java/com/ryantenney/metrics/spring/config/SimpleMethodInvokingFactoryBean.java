@@ -18,6 +18,8 @@ package com.ryantenney.metrics.spring.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 
 /**
@@ -28,11 +30,13 @@ import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
  *
  */
 public final class SimpleMethodInvokingFactoryBean extends MethodInvokingFactoryBean {
+    private final Logger log = LoggerFactory.getLogger(SimpleMethodInvokingFactoryBean.class);
     private Object arg0 = null;
     private Object arg1 = null;
     private Object arg2 = null;
     private Object arg3 = null;
     private Object arg4 = null;
+    private boolean failureShouldThrow = true;
     public SimpleMethodInvokingFactoryBean() {
         super();
     }
@@ -66,6 +70,13 @@ public final class SimpleMethodInvokingFactoryBean extends MethodInvokingFactory
     public void setArg4(Object arg4) {
         this.arg4 = arg4;
     }
+    public boolean isFailureShouldThrow() {
+        return failureShouldThrow;
+    }
+    public void setFailureShouldThrow(boolean failureShouldThrow) {
+        this.failureShouldThrow = failureShouldThrow;
+    }
+    
     @Override
     public Object[] getArguments() {
         List<Object> arguments = new ArrayList<Object>();
@@ -75,6 +86,18 @@ public final class SimpleMethodInvokingFactoryBean extends MethodInvokingFactory
         if (arg3 != null) arguments.add(arg3);
         if (arg4 != null) arguments.add(arg4);
         return arguments.toArray();
+    }
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        try {
+            super.afterPropertiesSet();
+        } catch (Exception e) {
+            log.error("Unexpected error invoking method:{}" + e.getMessage());
+            log.debug("Detailed error",e);
+            if (failureShouldThrow) {
+                throw e;
+            }
+        }
     }
     
 }
