@@ -33,8 +33,8 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
 
-	public CountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+	public CountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final String beanName, final NamingStrategy namingStrategy) {
+		super(metricRegistry, targetClass, beanName, namingStrategy, ANNOTATION, METHOD_FILTER);
 	}
 
 	@Override
@@ -57,14 +57,14 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	
 	@Override
 	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
-		return Util.forCountedMethod(targetClass, method, annotation);
+		return namingStrategy.forCountedMethod(targetClass, beanName, method, annotation);
 	}
 
-	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry, final NamingStrategy namingStrategy) {
 		return new AdviceFactory() {
 			@Override
-			public Advice getAdvice(Object bean, Class<?> targetClass) {
-				return new CountedMethodInterceptor(metricRegistry, targetClass);
+			public Advice getAdvice(Object bean, Class<?> targetClass, String beanName) {
+				return new CountedMethodInterceptor(metricRegistry, targetClass, beanName, namingStrategy);
 			}
 		};
 	}

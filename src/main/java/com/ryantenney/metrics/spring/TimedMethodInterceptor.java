@@ -35,8 +35,8 @@ class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Time
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
 
-	public TimedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+	public TimedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, String beanName, final NamingStrategy namingStrategy) {
+		super(metricRegistry, targetClass, beanName, namingStrategy, ANNOTATION, METHOD_FILTER);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Time
 
 	@Override
 	protected String buildMetricName(Class<?> targetClass, Method method, Timed annotation) {
-		return Util.forTimedMethod(targetClass, method, annotation);
+		return namingStrategy.forTimedMethod(targetClass, beanName, method, annotation);
 	}
 
 	@Override
@@ -65,11 +65,11 @@ class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Time
 		return HIGHEST_PRECEDENCE;
 	}
 
-	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry, final NamingStrategy naming) {
 		return new AdviceFactory() {
 			@Override
-			public Advice getAdvice(Object bean, Class<?> targetClass) {
-				return new TimedMethodInterceptor(metricRegistry, targetClass);
+			public Advice getAdvice(Object bean, Class<?> targetClass, String beanName) {
+				return new TimedMethodInterceptor(metricRegistry, targetClass, beanName, naming);
 			}
 		};
 	}

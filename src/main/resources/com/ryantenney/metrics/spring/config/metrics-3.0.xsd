@@ -27,7 +27,8 @@
 	<xsd:element name="annotation-driven">
 		<xsd:complexType>
 			<xsd:attribute name="metric-registry" type="xsd:string" use="optional"/>
-			<xsd:attribute name="health-check-registry" type="xsd:string" use="optional"/>
+            <xsd:attribute name="health-check-registry" type="xsd:string" use="optional"/>
+            <xsd:attribute name="naming-strategy-class" type="xsd:string" use="optional"/>
 			<xsd:attribute name="expose-proxy" type="xsd:boolean" use="optional"/>
 			<xsd:attribute name="proxy-target-class" type="xsd:boolean" use="optional"/>
 		</xsd:complexType>

@@ -15,6 +15,9 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
+import com.ryantenney.metrics.spring.MyNamingStrategy;
+import com.ryantenney.metrics.spring.NamingStrategy;
+import com.ryantenney.metrics.spring.Util;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -47,8 +50,9 @@ public class MetricsConfigurationSupport implements ImportAware {
 	private volatile HealthCheckRegistry healthCheckRegistry;
 
 	private ProxyConfig proxyConfig;
+    private NamingStrategy namingStrategy;
 
-	@Override
+    @Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
 		final AnnotationAttributes enableMetrics = AnnotationAttributes.fromMap(
 				importMetadata.getAnnotationAttributes(EnableMetrics.class.getName(), false));
@@ -63,37 +67,37 @@ public class MetricsConfigurationSupport implements ImportAware {
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor exceptionMeteredAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.exceptionMetered(getMetricRegistry(), proxyConfig);
+		return MetricsBeanPostProcessorFactory.exceptionMetered(getMetricRegistry(), proxyConfig, getNamingStrategy());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor meteredAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.metered(getMetricRegistry(), proxyConfig);
+		return MetricsBeanPostProcessorFactory.metered(getMetricRegistry(), proxyConfig, getNamingStrategy());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor timedAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.timed(getMetricRegistry(), proxyConfig);
+		return MetricsBeanPostProcessorFactory.timed(getMetricRegistry(), proxyConfig, getNamingStrategy());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor countedAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.counted(getMetricRegistry(), proxyConfig);
+		return MetricsBeanPostProcessorFactory.counted(getMetricRegistry(), proxyConfig, getNamingStrategy());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor gaugeAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.gauge(getMetricRegistry());
+		return MetricsBeanPostProcessorFactory.gauge(getMetricRegistry(), getNamingStrategy());
 	}
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor cachedGaugeAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.cachedGauge(getMetricRegistry());
+		return MetricsBeanPostProcessorFactory.cachedGauge(getMetricRegistry(), getNamingStrategy());
 	}
 
 	@Bean
@@ -106,7 +110,7 @@ public class MetricsConfigurationSupport implements ImportAware {
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	@SuppressWarnings("deprecation")
 	public BeanPostProcessor injectMetricAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.injectMetric(getMetricRegistry());
+		return MetricsBeanPostProcessorFactory.injectMetric(getMetricRegistry(), getNamingStrategy());
 	}
 
 	@Bean
@@ -137,4 +141,14 @@ public class MetricsConfigurationSupport implements ImportAware {
 		return healthCheckRegistry;
 	}
 
+    protected NamingStrategy getNamingStrategy() {
+        if (namingStrategy == null) {
+            synchronized (lock) {
+                if (namingStrategy == null) {
+                    namingStrategy = new MyNamingStrategy();
+                }
+            }
+        }
+        return namingStrategy;
+    }
 }

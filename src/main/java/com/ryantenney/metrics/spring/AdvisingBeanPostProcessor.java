@@ -59,7 +59,7 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		if (AopUtils.canApply(pointcut, targetClass)) {
-			final Advice advice = adviceFactory.getAdvice(bean, targetClass);
+			final Advice advice = adviceFactory.getAdvice(bean, targetClass, beanName);
 			final Advisor advisor = new DefaultPointcutAdvisor(pointcut, advice);
 
 			if (bean instanceof Advised) {

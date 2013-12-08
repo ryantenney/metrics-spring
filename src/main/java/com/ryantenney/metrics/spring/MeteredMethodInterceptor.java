@@ -33,8 +33,8 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
 
-	public MeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+	public MeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, String beanName, final NamingStrategy namingStrategy) {
+		super(metricRegistry, targetClass, beanName, namingStrategy, ANNOTATION, METHOD_FILTER);
 	}
 
 	@Override
@@ -50,14 +50,14 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	
 	@Override
 	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
-		return Util.forMeteredMethod(targetClass, method, annotation);
+		return namingStrategy.forMeteredMethod(targetClass, beanName, method, annotation);
 	}
 
-	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry, final NamingStrategy namingStrategy) {
 		return new AdviceFactory() {
 			@Override
-			public Advice getAdvice(Object bean, Class<?> targetClass) {
-				return new MeteredMethodInterceptor(metricRegistry, targetClass);
+			public Advice getAdvice(Object bean, Class<?> targetClass, String beanName) {
+				return new MeteredMethodInterceptor(metricRegistry, targetClass, beanName, namingStrategy);
 			}
 		};
 	}

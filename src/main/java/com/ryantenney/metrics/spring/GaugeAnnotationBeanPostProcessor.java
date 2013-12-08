@@ -38,13 +38,15 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 	private static final AnnotationFilter FILTER = new AnnotationFilter(Gauge.class);
 
 	private final MetricRegistry metrics;
+    private final NamingStrategy namingStrategy;
 
-	public GaugeAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+	public GaugeAnnotationBeanPostProcessor(final MetricRegistry metrics, NamingStrategy namingStrategy) {
 		this.metrics = metrics;
+        this.namingStrategy = namingStrategy;
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, final String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
@@ -53,7 +55,7 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 				ReflectionUtils.makeAccessible(field);
 
 				final Gauge annotation = field.getAnnotation(Gauge.class);
-				final String metricName = Util.forGauge(targetClass, field, annotation);
+				final String metricName = namingStrategy.forGauge(targetClass, beanName, field, annotation);
 
 				metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 					@Override
@@ -74,7 +76,7 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(final Object bean, final String beanName) throws BeansException {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithMethods(targetClass, new MethodCallback() {
@@ -86,7 +88,7 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 				}
 
 				final Gauge annotation = method.getAnnotation(Gauge.class);
-				final String metricName = Util.forGauge(targetClass, method, annotation);
+				final String metricName = namingStrategy.forGauge(targetClass, beanName, method, annotation);
 
 				metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 					@Override

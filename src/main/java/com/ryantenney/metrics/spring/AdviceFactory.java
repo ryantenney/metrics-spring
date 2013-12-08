@@ -19,6 +19,6 @@ import org.aopalliance.aop.Advice;
 
 interface AdviceFactory {
 
-	Advice getAdvice(Object bean, Class<?> targetClass);
+	Advice getAdvice(Object bean, Class<?> targetClass, String beanName);
 
 }

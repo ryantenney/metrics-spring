@@ -36,14 +36,18 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	private final MetricRegistry metricRegistry;
 	private final Class<?> targetClass;
+    protected final String beanName;
 	private final Class<A> annotationClass;
 	private final Map<MethodKey, AnnotationMetricPair<A, M>> metrics;
+    protected final NamingStrategy namingStrategy;
 
-	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final Class<A> annotationClass, final MethodFilter methodFilter) {
+	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final String beanName, final NamingStrategy namingStrategy, final Class<A> annotationClass, final MethodFilter methodFilter) {
 		this.metricRegistry = metricRegistry;
 		this.targetClass = targetClass;
+        this.beanName = beanName;
 		this.annotationClass = annotationClass;
 		this.metrics = new HashMap<MethodKey, AnnotationMetricPair<A, M>>();
+        this.namingStrategy = namingStrategy;
 
 		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		LOG.debug("Scanning for @{} annotated methods", annotationClass.getSimpleName());

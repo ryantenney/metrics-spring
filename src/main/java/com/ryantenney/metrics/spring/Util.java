@@ -29,36 +29,41 @@ import com.ryantenney.metrics.annotation.InjectMetric;
 import com.ryantenney.metrics.annotation.Metric;
 
 @SuppressWarnings("deprecation")
-class Util {
+public class Util implements NamingStrategy {
 
-	private Util() {
-	}
 
-	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
+	@Override
+    public String forTimedMethod(Class<?> klass, String beanName, Member member, Timed annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
+    @Override
+    public String forMeteredMethod(Class<?> klass, String beanName, Member member, Metered annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	static String forGauge(Class<?> klass, Member member, Gauge annotation) {
+    @Override
+    public String forGauge(Class<?> klass, String beanName, Member member, Gauge annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	static String forCachedGauge(Class<?> klass, Member member, CachedGauge annotation) {
+    @Override
+    public String forCachedGauge(Class<?> klass, String beanName, Member member, CachedGauge annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
+    @Override
+    public String forExceptionMeteredMethod(Class<?> klass, String beanName, Member member, ExceptionMetered annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member, ExceptionMetered.DEFAULT_NAME_SUFFIX);
 	}
 
-	static String forCountedMethod(Class<?> klass, Member member, Counted annotation) {
+    @Override
+    public String forCountedMethod(Class<?> klass, String beanName, Member member, Counted annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 
-	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
+    @Override
+    public String forInjectMetricField(Class<?> klass, String beanName, Member member, InjectMetric annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 

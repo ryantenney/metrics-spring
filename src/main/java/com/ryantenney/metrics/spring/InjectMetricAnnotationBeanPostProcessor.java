@@ -41,20 +41,22 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	private static final AnnotationFilter FILTER = new AnnotationFilter(InjectMetric.class);
 
 	private final MetricRegistry metrics;
+    private final NamingStrategy namingStrategy;
 
-	public InjectMetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
-		this.metrics = metrics;
-	}
+    InjectMetricAnnotationBeanPostProcessor(MetricRegistry metrics, NamingStrategy namingStrategy) {
+        this.metrics = metrics;
+        this.namingStrategy = namingStrategy;
+    }
 
 	@Override
-	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, final String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalAccessException {
 				final InjectMetric annotation = field.getAnnotation(InjectMetric.class);
-				final String metricName = Util.forInjectMetricField(targetClass, field, annotation);
+				final String metricName = namingStrategy.forInjectMetricField(targetClass, beanName, field, annotation);
 
 				final Class<?> type = field.getType();
 				Metric metric = null;

@@ -18,6 +18,9 @@ package com.ryantenney.metrics.spring.config;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_APPLICATION;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
+import com.ryantenney.metrics.spring.MyNamingStrategy;
+import com.ryantenney.metrics.spring.NamingStrategy;
+import com.ryantenney.metrics.spring.Util;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -53,6 +56,17 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		final ProxyConfig proxyConfig = new ProxyConfig();
 
+        NamingStrategy namingStrategy = new Util();
+        String namingStrategyClassName = element.getAttribute("naming-strategy-class");
+        if (StringUtils.hasText(namingStrategyClassName)) {
+            try {
+                namingStrategy = (NamingStrategy)Class.forName(namingStrategyClassName).newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
 		if (StringUtils.hasText(element.getAttribute("expose-proxy"))) {
 			proxyConfig.setExposeProxy(Boolean.valueOf(element.getAttribute("expose-proxy")));
 		}
@@ -67,35 +81,41 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("exceptionMetered")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+					.addConstructorArgValue(proxyConfig)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("metered")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+					.addConstructorArgValue(proxyConfig)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("timed")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+					.addConstructorArgValue(proxyConfig)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("counted")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig));
+					.addConstructorArgValue(proxyConfig)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("gauge")
-					.addConstructorArgReference(metricsBeanName));
+					.addConstructorArgReference(metricsBeanName)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("cachedGauge")
-					.addConstructorArgReference(metricsBeanName));
+					.addConstructorArgReference(metricsBeanName)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
@@ -105,7 +125,8 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("injectMetric")
-					.addConstructorArgReference(metricsBeanName));
+					.addConstructorArgReference(metricsBeanName)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
