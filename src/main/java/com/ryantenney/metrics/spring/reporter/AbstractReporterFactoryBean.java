@@ -16,7 +16,6 @@
 package com.ryantenney.metrics.spring.reporter;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -27,13 +26,15 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
+import com.ryantenney.metrics.spring.RegexMetricFilter;
 
 public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, InitializingBean, BeanFactoryAware {
 
-	protected static final String FILTER_PATTERN = "filter";
+
+
+    protected static final String FILTER_PATTERN = "filter";
 	protected static final String FILTER_REF = "filter-ref";
 
 	private MetricRegistry metricRegistry;
@@ -155,20 +156,7 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 	}
 
 	protected MetricFilter metricFilterPattern(String pattern) {
-		final Pattern filter = Pattern.compile(pattern);
-		return new MetricFilter() {
-
-			@Override
-			public boolean matches(String name, Metric metric) {
-				return filter.matcher(name).matches();
-			}
-
-			@Override
-			public String toString() {
-				return "[MetricFilter regex=" + filter.pattern() + "]";
-			}
-
-		};
+		return new RegexMetricFilter(pattern);
 	}
 
 }
