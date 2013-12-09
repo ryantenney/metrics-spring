@@ -49,6 +49,10 @@ public class MetricsBeanPostProcessorFactory {
 		return new GaugeAnnotationBeanPostProcessor(metricRegistry);
 	}
 
+	public static CachedGaugeAnnotationBeanPostProcessor cachedGauge(final MetricRegistry metricRegistry) {
+		return new CachedGaugeAnnotationBeanPostProcessor(metricRegistry);
+	}
+
 	public static InjectMetricAnnotationBeanPostProcessor injectMetric(final MetricRegistry metricRegistry) {
 		return new InjectMetricAnnotationBeanPostProcessor(metricRegistry);
 	}

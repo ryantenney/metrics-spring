@@ -24,6 +24,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -53,6 +54,10 @@ class TestUtil {
 		return Util.forGauge(klass, member, annotation);
 	}
 
+	static String forCachedGauge(Class<?> klass, Member member, com.ryantenney.metrics.annotation.CachedGauge annotation) {
+		return Util.forCachedGauge(klass, member, annotation);
+	}
+
 	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
 		return Util.forExceptionMeteredMethod(klass, member, annotation);
 	}
@@ -77,6 +82,13 @@ class TestUtil {
 		String metricName = forGauge(clazz, method, method.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge method named '{}'", metricName);
 		return metricRegistry.getGauges().get(metricName);
+	}
+
+	static CachedGauge<?> forCachedGaugeMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+		Method method = findMethod(clazz, methodName);
+		String metricName = forCachedGauge(clazz, method, method.getAnnotation(com.ryantenney.metrics.annotation.CachedGauge.class));
+		log.info("Looking up cached gauge method named '{}'", metricName);
+		return (CachedGauge<?>) metricRegistry.getGauges().get(metricName);
 	}
 
 	static Timer forTimedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {

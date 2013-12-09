@@ -15,24 +15,40 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
-import static com.ryantenney.metrics.spring.reporter.JmxReporterFactoryBean.*;
+import static com.ryantenney.metrics.spring.reporter.LibratoReporterFactoryBean.*;
 
-public class JmxReporterElementParser extends AbstractReporterElementParser {
+public class LibratoReporterElementParser extends AbstractReporterElementParser {
 
 	@Override
 	public String getType() {
-		return "jmx";
+		return "librato";
 	}
 
 	@Override
 	protected Class<?> getBeanClass() {
-		return JmxReporterFactoryBean.class;
+		return LibratoReporterFactoryBean.class;
 	}
 
 	@Override
 	protected void validate(ValidationContext c) {
-		c.optional(DOMAIN);
-		c.optional(MBEAN_SERVER_REF);
+		c.require(USERNAME);
+		c.require(TOKEN);
+		c.require(SOURCE);
+		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
+
+		c.optional(TIMEOUT, DURATION_STRING_REGEX, "Timeout must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
+		c.optional(NAME);
+		c.optional(SANITIZER_REF);
+		c.optional(HTTP_POSTER_REF);
+		c.optional(PREFIX);
+		c.optional(PREFIX_DELIMITER);
+		c.optional(CLOCK_REF);
+
+		c.optional(EXPANSION_CONFIG);
+		c.optional(EXPANSION_CONFIG_REF);
+		if (c.has(EXPANSION_CONFIG) && c.has(EXPANSION_CONFIG_REF)) {
+			c.reject(FILTER_REF, "Librato Reporter element must not specify both the 'expansion-config' and 'expansion-config-ref' attributes");
+		}
 
 		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
@@ -40,7 +56,7 @@ public class JmxReporterElementParser extends AbstractReporterElementParser {
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);
 		if (c.has(FILTER_PATTERN) && c.has(FILTER_REF)) {
-			c.reject(FILTER_REF, "Reporter element not specify both the 'filter' and 'filter-ref' attributes");
+			c.reject(FILTER_REF, "Reporter element must not specify both the 'filter' and 'filter-ref' attributes");
 		}
 
 		c.rejectUnmatchedProperties();

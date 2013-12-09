@@ -46,49 +46,45 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
+		final Class<?> targetClass = AopUtils.getTargetClass(bean);
+
+		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
+			@Override
+			public void doWith(Field field) throws IllegalAccessException {
+				final InjectMetric annotation = field.getAnnotation(InjectMetric.class);
+				final String metricName = Util.forInjectMetricField(targetClass, field, annotation);
+
+				final Class<?> type = field.getType();
+				Metric metric = null;
+				if (Meter.class == type) {
+					metric = metrics.meter(metricName);
+				}
+				else if (Timer.class == type) {
+					metric = metrics.timer(metricName);
+				}
+				else if (Counter.class == type) {
+					metric = metrics.counter(metricName);
+				}
+				else if (Histogram.class == type) {
+					metric = metrics.histogram(metricName);
+				}
+				else {
+					throw new IllegalStateException("Cannot inject a metric of type " + type.getCanonicalName());
+				}
+
+				ReflectionUtils.makeAccessible(field);
+				ReflectionUtils.setField(field, bean, metric);
+
+				LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
+			}
+		}, FILTER);
+
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(final Object bean, String beanName) {
-		final Class<?> targetClass = AopUtils.getTargetClass(bean);
-		try {
-    		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
-    			@Override
-    			public void doWith(Field field) throws IllegalAccessException {
-    				final InjectMetric annotation = field.getAnnotation(InjectMetric.class);
-    				final String metricName = Util.forInjectMetricField(targetClass, field, annotation);
-    
-    				final Class<?> type = field.getType();
-    				Metric metric = null;
-    				if (Meter.class == type) {
-    					metric = metrics.meter(metricName);
-    				}
-    				else if (Timer.class == type) {
-    					metric = metrics.timer(metricName);
-    				}
-    				else if (Counter.class == type) {
-    					metric = metrics.counter(metricName);
-    				}
-    				else if (Histogram.class == type) {
-    					metric = metrics.histogram(metricName);
-    				}
-    				else {
-    					throw new IllegalStateException("Cannot inject a metric of type " + type.getCanonicalName());
-    				}
-    
-    				ReflectionUtils.makeAccessible(field);
-    				ReflectionUtils.setField(field, bean, metric);
-    
-    				LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
-    			}
-    		}, FILTER);
-		} catch (Exception e) {
-		    LOG.warn("Could not inject metrics into {} due to {}", targetClass.getName(),e.getMessage());
-            LOG.debug("Could not inject metrics into {}", targetClass.getName(),e);
-		}
-
+	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		return bean;
 	}
 

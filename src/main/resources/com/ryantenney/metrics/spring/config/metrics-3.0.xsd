@@ -22,7 +22,7 @@
 			targetNamespace="http://www.ryantenney.com/schema/metrics"
 			elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-	<xsd:import namespace="http://www.springframework.org/schema/beans"/>
+	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"/>
 
 	<xsd:element name="annotation-driven">
 		<xsd:complexType>
@@ -49,19 +49,21 @@
 	<xsd:element name="reporter">
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:string" use="optional"/>
-            <xsd:attribute name="type" type="xsd:string" use="optional"/>
+			<xsd:attribute name="type" type="xsd:string" use="optional"/>
 			<xsd:attribute name="metric-registry" type="xsd:string" use="required"/>
-            <xsd:anyAttribute processContents="lax"/>
+			<xsd:anyAttribute processContents="lax"/>
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="register">
+		<xsd:complexType>
+			<xsd:sequence maxOccurs="unbounded">
+				<xsd:element ref="beans:bean"/>
+			</xsd:sequence>
+			<xsd:attribute name="metric-registry" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
 
-    <xsd:element name="metric-set">
-        <xsd:complexType>
-            <xsd:attribute name="id" type="xsd:string" use="optional"/>
-            <xsd:attribute name="name" type="xsd:string" use="optional"/>
-            <xsd:attribute name="ref" type="xsd:string" use="required"/>
-            <xsd:attribute name="metric-registry" type="xsd:string" use="required"/>
-        </xsd:complexType>
-    </xsd:element>
+	<xsd:attribute name="name" type="xsd:string"/>
+
 </xsd:schema>

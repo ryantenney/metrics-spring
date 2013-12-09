@@ -1,0 +1,4 @@
+# Tooling related information for the metrics namespace
+http\://www.ryantenney.com/schema/metrics@name=metrics Namespace
+http\://www.ryantenney.com/schema/metrics@prefix=metrics
+http\://www.ryantenney.com/schema/metrics@icon=com/ryantenney/metrics/spring/config/metrics.gif

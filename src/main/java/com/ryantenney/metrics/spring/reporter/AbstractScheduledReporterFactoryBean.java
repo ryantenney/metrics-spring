@@ -101,19 +101,20 @@ public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledRe
 		return sourceUnit.toNanos(sourceDuration);
 	}
 
-    @Override
-    public int getPhase() {
-        return 0;
-    }
+	@Override
+	public int getPhase() {
+		return 0;
+	}
 
-    @Override
-    public void stop(Runnable callback) {
-        stop();
-        callback.run();
-    }
+	@Override
+	public void stop(Runnable callback) {
+		stop();
+		callback.run();
+	}
 
-    @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
+	@Override
+	public boolean isAutoStartup() {
+		return true;
+	}
+
 }

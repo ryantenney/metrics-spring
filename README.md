@@ -2,29 +2,30 @@
 
 ##About
 
-The `metrics-spring` module integrates [Yammer Metrics](http://metrics.codahale.com/) with Spring AOP, and provides XML and Java configuration.
+The `metrics-spring` module integrates [Coda Hale's Metrics library](http://metrics.codahale.com/) with Spring, and provides XML and Java configuration.
 
 This module does the following things:
 
-* Proxies beans which contain methods annotated with `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted`
-* Registers a `Gauge` for beans which have members annotated with `@Gauge`
+* Creates metrics and proxies beans which contain methods annotated with `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted`
+* Registers a `Gauge` for beans which have members annotated with `@Gauge` and `@CachedGauge`
 * Autowires Timers, Meters, Counters and Histograms into fields annotated with `@InjectMetric`
 * Registers with the `HealthCheckRegistry` any beans which extend the class `HealthCheck`
-* Creates reporters and binds them to the Spring lifecycle
+* Creates reporters from XML config and binds them to the Spring lifecycle
+* Registers metrics and metric sets in XML
 
 ###Maven
 
-Current version is 3.0.0-RC2, which is compatible with Metrics 3.0
+Current version is 3.0.0-RC3, which is compatible with Metrics 3.0
 
 ```xml
 <dependency>
-	<groupId>com.ryantenney.metrics</groupId>
-	<artifactId>metrics-spring</artifactId>
-	<version>3.0.0-RC2</version>
+    <groupId>com.ryantenney.metrics</groupId>
+    <artifactId>metrics-spring</artifactId>
+    <version>3.0.0-RC3</version>
 </dependency>
 ```
 
-This module was formerly contained in the [Yammer Metrics repository](https://github.com/codahale/metrics).
+This module was formerly contained in the [Metrics repository](https://github.com/codahale/metrics).
 
 ###Basic Usage
 
@@ -34,22 +35,32 @@ Spring Context XML:
 
 ```xml
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:metrics="http://www.ryantenney.com/schema/metrics"
-	   xsi:schemaLocation="
-			http://www.springframework.org/schema/beans
-			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-			http://www.ryantenney.com/schema/metrics
-			http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.ryantenney.com/schema/metrics
+           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
-	<!-- registry and reporters should be defined in only one context xml file -->
-	<metrics:metric-registry id="registry" name="springMetrics" />
-	<metrics:reporter type="console" metric-registry="registry" period="1m" />
-	
-	<!-- annotation-driven must be included in all context files -->
-	<metrics:annotation-driven metric-registry="registry" />
+    <!-- Registry should be defined in only one context XML file -->
+    <metrics:metric-registry id="metrics" />
 
-	<!-- beans -->
+    <!-- annotation-driven must be included in all context files -->
+    <metrics:annotation-driven metric-registry="metrics" />
+
+    <!-- (Optional) Registry should be defined in only one context XML file -->
+    <metrics:reporter type="console" metric-registry="metrics" period="1m" />
+
+    <!-- (Optional) The metrics in this example require the metrics-jvm jar-->
+    <metrics:register metric-registry="metrics">
+        <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
+        <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet" />
+        <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
+        <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
+    </metrics:register>
+
+    <!-- Beans and other Spring config -->
 
 </beans>
 ```
@@ -69,18 +80,13 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 @EnableMetrics
 public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 
-	@Override
-	public MetricRegistry getMetricRegistry() {
-		return SharedMetricRegistries.getOrCreate("springMetrics");
-	}
-
-	@Override
-	public void configureReporters(MetricRegistry metricRegistry) {
-		ConsoleReporter.forRegistry(registry)
-			.outputTo(output)
-			.build()
-			.start(1, TimeUnit.MINUTES);
-	}
+    @Override
+    public void configureReporters(MetricRegistry metricRegistry) {
+        ConsoleReporter
+            .forRegistry(registry)
+            .build()
+            .start(1, TimeUnit.MINUTES);
+    }
 
 }
 ```
@@ -88,31 +94,38 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 ###XML Config Documentation
 
 The `<metrics:annotation-driven />` element is required, and has 4 optional arguments:
-
-* `metric-registry` - the id of the `MetricRegsitry` bean with which the generated metrics should be registered. If omitted a new `MetricRegistry` bean is created.
-* `health-check-registry` - the id of the `HealthCheckRegsitry` bean with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` bean is created.
-* `proxy-target-class` - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This *may* be necessary if you use class-based autowiring.
-* `expose-proxy` - if set to true, the target can access the proxy which wraps it by calling `AopContext.currentProxy()`.
+* Attributes
+ * `metric-registry` - the id of the `MetricRegsitry` bean with which the generated metrics should be registered. If omitted a new `MetricRegistry` bean is created.
+ * `health-check-registry` - the id of the `HealthCheckRegsitry` bean with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` bean is created.
+ * `proxy-target-class` - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This *may* be necessary if you use class-based autowiring.
+ * `expose-proxy` - if set to true, the target can access the proxy which wraps it by calling `AopContext.currentProxy()`.
 
 The `<metrics:metric-registry />` element constructs a new MetricRegistry or retrieves a shared registry:
-
-* `id` - the bean name with which to register the MetricRegistry bean
-* `name` - the name of the MetricRegistry, if present, this calls SharedMetricRegistries.getOrCreate(name)
+* Attributes
+ * `id` - the bean name with which to register the MetricRegistry bean
+ * `name` - the name of the MetricRegistry, if present, this calls SharedMetricRegistries.getOrCreate(name)
 
 The `<metrics:health-check-registry />` element constructs a new HealthCheckRegistry:
+* Attributes
+ * `id` - the bean name with which to register the HealthCheckRegistry bean
 
-* `id` - the bean name with which to register the HealthCheckRegistry bean
+The `<metrics:reporter />` element creates and starts a reporter:
+* Attributes
+ * `id` - the bean name
+ * `metric-registry` - the id of the `MetricRegsitry` bean for which the reporter should retrieve metrics
+ * `type` - the type of the reporter. Additional types may be registered through SPI (more on this later).
+  * `console`: ConsoleReporter
+  * `jmx`: JmxReporter
+  * `slf4j`: Slf4jReporter
+  * `ganglia`: GangliaReporter (requires `metrics-ganglia`)
+  * `graphite`: GraphiteReporter (requires `metrics-graphite`)
 
-The `<metrics:reporter />` element creates and starts a reporter.
-
-* `id` - the bean name
-* `metric-registry` - the id of the `MetricRegsitry` bean for which the reporter should retrieve metrics
-* `type` - the type of the reporter. Additional types may be registered through SPI (more on this later).
- * `console`: ConsoleReporter
- * `jmx`: JmxReporter
- * `slf4j`: Slf4jReporter
- * `ganglia`: GangliaReporter (requires `metrics-ganglia`)
- * `graphite`: GraphiteReporter (requires `metrics-graphite`)
+The `<metrics:register />` element registers with the MetricRegistry a bean which extends implements Metric or MetricSet
+* Attributes
+ * `metric-registry` - the id of the `MetricRegsitry` bean with which the metrics are to be registered
+* Child elements
+ * `<bean />` - The beans to register with the specified registry.
+  * `metrics:name` attribute on the bean element - specifies the name with which the metric will be registered. Optional if the bean is a MetricSet.
 
 ###Java Config Documentation
 
@@ -134,16 +147,16 @@ Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`
 ```java
 public class Foo {
 	
-	@Timed
-	public void bar() { /* … */ }
+    @Timed
+    public void bar() { /* … */ }
 	
-	public void baz() {
-		this.bar(); // doesn't pass through the proxy
+    public void baz() {
+        this.bar(); // doesn't pass through the proxy
 		
-		// fix: reengineer
-		// workaround: enable `expose-proxy` and change to:
-		((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
-	}
+        // fix: reengineer
+        // workaround: enable `expose-proxy` and change to:
+        ((Foo) AopContext.currentProxy()).bar(); // hideous, but it works
+    }
 }
 ```
 

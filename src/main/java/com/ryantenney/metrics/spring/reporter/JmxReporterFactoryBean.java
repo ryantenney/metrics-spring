@@ -96,19 +96,20 @@ public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxRepor
 		stop();
 	}
 
-    @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
+	@Override
+	public boolean isAutoStartup() {
+		return true;
+	}
 
-    @Override
-    public void stop(Runnable runnable) {
-        stop();
-        runnable.run();
-    }
+	@Override
+	public void stop(Runnable runnable) {
+		stop();
+		runnable.run();
+	}
 
-    @Override
-    public int getPhase() {
-        return 0;
-    }
+	@Override
+	public int getPhase() {
+		return 0;
+	}
+
 }

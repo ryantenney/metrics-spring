@@ -17,11 +17,8 @@ package com.ryantenney.metrics.spring.reporter;
 
 import static com.ryantenney.metrics.spring.reporter.ConsoleReporterFactoryBean.*;
 
-import java.util.concurrent.TimeUnit;
-
 public class ConsoleReporterElementParser extends AbstractReporterElementParser {
 
-	private static final String DURATION_STRING_REGEX = "^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$";
 	private static final String LOCALE_STRING_REGEX = "^[a-z]{2}(_[A-Z]{2})?$";
 
 	@Override
@@ -44,12 +41,8 @@ public class ConsoleReporterElementParser extends AbstractReporterElementParser 
 		c.optional(LOCALE, LOCALE_STRING_REGEX, "Locale must be in the proper format");
 		c.optional(TIMEZONE); // Difficult to validate, if invalid will fall back to GMT
 
-		if (c.optional(RATE_UNIT)) {
-			TimeUnit.valueOf(c.get(RATE_UNIT));
-		}
-		if (c.optional(DURATION_UNIT)) {
-			TimeUnit.valueOf(c.get(DURATION_UNIT));
-		}
+		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
+		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);

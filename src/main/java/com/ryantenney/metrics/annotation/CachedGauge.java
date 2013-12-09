@@ -19,28 +19,31 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Counted {
+public @interface CachedGauge {
 
-	/**
-	 * The name of the counter.
-	 */
-	String name() default "";
+    /**
+     * The name of the counter.
+     */
+    String name() default "";
 
-	/**
-	 * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
-	 * relative to the annotated class.
-	 */
-	boolean absolute() default false;
+    /**
+     * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
+     * relative to the annotated class.
+     */
+    boolean absolute() default false;
 
-	/**
-	 * If {@code false} (default), counter is decremented when the annotated
-	 * method returns, counts current invocations of the annotated method.
-	 * If {@code true}, counter increases monotonically, counts total number
-	 * of invocations of the annotated method.
-	 */
-	boolean monotonic() default false;
+    /**
+     * The timeout
+     */
+    long timeout();
+
+    /**
+     * The unit of timeout
+     */
+    TimeUnit timeoutUnit() default TimeUnit.MILLISECONDS;
 
 }

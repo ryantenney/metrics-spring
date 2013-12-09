@@ -15,6 +15,7 @@
  */
 package com.ryantenney.metrics.spring;
 
+import static com.ryantenney.metrics.spring.TestUtil.forCachedGaugeMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
@@ -25,12 +26,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
@@ -62,14 +66,17 @@ public class MeteredClassTest {
 		Gauge<?> gaugedField = forGaugeField(metricRegistry, MeteredClass.class, "gaugedField");
 		Gauge<?> gaugedMethod = forGaugeMethod(metricRegistry, MeteredClass.class, "gaugedMethod");
 		Gauge<?> gaugedGaugeField = forGaugeField(metricRegistry, MeteredClass.class, "gaugedGaugeField");
+		CachedGauge<?> cachedGaugedMethod = forCachedGaugeMethod(metricRegistry, MeteredClass.class, "cachedGaugedMethod");
 
 		assertEquals(999, gaugedField.getValue());
 		assertEquals(999, gaugedMethod.getValue());
+		assertEquals(999, cachedGaugedMethod.getValue());
 
 		meteredClass.setGaugedField(1000);
 
 		assertEquals(1000, gaugedField.getValue());
 		assertEquals(1000, gaugedMethod.getValue());
+		assertEquals(999, cachedGaugedMethod.getValue());
 
 		assertEquals(0.5, gaugedGaugeField.getValue());
 	}
@@ -381,6 +388,11 @@ public class MeteredClassTest {
 
 		public void setGaugedField(int value) {
 			this.gaugedField = value;
+		}
+
+		@com.ryantenney.metrics.annotation.CachedGauge(timeout=1, timeoutUnit=TimeUnit.DAYS)
+		public int cachedGaugedMethod() {
+			return this.gaugedField;
 		}
 
 		@Timed
