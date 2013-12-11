@@ -34,6 +34,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 
 	protected static final String ID = "id";
 	protected static final String TYPE = "type";
+	protected static final String ENABLED = "enabled";
 	protected static final String METRIC_REGISTRY_REF = "metric-registry";
 
 	protected static final String DURATION_STRING_REGEX = "^(\\d+)\\s?(ns|us|ms|s|m|h|d)?$";
@@ -81,7 +82,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		for (int i = 0; i < attributes.getLength(); i++) {
 			final Node attribute = attributes.item(i);
 			final String name = attribute.getNodeName();
-			if (name.equals(METRIC_REGISTRY_REF) || name.equals(ID) || name.equals(TYPE)) {
+			if (name.equals(METRIC_REGISTRY_REF) || name.equals(ID) || name.equals(TYPE) || name.equals(ENABLED)) {
 				continue;
 			}
 			properties.put(name, attribute.getNodeValue());
@@ -90,6 +91,12 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		validate(properties);
 
 		beanDefBuilder.addPropertyReference("metricRegistry", element.getAttribute(METRIC_REGISTRY_REF));
+
+		String enabled = element.getAttribute(ENABLED);
+		if (StringUtils.hasText(enabled)) {
+			beanDefBuilder.addPropertyValue("enabled", enabled);
+		}
+
 		beanDefBuilder.addPropertyValue("properties", properties);
 	}
 

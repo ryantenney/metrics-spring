@@ -32,7 +32,7 @@ public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledRe
 
 	@Override
 	public void start() {
-		if (!isRunning()) {
+		if (isEnabled() && !isRunning()) {
 			getObject().start(getPeriod(), TimeUnit.NANOSECONDS);
 			running = true;
 		}
@@ -40,7 +40,7 @@ public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledRe
 
 	@Override
 	public void stop() {
-		if (isRunning()) {
+		if (isEnabled() && isRunning()) {
 			getObject().stop();
 			running = true;
 		}

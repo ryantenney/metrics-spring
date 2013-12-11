@@ -43,6 +43,7 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 	private Map<String, String> properties;
 	private T instance;
 
+	private boolean enabled = true;
 	private boolean initialized = false;
 
 	public abstract Class<? extends T> getObjectType();
@@ -54,6 +55,9 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 
 	@Override
 	public T getObject() {
+		if (!this.enabled) {
+			return null;
+		}
 		if (!this.initialized) {
 			throw new IllegalStateException("Singleton instance not initialized yet");
 		}
@@ -93,6 +97,14 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 
 	public MetricRegistry getMetricRegistry() {
 		return metricRegistry;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isEnabled() {
+		return this.enabled;
 	}
 
 	public void setProperties(final Map<String, String> properties) {

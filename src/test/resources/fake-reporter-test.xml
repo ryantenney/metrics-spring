@@ -32,5 +32,6 @@
 
 	<metrics:reporter id="fakeReporterOne" type="fake" metric-registry="metrics" duration-unit="MILLISECONDS" rate-unit="SECONDS" filter="foo" period="100ms" />
 	<metrics:reporter id="fakeReporterTwo" type="fake" metric-registry="metrics" duration-unit="NANOSECONDS" rate-unit="HOURS" filter-ref="barFilter" period="100ms" />
+	<metrics:reporter id="fakeReporterThree" type="fake" metric-registry="metrics" enabled="false" duration-unit="NANOSECONDS" rate-unit="HOURS" filter-ref="barFilter" period="100ms" />
 
 </beans>
