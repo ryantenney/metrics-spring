@@ -1,4 +1,4 @@
-#Metrics for Spring [![Build Status](https://secure.travis-ci.org/ryantenney/metrics-spring.png)](http://travis-ci.org/ryantenney/metrics-spring)
+#Metrics for Spring [![Build Status](https://drone.io/github.com/ryantenney/metrics-spring/status.png)](https://drone.io/github.com/ryantenney/metrics-spring/latest)
 
 ##About
 
