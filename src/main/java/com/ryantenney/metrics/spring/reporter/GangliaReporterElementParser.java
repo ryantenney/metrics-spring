@@ -17,8 +17,6 @@ package com.ryantenney.metrics.spring.reporter;
 
 import static com.ryantenney.metrics.spring.reporter.GangliaReporterFactoryBean.*;
 
-import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
-
 public class GangliaReporterElementParser extends AbstractReporterElementParser {
 
 	private static final String UUID_STRING_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
@@ -37,7 +35,7 @@ public class GangliaReporterElementParser extends AbstractReporterElementParser 
 	protected void validate(ValidationContext c) {
 		c.require(GROUP);
 		c.require(PORT, PORT_NUMBER_REGEX, "Port number is required and must be between 1-65536");
-		UDPAddressingMode.valueOf(c.require(UDP_MODE));
+		c.require(UDP_MODE);
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.require(TTL, INTEGER_REGEX);
 
