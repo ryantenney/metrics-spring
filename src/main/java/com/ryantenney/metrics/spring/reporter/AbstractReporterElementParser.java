@@ -63,8 +63,12 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			beanDefBuilder = BeanDefinitionBuilder.rootBeanDefinition(getBeanClassName());
 		}
 
-		beanDefBuilder.setRole(BeanDefinition.ROLE_APPLICATION);
-		beanDefBuilder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
+		beanDefBuilder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+
+		AbstractBeanDefinition rawBeanDefinition = beanDefBuilder.getRawBeanDefinition();
+		rawBeanDefinition.setAutowireCandidate(false);
+		rawBeanDefinition.setSource(parserContext.extractSource(element));
+
 		try {
 			parseReporter(element, beanDefBuilder);
 			addDefaultProperties(element, beanDefBuilder);
