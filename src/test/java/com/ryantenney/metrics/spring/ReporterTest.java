@@ -17,10 +17,12 @@ package com.ryantenney.metrics.spring;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.codahale.metrics.ConsoleReporter;
@@ -70,6 +72,11 @@ public class ReporterTest {
 			Assert.assertThat(two.getCalls(), allOf(greaterThanOrEqualTo(9), lessThanOrEqualTo(11)));
 			Assert.assertEquals(ctx.getBean(BarFilter.class), two.getFilter());
 			Assert.assertTrue(one.isRunning());
+
+			// Make certain reporters aren't candidates for autowiring
+			ReporterCollaborator collab = ctx.getBean(ReporterCollaborator.class);
+			Assert.assertNotNull(collab.metricRegistry);
+			Assert.assertNull(collab.fakeReporter);
 
 		}
 		finally {
@@ -137,6 +144,16 @@ public class ReporterTest {
 		public boolean matches(String name, Metric metric) {
 			return false;
 		}
+
+	}
+
+	public static class ReporterCollaborator {
+
+		@Autowired(required = false)
+		Collection<FakeReporter> fakeReporter;
+
+		@Autowired
+		MetricRegistry metricRegistry;
 
 	}
 
