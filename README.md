@@ -8,7 +8,7 @@ This module does the following things:
 
 * Creates metrics and proxies beans which contain methods annotated with `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted`
 * Registers a `Gauge` for beans which have members annotated with `@Gauge` and `@CachedGauge`
-* Autowires Timers, Meters, Counters and Histograms into fields annotated with `@InjectMetric`
+* Autowires Timers, Meters, Counters and Histograms into fields annotated with `@Metric`
 * Registers with the `HealthCheckRegistry` any beans which extend the class `HealthCheck`
 * Creates reporters from XML config and binds them to the Spring lifecycle
 * Registers metrics and metric sets in XML
@@ -83,7 +83,7 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
     @Override
     public void configureReporters(MetricRegistry metricRegistry) {
         ConsoleReporter
-            .forRegistry(registry)
+            .forRegistry(metricRegistry)
             .build()
             .start(1, TimeUnit.MINUTES);
     }
