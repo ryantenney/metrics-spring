@@ -30,9 +30,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 import com.ryantenney.metrics.annotation.InjectMetric;
+import com.ryantenney.metrics.annotation.Metric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aop-field-injection-interaction.xml")
+@SuppressWarnings("deprecation")
 public class AopFieldInjectionInteractionTest {
 
 	@Autowired private MetricRegistry metricRegistry;
@@ -45,6 +47,9 @@ public class AopFieldInjectionInteractionTest {
 
 		assertThat(metricRegistry.getCounters(), hasKey("targetCounter"));
 		assertThat(metricRegistry.getCounters().get("targetCounter").getCount(), is(1L));
+
+		assertThat(metricRegistry.getCounters(), hasKey("targetCounter2"));
+		assertThat(metricRegistry.getCounters().get("targetCounter2").getCount(), is(1L));
 	}
 
 }
@@ -68,11 +73,15 @@ interface TestAspectTarget {
 
 class TestAspectTargetImpl implements TestAspectTarget {
 
+	@SuppressWarnings("deprecation")
 	@InjectMetric(name = "targetCounter", absolute = true) private Counter counter;
+
+	@Metric(name = "targetCounter2", absolute = true) private Counter counter2;
 
 	@Override
 	public int targetMethod() {
 		this.counter.inc();
+		this.counter2.inc();
 		return 3;
 	}
 
