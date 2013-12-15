@@ -99,6 +99,11 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("metric")
+					.addConstructorArgReference(metricsBeanName));
+
+		registerComponent(parserContext,
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("injectMetric")
 					.addConstructorArgReference(metricsBeanName));
 
