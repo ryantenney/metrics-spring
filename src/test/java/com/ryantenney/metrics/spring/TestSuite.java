@@ -33,6 +33,7 @@ import com.codahale.metrics.SharedMetricRegistries;
 		MeteredClassImpementsInterfaceTest.class,
 		MeteredClassTest.class,
 		MeteredInterfaceTest.class,
+		MetricAnnotationTest.class,
 		ProxyTargetClassTest.class,
 		RegistryTest.class,
 		ReporterTest.class,

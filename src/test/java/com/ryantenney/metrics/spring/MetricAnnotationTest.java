@@ -15,13 +15,14 @@
  */
 package com.ryantenney.metrics.spring;
 
-import static com.ryantenney.metrics.spring.TestUtil.forInjectMetricField;
+import static com.ryantenney.metrics.spring.TestUtil.forMetricField;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -30,53 +31,76 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.ryantenney.metrics.annotation.InjectMetric;
+import com.codahale.metrics.UniformReservoir;
+import com.ryantenney.metrics.annotation.Metric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:injected-metrics.xml")
-@SuppressWarnings("deprecation")
-public class InjectMetricTest {
+@ContextConfiguration("classpath:metric-annotation.xml")
+public class MetricAnnotationTest {
 
 	@Autowired
-	InjectMetricTest.Target target;
+	@Qualifier("target1")
+	MetricAnnotationTest.Target target;
+
+	@Autowired
+	@Qualifier("target2")
+	MetricAnnotationTest.Target target2;
 
 	@Autowired
 	MetricRegistry metricRegistry;
 
 	@Test
-	public void targetIsNotNull() {
+	public void targetIsNotNull() throws Exception {
 		assertNotNull(target);
+		assertNotNull(target2);
 
 		assertNotNull(target.theNameForTheMeter);
-		Meter meter = (Meter) forInjectMetricField(metricRegistry, InjectMetricTest.Target.class, "theNameForTheMeter");
+		assertNotNull(target2.theNameForTheMeter);
+		Meter meter = (Meter) forMetricField(metricRegistry, MetricAnnotationTest.Target.class, "theNameForTheMeter");
 		assertSame(target.theNameForTheMeter, meter);
+		assertSame(target2.theNameForTheMeter, meter);
 
 		assertNotNull(target.timer);
-		Timer timer = (Timer) forInjectMetricField(metricRegistry, InjectMetricTest.Target.class, "timer");
+		assertNotNull(target2.timer);
+		Timer timer = (Timer) forMetricField(metricRegistry, MetricAnnotationTest.Target.class, "timer");
 		assertSame(target.timer, timer);
+		assertSame(target2.timer, timer);
 
 		assertNotNull(target.counter);
-		Counter ctr = (Counter) forInjectMetricField(metricRegistry, InjectMetricTest.Target.class, "counter");
+		assertNotNull(target2.counter);
+		Counter ctr = (Counter) forMetricField(metricRegistry, MetricAnnotationTest.Target.class, "counter");
 		assertSame(target.counter, ctr);
+		assertSame(target2.counter, ctr);
 
 		assertNotNull(target.histogram);
-		Histogram hist = (Histogram) forInjectMetricField(metricRegistry, InjectMetricTest.Target.class, "histogram");
+		assertNotNull(target2.histogram);
+		Histogram hist = (Histogram) forMetricField(metricRegistry, MetricAnnotationTest.Target.class, "histogram");
 		assertSame(target.histogram, hist);
+		assertSame(target2.histogram, hist);
+
+		assertNotNull(target.uniformHistogram);
+		assertNotNull(target2.uniformHistogram);
+		Histogram uniHist = (Histogram) forMetricField(metricRegistry, MetricAnnotationTest.Target.class, "uniformHistogram");
+		assertSame(target.uniformHistogram, uniHist);
+		assertSame(target2.uniformHistogram, uniHist);
 	}
 
 	public static class Target {
 
-		@InjectMetric
+		@Metric
 		public Meter theNameForTheMeter;
 
-		@InjectMetric(name = "theNameForTheTimer")
+		@Metric(name = "theNameForTheTimer")
 		private Timer timer;
 
-		@InjectMetric(name = "group.type.counter", absolute = true)
+		@Metric(name = "group.type.counter", absolute = true)
 		Counter counter;
 
-		@InjectMetric
+		@Metric
 		Histogram histogram;
+
+		@Metric
+		Histogram uniformHistogram = new Histogram(new UniformReservoir());
 
 	}
 
