@@ -1,67 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>metrics-spring by ryantenney</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <title>metrics-spring by ryantenney</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
+    <header>
+      <div class="inner">
         <h1>metrics-spring</h1>
-        <p>Spring integration for Yammer&#39;s Metrics library</p>
+        <h2>Spring integration for Coda Hale's Metrics library</h2>
+        <a href="https://github.com/ryantenney/metrics-spring" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-        <p class="view"><a href="https://github.com/ryantenney/metrics-spring">View the Project on GitHub <small>ryantenney/metrics-spring</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/ryantenney/metrics-spring/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/ryantenney/metrics-spring/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/ryantenney/metrics-spring">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a name="metrics-for-spring-" class="anchor" href="#metrics-for-spring-"><span class="octicon octicon-link"></span></a>Metrics for Spring <a href="http://travis-ci.org/ryantenney/metrics-spring"><img src="https://secure.travis-ci.org/ryantenney/metrics-spring.png" alt="Build Status"></a>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="metrics-for-spring-" class="anchor" href="#metrics-for-spring-"><span class="octicon octicon-link"></span></a>Metrics for Spring <a href="https://drone.io/github.com/ryantenney/metrics-spring/latest"><img src="https://drone.io/github.com/ryantenney/metrics-spring/status.png" alt="Build Status"></a>
 </h1>
 
 <h2>
 <a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About</h2>
 
-<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Yammer Metrics</a> with Spring AOP, and provides XML and Java configuration.</p>
+<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Coda Hale's Metrics library</a> with Spring, and provides XML and Java configuration.</p>
 
 <p>This module does the following things:</p>
 
 <ul>
-<li>Proxies beans which contain methods annotated with <code>@Timed</code>, <code>@Metered</code>, <code>@ExceptionMetered</code>, and <code>@Counted</code>
+<li>Creates metrics and proxies beans which contain methods annotated with <code>@Timed</code>, <code>@Metered</code>, <code>@ExceptionMetered</code>, and <code>@Counted</code>
 </li>
-<li>Registers a <code>Gauge</code> for beans which have members annotated with <code>@Gauge</code>
+<li>Registers a <code>Gauge</code> for beans which have members annotated with <code>@Gauge</code> and <code>@CachedGauge</code>
 </li>
-<li>Autowires Timers, Meters, Counters and Histograms into fields annotated with <code>@InjectMetric</code>
+<li>Autowires Timers, Meters, Counters and Histograms into fields annotated with <code>@Metric</code>
 </li>
 <li>Registers with the <code>HealthCheckRegistry</code> any beans which extend the class <code>HealthCheck</code>
 </li>
-<li>Creates reporters and binds them to the Spring lifecycle</li>
+<li>Creates reporters from XML config and binds them to the Spring lifecycle</li>
+<li>Registers metrics and metric sets in XML</li>
 </ul><h3>
 <a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h3>
 
-<p>Current version is 3.0.0-RC2, which is compatible with Metrics 3.0</p>
+<p>Current version is 3.0.0-RC4, which is compatible with Metrics 3.0</p>
 
 <div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>com.ryantenney.metrics<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>metrics-spring<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.0-RC2<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.0-RC4<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 
-<p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Yammer Metrics repository</a>.</p>
+<p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Metrics repository</a>.</p>
 
 <h3>
 <a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
@@ -74,19 +75,29 @@
        <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
        <span class="na">xmlns:metrics=</span><span class="s">"http://www.ryantenney.com/schema/metrics"</span>
        <span class="na">xsi:schemaLocation=</span><span class="s">"</span>
-<span class="s">            http://www.springframework.org/schema/beans</span>
-<span class="s">            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span>
-<span class="s">            http://www.ryantenney.com/schema/metrics</span>
-<span class="s">            http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd"</span><span class="nt">&gt;</span>
+<span class="s">           http://www.springframework.org/schema/beans</span>
+<span class="s">           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span>
+<span class="s">           http://www.ryantenney.com/schema/metrics</span>
+<span class="s">           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd"</span><span class="nt">&gt;</span>
 
-    <span class="c">&lt;!-- registry and reporters should be defined in only one context xml file --&gt;</span>
-    <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"registry"</span> <span class="na">name=</span><span class="s">"springMetrics"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;metrics:reporter</span> <span class="na">type=</span><span class="s">"console"</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="na">period=</span><span class="s">"1m"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- Registry should be defined in only one context XML file --&gt;</span>
+    <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"metrics"</span> <span class="nt">/&gt;</span>
 
     <span class="c">&lt;!-- annotation-driven must be included in all context files --&gt;</span>
-    <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"registry"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"metrics"</span> <span class="nt">/&gt;</span>
 
-    <span class="c">&lt;!-- beans --&gt;</span>
+    <span class="c">&lt;!-- (Optional) Registry should be defined in only one context XML file --&gt;</span>
+    <span class="nt">&lt;metrics:reporter</span> <span class="na">type=</span><span class="s">"console"</span> <span class="na">metric-registry=</span><span class="s">"metrics"</span> <span class="na">period=</span><span class="s">"1m"</span> <span class="nt">/&gt;</span>
+
+    <span class="c">&lt;!-- (Optional) The metrics in this example require the metrics-jvm jar--&gt;</span>
+    <span class="nt">&lt;metrics:register</span> <span class="na">metric-registry=</span><span class="s">"metrics"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.gc"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.GarbageCollectorMetricSet"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.memory"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.MemoryUsageGaugeSet"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.thread-states"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.ThreadStatesGaugeSet"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.fd.usage"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.FileDescriptorRatioGauge"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/metrics:register&gt;</span>
+
+    <span class="c">&lt;!-- Beans and other Spring config --&gt;</span>
 
 <span class="nt">&lt;/beans&gt;</span>
 </pre></div>
@@ -106,14 +117,9 @@
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringConfiguringClass</span> <span class="kd">extends</span> <span class="n">MetricsConfigurerAdapter</span> <span class="o">{</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="n">MetricRegistry</span> <span class="nf">getMetricRegistry</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">SharedMetricRegistries</span><span class="o">.</span><span class="na">getOrCreate</span><span class="o">(</span><span class="s">"springMetrics"</span><span class="o">);</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">configureReporters</span><span class="o">(</span><span class="n">MetricRegistry</span> <span class="n">metricRegistry</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">ConsoleReporter</span><span class="o">.</span><span class="na">forRegistry</span><span class="o">(</span><span class="n">registry</span><span class="o">)</span>
-            <span class="o">.</span><span class="na">outputTo</span><span class="o">(</span><span class="n">output</span><span class="o">)</span>
+        <span class="n">ConsoleReporter</span>
+            <span class="o">.</span><span class="na">forRegistry</span><span class="o">(</span><span class="n">metricRegistry</span><span class="o">)</span>
             <span class="o">.</span><span class="na">build</span><span class="o">()</span>
             <span class="o">.</span><span class="na">start</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MINUTES</span><span class="o">);</span>
     <span class="o">}</span>
@@ -127,6 +133,9 @@
 <p>The <code>&lt;metrics:annotation-driven /&gt;</code> element is required, and has 4 optional arguments:</p>
 
 <ul>
+<li>Attributes
+
+<ul>
 <li>
 <code>metric-registry</code> - the id of the <code>MetricRegsitry</code> bean with which the generated metrics should be registered. If omitted a new <code>MetricRegistry</code> bean is created.</li>
 <li>
@@ -135,19 +144,34 @@
 <code>proxy-target-class</code> - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This <em>may</em> be necessary if you use class-based autowiring.</li>
 <li>
 <code>expose-proxy</code> - if set to true, the target can access the proxy which wraps it by calling <code>AopContext.currentProxy()</code>.</li>
+</ul>
+</li>
 </ul><p>The <code>&lt;metrics:metric-registry /&gt;</code> element constructs a new MetricRegistry or retrieves a shared registry:</p>
+
+<ul>
+<li>Attributes
 
 <ul>
 <li>
 <code>id</code> - the bean name with which to register the MetricRegistry bean</li>
 <li>
 <code>name</code> - the name of the MetricRegistry, if present, this calls SharedMetricRegistries.getOrCreate(name)</li>
+</ul>
+</li>
 </ul><p>The <code>&lt;metrics:health-check-registry /&gt;</code> element constructs a new HealthCheckRegistry:</p>
+
+<ul>
+<li>Attributes
 
 <ul>
 <li>
 <code>id</code> - the bean name with which to register the HealthCheckRegistry bean</li>
-</ul><p>The <code>&lt;metrics:reporter /&gt;</code> element creates and starts a reporter.</p>
+</ul>
+</li>
+</ul><p>The <code>&lt;metrics:reporter /&gt;</code> element creates and starts a reporter:</p>
+
+<ul>
+<li>Attributes
 
 <ul>
 <li>
@@ -155,9 +179,7 @@
 <li>
 <code>metric-registry</code> - the id of the <code>MetricRegsitry</code> bean for which the reporter should retrieve metrics</li>
 <li>
-<code>type</code> - the type of the reporter. Additional types may be registered through SPI (more on this later).
-
-<ul>
+<code>type</code> - the type of the reporter. Additional types may be registered through SPI (more on this later).</li>
 <li>
 <code>console</code>: ConsoleReporter</li>
 <li>
@@ -168,6 +190,25 @@
 <code>ganglia</code>: GangliaReporter (requires <code>metrics-ganglia</code>)</li>
 <li>
 <code>graphite</code>: GraphiteReporter (requires <code>metrics-graphite</code>)</li>
+</ul>
+</li>
+</ul><p>The <code>&lt;metrics:register /&gt;</code> element registers with the MetricRegistry a bean which extends implements Metric or MetricSet</p>
+
+<ul>
+<li>Attributes
+
+<ul>
+<li>
+<code>metric-registry</code> - the id of the <code>MetricRegsitry</code> bean with which the metrics are to be registered</li>
+</ul>
+</li>
+<li>Child elements
+
+<ul>
+<li>
+<code>&lt;bean /&gt;</code> - The beans to register with the specified registry.</li>
+<li>
+<code>metrics:name</code> attribute on the bean element - specifies the name with which the metric will be registered. Optional if the bean is a MetricSet.</li>
 </ul>
 </li>
 </ul><h3>
@@ -230,14 +271,26 @@ Additionally, <code>@InjectMetric</code> may be used on non-public, non-final fi
 <p>Published under Apache Software License 2.0, see LICENSE</p>
 
 <p><a href="http://rochestermade.com"><img src="http://rochestermade.com/media/images/rochester-made-dark-on-light.png" alt="Rochester Made"></a></p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/ryantenney">ryantenney</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/ryantenney/metrics-spring/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/ryantenney/metrics-spring/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/ryantenney/metrics-spring"></a> is maintained by <a href="https://github.com/ryantenney">ryantenney</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
