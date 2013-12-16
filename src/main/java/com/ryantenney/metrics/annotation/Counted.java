@@ -20,6 +20,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * An annotation for marking a method of an annotated object as counted.
+ *
+ * <p/>
+ * Given a method like this:
+ * <pre><code>
+ *     {@literal @}Counted(name = "fancyName")
+ *     public String fancyName(String name) {
+ *         return "Sir Captain " + name;
+ *     }
+ * </code></pre>
+ * <p/>
+ * A counter for the defining class with the name {@code fancyName} will be created and each time the
+ * {@code #fancyName(String)} method is invoked, the counter will be marked.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Counted {
@@ -30,7 +45,7 @@ public @interface Counted {
 	String name() default "";
 
 	/**
-	 * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
+	 * If {@code true}, use the given name as an absolute name. If {@code false}, use the given name
 	 * relative to the annotated class.
 	 */
 	boolean absolute() default false;

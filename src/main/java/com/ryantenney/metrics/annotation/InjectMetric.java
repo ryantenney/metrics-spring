@@ -21,18 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Deprecated, use @Metric instead.
+ * Deprecated: use {@literal @}{@link Metric} instead.
  *
- * An annotation requesting that a metric be injected
- * <p/>
- * Given a field like this:
- * <pre><code>
- *     \@InjectMetric
- *     public Meter someTimer;
- * </code></pre>
- * <p/>
- * A meter for the defining class with the name {@code someTimer} will be created. It will be up to the user
- * to mark the meter. This annotation can be used on fields of type Meter, Timer, Counter, and Histogram.
+ * <p>Support for this annotation will be removed before the 3.0.0 release.</p>
  */
 @Deprecated
 @Retention(RetentionPolicy.RUNTIME)
@@ -45,7 +36,7 @@ public @interface InjectMetric {
 	String name() default "";
 
 	/**
-	 * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
+	 * If {@code true}, use the given name as an absolute name. If {@code false}, use the given name
 	 * relative to the annotated class.
 	 */
 	boolean absolute() default false;

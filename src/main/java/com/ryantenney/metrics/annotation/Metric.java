@@ -21,16 +21,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation requesting that a metric be injected
+ * An annotation requesting that a metric be injected or registered.
+ *
  * <p/>
  * Given a field like this:
  * <pre><code>
- *     \@Metric
- *     public Meter someTimer;
+ *     {@literal @}Metric
+ *     public Histogram histogram;
  * </code></pre>
  * <p/>
- * A meter for the defining class with the name {@code someTimer} will be created. It will be up to the user
- * to mark the meter. This annotation can be used on fields of type Meter, Timer, Counter, and Histogram.
+ * A meter of the field's type will be created and injected into Spring-managed beans after construction
+ * but before initialization. It will be up to the user to interact with the metric. This annotation
+ * can be used on fields of type Meter, Timer, Counter, and Histogram.
+ * 
+ * <p>
+ * This may also be used to register a metric, which is useful for creating a histogram with
+ * a custom Reservoir.
+ * <pre><code>
+ *     {@literal @}Metric
+ *     public Histogram uniformHistogram = new Histogram(new UniformReservoir());
+ * </code></pre>
+ * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -42,7 +53,7 @@ public @interface Metric {
 	String name() default "";
 
 	/**
-	 * If {@code true}, use the given name an as absolute name. If {@code false}, use the given name
+	 * If {@code true}, use the given name as an absolute name. If {@code false}, use the given name
 	 * relative to the annotated class.
 	 */
 	boolean absolute() default false;
