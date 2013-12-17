@@ -29,11 +29,13 @@ import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
 import com.codahale.metrics.annotation.Timed;
 
+import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
+
 class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Timer> implements Ordered {
 
 	public static final Class<Timed> ANNOTATION = Timed.class;
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
-	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public TimedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
 		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);

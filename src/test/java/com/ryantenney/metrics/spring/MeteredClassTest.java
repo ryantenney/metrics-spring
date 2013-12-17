@@ -386,9 +386,7 @@ public class MeteredClassTest {
 		assertEquals(1, protectedScopeMethodCounter.getCount());
 
 		Counter privateScopeMethodCounter = forCountedMethod(metricRegistry, MeteredClass.class, "privateScopeMethod");
-		assertEquals(0, privateScopeMethodCounter.getCount());
-		meteredClass.privateScopeMethod();
-		assertEquals(0, privateScopeMethodCounter.getCount());
+		assertTrue(privateScopeMethodCounter == null);
 	}
 
 	public static class MeteredClass {

@@ -27,11 +27,13 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metered;
 
+import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
+
 class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, Meter> {
 
 	public static final Class<Metered> ANNOTATION = Metered.class;
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
-	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION);
+	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public MeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
 		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);

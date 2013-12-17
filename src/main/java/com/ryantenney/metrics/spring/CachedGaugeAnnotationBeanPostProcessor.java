@@ -28,11 +28,13 @@ import org.springframework.util.ReflectionUtils.MethodCallback;
 import com.codahale.metrics.MetricRegistry;
 import com.ryantenney.metrics.annotation.CachedGauge;
 
+import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
+
 class CachedGaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CachedGaugeAnnotationBeanPostProcessor.class);
 
-	private static final AnnotationFilter FILTER = new AnnotationFilter(CachedGauge.class);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(CachedGauge.class, INSTANCE_METHODS);
 
 	private final MetricRegistry metrics;
 

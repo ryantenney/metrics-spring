@@ -31,11 +31,14 @@ import org.springframework.util.ReflectionUtils.MethodCallback;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Gauge;
 
+import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_FIELDS;
+import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
+
 class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GaugeAnnotationBeanPostProcessor.class);
 
-	private static final AnnotationFilter FILTER = new AnnotationFilter(Gauge.class);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(Gauge.class, PROXYABLE_METHODS, INSTANCE_FIELDS);
 
 	private final MetricRegistry metrics;
 
