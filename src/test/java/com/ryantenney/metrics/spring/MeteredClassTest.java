@@ -368,6 +368,29 @@ public class MeteredClassTest {
 		assertEquals(1, overloaded_param.getCount());
 	}
 
+	@Test
+	public void scopeTest() {
+		Counter publicScopeMethodCounter = forCountedMethod(metricRegistry, MeteredClass.class, "publicScopeMethod");
+		assertEquals(0, publicScopeMethodCounter.getCount());
+		meteredClass.publicScopeMethod();
+		assertEquals(1, publicScopeMethodCounter.getCount());
+
+		Counter packageScopeMethodCounter = forCountedMethod(metricRegistry, MeteredClass.class, "packageScopeMethod");
+		assertEquals(0, packageScopeMethodCounter.getCount());
+		meteredClass.packageScopeMethod();
+		assertEquals(1, packageScopeMethodCounter.getCount());
+
+		Counter protectedScopeMethodCounter = forCountedMethod(metricRegistry, MeteredClass.class, "protectedScopeMethod");
+		assertEquals(0, protectedScopeMethodCounter.getCount());
+		meteredClass.protectedScopeMethod();
+		assertEquals(1, protectedScopeMethodCounter.getCount());
+
+		Counter privateScopeMethodCounter = forCountedMethod(metricRegistry, MeteredClass.class, "privateScopeMethod");
+		assertEquals(0, privateScopeMethodCounter.getCount());
+		meteredClass.privateScopeMethod();
+		assertEquals(0, privateScopeMethodCounter.getCount());
+	}
+
 	public static class MeteredClass {
 
 		@com.codahale.metrics.annotation.Gauge
@@ -463,6 +486,18 @@ public class MeteredClassTest {
 				throw clazz.newInstance();
 			}
 		}
+
+		@Counted(name = "public-scope-method", monotonic = true)
+		public void publicScopeMethod() {}
+
+		@Counted(name = "package-scope-method", monotonic = true)
+		void packageScopeMethod() {}
+
+		@Counted(name = "protected-scope-method", monotonic = true)
+		protected void protectedScopeMethod() {}
+
+		@Counted(name = "private-scope-method", monotonic = true)
+		private void privateScopeMethod() {}
 
 	}
 
