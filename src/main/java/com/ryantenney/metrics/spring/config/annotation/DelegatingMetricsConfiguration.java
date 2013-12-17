@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.NamingStrategy;
 
 /**
  * This is the class imported by {@link EnableMetrics @EnableMetrics}.
@@ -39,6 +40,7 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 
 	private MetricRegistry metricRegistry;
 	private HealthCheckRegistry healthCheckRegistry;
+	private NamingStrategy namingStrategy;;
 
 	@Autowired(required = false)
 	public void setMetricsConfigurers(final List<MetricsConfigurer> configurers) {
@@ -69,6 +71,15 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 			this.healthCheckRegistry = this.delegates.getHealthCheckRegistry();
 		}
 		return this.healthCheckRegistry;
+	}
+
+	@Bean
+	@Override
+	public NamingStrategy getNamingStrategy() {
+		if (this.namingStrategy == null) {
+			this.namingStrategy = this.delegates.getNamingStrategy();
+		}
+		return this.namingStrategy;
 	}
 
 }

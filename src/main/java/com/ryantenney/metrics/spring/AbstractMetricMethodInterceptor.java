@@ -35,19 +35,19 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	private final MetricRegistry metricRegistry;
+	private final NamingStrategy namingStrategy;
 	private final Class<?> targetClass;
-    protected final String beanName;
+	private final String beanName;
 	private final Class<A> annotationClass;
 	private final Map<MethodKey, AnnotationMetricPair<A, M>> metrics;
-    protected final NamingStrategy namingStrategy;
 
 	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final String beanName, final NamingStrategy namingStrategy, final Class<A> annotationClass, final MethodFilter methodFilter) {
 		this.metricRegistry = metricRegistry;
+		this.namingStrategy = namingStrategy;
 		this.targetClass = targetClass;
-        this.beanName = beanName;
+		this.beanName = beanName;
 		this.annotationClass = annotationClass;
 		this.metrics = new HashMap<MethodKey, AnnotationMetricPair<A, M>>();
-        this.namingStrategy = namingStrategy;
 
 		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		LOG.debug("Scanning for @{} annotated methods", annotationClass.getSimpleName());
@@ -71,7 +71,7 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 		final A annotation = method.getAnnotation(annotationClass);
 		if (annotation != null) {
 			final MethodKey methodKey = MethodKey.forMethod(method);
-			final String metricName = buildMetricName(targetClass, method, annotation);
+			final String metricName = buildMetricName(namingStrategy, targetClass, beanName, method, annotation);
 			final M metric = buildMetric(metricRegistry, metricName, annotation);
 
 			if (metric != null) {
@@ -84,7 +84,7 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 		}
 	}
 
-	protected abstract String buildMetricName(Class<?> targetClass, Method method, A annotation);
+	protected abstract String buildMetricName(NamingStrategy namingStrategy, Class<?> targetClass, String beanName, Method method, A annotation);
 
 	protected abstract M buildMetric(MetricRegistry metricRegistry, String metricName, A annotation);
 

@@ -47,7 +47,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.ryantenney.metrics.annotation.Counted;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
-import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 
 /**
  * Tests use of {@link EnableMetrics @EnableMetrics} on {@code @Configuration} classes.
@@ -61,6 +61,7 @@ public class EnableMetricsTest {
 	private static AnnotationConfigApplicationContext applicationContext;
 	private static MetricRegistry metricRegistry;
 	private static HealthCheckRegistry healthCheckRegistry;
+	private static NamingStrategy namingStrategy;
 	private static TestBean testBean;
 
 	@BeforeClass
@@ -176,7 +177,7 @@ public class EnableMetricsTest {
 
 	@Configuration
 	@EnableMetrics
-	public static class MetricsConfig implements MetricsConfigurer {
+	public static class MetricsConfig extends MetricsConfigurerAdapter {
 
 		public static boolean isConfigureReportersInvoked = false;
 
@@ -193,6 +194,11 @@ public class EnableMetricsTest {
 		@Override
 		public HealthCheckRegistry getHealthCheckRegistry() {
 			return healthCheckRegistry;
+		}
+
+		@Override
+		public NamingStrategy getNamingStrategy() {
+			return namingStrategy;
 		}
 
 		@Override

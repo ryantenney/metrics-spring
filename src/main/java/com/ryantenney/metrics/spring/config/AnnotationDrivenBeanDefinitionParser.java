@@ -18,17 +18,18 @@ package com.ryantenney.metrics.spring.config;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_APPLICATION;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
-import com.ryantenney.metrics.spring.MyNamingStrategy;
-import com.ryantenney.metrics.spring.NamingStrategy;
-import com.ryantenney.metrics.spring.Util;
+import com.ryantenney.metrics.spring.DefaultNamingStrategy;
+
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
+import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import com.codahale.metrics.MetricRegistry;
@@ -56,16 +57,15 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 		final ProxyConfig proxyConfig = new ProxyConfig();
 
-        NamingStrategy namingStrategy = new Util();
-        String namingStrategyClassName = element.getAttribute("naming-strategy-class");
-        if (StringUtils.hasText(namingStrategyClassName)) {
-            try {
-                namingStrategy = (NamingStrategy)Class.forName(namingStrategyClassName).newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
+		BeanDefinitionHolder namingStrategy;
+		Element namingStrategyElement = DomUtils.getChildElementByTagName(element, "naming-strategy");
+		if (namingStrategyElement != null) {
+			Element namingStrategyBeanElement = DomUtils.getChildElementByTagName(namingStrategyElement, "bean");
+			namingStrategy = parserContext.getDelegate().parseBeanDefinitionElement(namingStrategyBeanElement);
+		}
+		else {
+			namingStrategy = new BeanDefinitionHolder(build(DefaultNamingStrategy.class, source, ROLE_INFRASTRUCTURE).getBeanDefinition(), "metricsNamingStrategy");
+		}
 
 		if (StringUtils.hasText(element.getAttribute("expose-proxy"))) {
 			proxyConfig.setExposeProxy(Boolean.valueOf(element.getAttribute("expose-proxy")));
@@ -81,29 +81,29 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("exceptionMetered")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-                    .addConstructorArgValue(namingStrategy));
+                    .addConstructorArgValue(namingStrategy)
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("metered")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-                    .addConstructorArgValue(namingStrategy));
+                    .addConstructorArgValue(namingStrategy)
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("timed")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-                    .addConstructorArgValue(namingStrategy));
+                    .addConstructorArgValue(namingStrategy)
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("counted")
 					.addConstructorArgReference(metricsBeanName)
-					.addConstructorArgValue(proxyConfig)
-                    .addConstructorArgValue(namingStrategy));
+                    .addConstructorArgValue(namingStrategy)
+					.addConstructorArgValue(proxyConfig));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
@@ -120,13 +120,13 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("metric")
-					.addConstructorArgReference(metricsBeanName));
+					.addConstructorArgReference(metricsBeanName)
+                    .addConstructorArgValue(namingStrategy));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
 					.setFactoryMethod("injectMetric")
-					.addConstructorArgReference(metricsBeanName)
-                    .addConstructorArgValue(namingStrategy));
+					.addConstructorArgReference(metricsBeanName));
 
 		registerComponent(parserContext,
 				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)

@@ -16,7 +16,6 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,48 +42,54 @@ class TestUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
 
-	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
-		return Util.forTimedMethod(klass, member, annotation);
+	private static final DefaultNamingStrategy DEFAULT_NAMING_STRATEGY = new DefaultNamingStrategy();
+
+	static String forTimedMethod(Class<?> klass, Method method, Timed annotation) {
+		return DEFAULT_NAMING_STRATEGY.forTimedMethod(klass, null, method, annotation);
 	}
 
-	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
-		return Util.forMeteredMethod(klass, member, annotation);
+	static String forMeteredMethod(Class<?> klass, Method method, Metered annotation) {
+		return DEFAULT_NAMING_STRATEGY.forMeteredMethod(klass, null, method, annotation);
 	}
 
-	static String forGauge(Class<?> klass, Member member, com.codahale.metrics.annotation.Gauge annotation) {
-		return Util.forGauge(klass, member, annotation);
+	static String forGaugeMethod(Class<?> klass, Method method, com.codahale.metrics.annotation.Gauge annotation) {
+		return DEFAULT_NAMING_STRATEGY.forGaugeMethod(klass, null, method, annotation);
 	}
 
-	static String forCachedGauge(Class<?> klass, Member member, com.ryantenney.metrics.annotation.CachedGauge annotation) {
-		return Util.forCachedGauge(klass, member, annotation);
+	static String forGaugeField(Class<?> klass, Field field, com.codahale.metrics.annotation.Gauge annotation) {
+		return DEFAULT_NAMING_STRATEGY.forGaugeField(klass, null, field, annotation);
 	}
 
-	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
-		return Util.forExceptionMeteredMethod(klass, member, annotation);
+	static String forCachedGauge(Class<?> klass, Method method, com.ryantenney.metrics.annotation.CachedGauge annotation) {
+		return DEFAULT_NAMING_STRATEGY.forCachedGaugeMethod(klass, null, method, annotation);
 	}
 
-	static String forCountedMethod(Class<?> klass, Member member, Counted annotation) {
-		return Util.forCountedMethod(klass, member, annotation);
+	static String forExceptionMeteredMethod(Class<?> klass, Method method, ExceptionMetered annotation) {
+		return DEFAULT_NAMING_STRATEGY.forExceptionMeteredMethod(klass, null, method, annotation);
 	}
 
-	static String forMetricField(Class<?> klass, Member member, Metric annotation) {
-		return Util.forMetricField(klass, member, annotation);
+	static String forCountedMethod(Class<?> klass, Method method, Counted annotation) {
+		return DEFAULT_NAMING_STRATEGY.forCountedMethod(klass, null, method, annotation);
 	}
 
-	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
-		return Util.forInjectMetricField(klass, member, annotation);
+	static String forMetricField(Class<?> klass, Field field, Metric annotation) {
+		return DEFAULT_NAMING_STRATEGY.forMetricField(klass, null, field, annotation);
+	}
+
+	static String forInjectMetricField(Class<?> klass, Field field, InjectMetric annotation) {
+		return DEFAULT_NAMING_STRATEGY.chooseName(annotation.name(), annotation.absolute(), klass, null, field);
 	}
 
 	static Gauge<?> forGaugeField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {
 		Field field = findField(clazz, fieldName);
-		String metricName = forGauge(clazz, field, field.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
+		String metricName = forGaugeField(clazz, field, field.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge field named '{}'", metricName);
 		return metricRegistry.getGauges().get(metricName);
 	}
 
 	static Gauge<?> forGaugeMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
-		String metricName = forGauge(clazz, method, method.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
+		String metricName = forGaugeMethod(clazz, method, method.getAnnotation(com.codahale.metrics.annotation.Gauge.class));
 		log.info("Looking up gauge method named '{}'", metricName);
 		return metricRegistry.getGauges().get(metricName);
 	}

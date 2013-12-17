@@ -56,7 +56,7 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	}
 	
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
+	protected String buildMetricName(NamingStrategy namingStrategy, Class<?> targetClass, String beanName, Method method, Counted annotation) {
 		return namingStrategy.forCountedMethod(targetClass, beanName, method, annotation);
 	}
 

@@ -17,6 +17,7 @@ package com.ryantenney.metrics.spring.config.annotation;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.NamingStrategy;
 
 /**
  * An implementation of {@link MetricsConfigurer} with empty methods allowing
@@ -52,6 +53,15 @@ public abstract class MetricsConfigurerAdapter implements MetricsConfigurer {
 	 */
 	@Override
 	public HealthCheckRegistry getHealthCheckRegistry() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>This implementation returns {@code null}.
+	 */
+	@Override
+	public NamingStrategy getNamingStrategy() {
 		return null;
 	}
 

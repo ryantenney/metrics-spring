@@ -49,7 +49,7 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	}
 	
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
+	protected String buildMetricName(NamingStrategy namingStrategy, Class<?> targetClass, String beanName, Method method, Metered annotation) {
 		return namingStrategy.forMeteredMethod(targetClass, beanName, method, annotation);
 	}
 

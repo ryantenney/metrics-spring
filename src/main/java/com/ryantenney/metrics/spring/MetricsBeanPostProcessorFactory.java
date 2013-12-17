@@ -25,41 +25,41 @@ public class MetricsBeanPostProcessorFactory {
 	private MetricsBeanPostProcessorFactory() {
 	}
 
-	public static AdvisingBeanPostProcessor exceptionMetered(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig, NamingStrategy naming) {
+	public static AdvisingBeanPostProcessor exceptionMetered(final MetricRegistry metricRegistry, NamingStrategy namingStrategy, final ProxyConfig proxyConfig) {
 		return new AdvisingBeanPostProcessor(ExceptionMeteredMethodInterceptor.POINTCUT,
-				ExceptionMeteredMethodInterceptor.adviceFactory(metricRegistry, naming), proxyConfig);
+				ExceptionMeteredMethodInterceptor.adviceFactory(metricRegistry, namingStrategy), proxyConfig);
 	}
 
-	public static AdvisingBeanPostProcessor metered(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig, NamingStrategy naming) {
+	public static AdvisingBeanPostProcessor metered(final MetricRegistry metricRegistry, NamingStrategy namingStrategy, final ProxyConfig proxyConfig) {
 		return new AdvisingBeanPostProcessor(MeteredMethodInterceptor.POINTCUT,
-				MeteredMethodInterceptor.adviceFactory(metricRegistry, naming), proxyConfig);
+				MeteredMethodInterceptor.adviceFactory(metricRegistry, namingStrategy), proxyConfig);
 	}
 
-	public static AdvisingBeanPostProcessor timed(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig, NamingStrategy naming) {
+	public static AdvisingBeanPostProcessor timed(final MetricRegistry metricRegistry, NamingStrategy namingStrategy, final ProxyConfig proxyConfig) {
 		return new AdvisingBeanPostProcessor(TimedMethodInterceptor.POINTCUT,
-				TimedMethodInterceptor.adviceFactory(metricRegistry, naming), proxyConfig);
+				TimedMethodInterceptor.adviceFactory(metricRegistry, namingStrategy), proxyConfig);
 	}
 
-	public static AdvisingBeanPostProcessor counted(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig, NamingStrategy naming) {
+	public static AdvisingBeanPostProcessor counted(final MetricRegistry metricRegistry, NamingStrategy namingStrategy, final ProxyConfig proxyConfig) {
 		return new AdvisingBeanPostProcessor(CountedMethodInterceptor.POINTCUT,
-				CountedMethodInterceptor.adviceFactory(metricRegistry, naming), proxyConfig);
+				CountedMethodInterceptor.adviceFactory(metricRegistry, namingStrategy), proxyConfig);
 	}
 
-	public static GaugeAnnotationBeanPostProcessor gauge(final MetricRegistry metricRegistry, NamingStrategy naming) {
-		return new GaugeAnnotationBeanPostProcessor(metricRegistry, naming);
+	public static GaugeAnnotationBeanPostProcessor gauge(final MetricRegistry metricRegistry, final NamingStrategy namingStrategy) {
+		return new GaugeAnnotationBeanPostProcessor(metricRegistry, namingStrategy);
 	}
 
-	public static CachedGaugeAnnotationBeanPostProcessor cachedGauge(final MetricRegistry metricRegistry, NamingStrategy naming) {
-		return new CachedGaugeAnnotationBeanPostProcessor(metricRegistry, naming);
+	public static CachedGaugeAnnotationBeanPostProcessor cachedGauge(final MetricRegistry metricRegistry, final NamingStrategy namingStrategy) {
+		return new CachedGaugeAnnotationBeanPostProcessor(metricRegistry, namingStrategy);
 	}
 
-	public static MetricAnnotationBeanPostProcessor metric(final MetricRegistry metricRegistry) {
-		return new MetricAnnotationBeanPostProcessor(metricRegistry);
+	public static MetricAnnotationBeanPostProcessor metric(final MetricRegistry metricRegistry, final NamingStrategy namingStrategy) {
+		return new MetricAnnotationBeanPostProcessor(metricRegistry, namingStrategy);
 	}
 
 	@Deprecated
-	public static InjectMetricAnnotationBeanPostProcessor injectMetric(final MetricRegistry metricRegistry, NamingStrategy naming) {
-		return new InjectMetricAnnotationBeanPostProcessor(metricRegistry, naming);
+	public static InjectMetricAnnotationBeanPostProcessor injectMetric(final MetricRegistry metricRegistry) {
+		return new InjectMetricAnnotationBeanPostProcessor(metricRegistry);
 	}
 
 	public static HealthCheckBeanPostProcessor healthCheck(final HealthCheckRegistry healthRegistry) {

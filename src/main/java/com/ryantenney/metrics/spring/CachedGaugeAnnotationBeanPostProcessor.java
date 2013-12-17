@@ -35,12 +35,12 @@ class CachedGaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Order
 	private static final AnnotationFilter FILTER = new AnnotationFilter(CachedGauge.class);
 
 	private final MetricRegistry metrics;
-    private final NamingStrategy namingStrategy;
+	private final NamingStrategy namingStrategy;
 
-    CachedGaugeAnnotationBeanPostProcessor(MetricRegistry metrics, NamingStrategy namingStrategy) {
-        this.metrics = metrics;
-        this.namingStrategy = namingStrategy;
-    }
+	CachedGaugeAnnotationBeanPostProcessor(MetricRegistry metrics, NamingStrategy namingStrategy) {
+		this.metrics = metrics;
+		this.namingStrategy = namingStrategy;
+	}
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
@@ -60,7 +60,7 @@ class CachedGaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Order
 				}
 
 				final CachedGauge annotation = method.getAnnotation(CachedGauge.class);
-				final String metricName = namingStrategy.forCachedGauge(targetClass, beanName, method, annotation);
+				final String metricName = namingStrategy.forCachedGaugeMethod(targetClass, beanName, method, annotation);
 
 				metrics.register(metricName, new com.codahale.metrics.CachedGauge<Object>(annotation.timeout(), annotation.timeoutUnit()) {
 					@Override

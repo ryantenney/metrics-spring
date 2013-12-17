@@ -39,20 +39,22 @@ class MetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class);
 
 	private final MetricRegistry metrics;
+	private final NamingStrategy namingStrategy;
 
-	public MetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+	public MetricAnnotationBeanPostProcessor(final MetricRegistry metrics, final NamingStrategy namingStrategy) {
 		this.metrics = metrics;
+		this.namingStrategy = namingStrategy;
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, final String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalAccessException {
 				final Metric annotation = field.getAnnotation(Metric.class);
-				final String metricName = Util.forMetricField(targetClass, field, annotation);
+				final String metricName = namingStrategy.forMetricField(targetClass, beanName, field, annotation);
 
 				final Class<?> type = field.getType();
 				if (!com.codahale.metrics.Metric.class.isAssignableFrom(type)) {

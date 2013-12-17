@@ -38,11 +38,11 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 	private static final AnnotationFilter FILTER = new AnnotationFilter(Gauge.class);
 
 	private final MetricRegistry metrics;
-    private final NamingStrategy namingStrategy;
+	private final NamingStrategy namingStrategy;
 
 	public GaugeAnnotationBeanPostProcessor(final MetricRegistry metrics, NamingStrategy namingStrategy) {
 		this.metrics = metrics;
-        this.namingStrategy = namingStrategy;
+		this.namingStrategy = namingStrategy;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 				ReflectionUtils.makeAccessible(field);
 
 				final Gauge annotation = field.getAnnotation(Gauge.class);
-				final String metricName = namingStrategy.forGauge(targetClass, beanName, field, annotation);
+				final String metricName = namingStrategy.forGaugeField(targetClass, beanName, field, annotation);
 
 				metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 					@Override
@@ -88,7 +88,7 @@ class GaugeAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 				}
 
 				final Gauge annotation = method.getAnnotation(Gauge.class);
-				final String metricName = namingStrategy.forGauge(targetClass, beanName, method, annotation);
+				final String metricName = namingStrategy.forGaugeMethod(targetClass, beanName, method, annotation);
 
 				metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 					@Override

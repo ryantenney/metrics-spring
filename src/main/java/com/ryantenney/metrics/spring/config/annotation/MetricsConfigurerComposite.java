@@ -21,6 +21,8 @@ import java.util.List;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.DefaultNamingStrategy;
+import com.ryantenney.metrics.spring.NamingStrategy;
 
 /**
  * A {@link MetricsConfigurer} implementation that delegates to other {@link MetricsConfigurer} instances.
@@ -73,6 +75,22 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 		HealthCheckRegistry instance = selectSingleInstance(candidates, HealthCheckRegistry.class);
 		if (instance == null) {
 			instance = new HealthCheckRegistry();
+		}
+		return instance;
+	}
+
+	@Override
+	public NamingStrategy getNamingStrategy() {
+		final List<NamingStrategy> candidates = new ArrayList<NamingStrategy>();
+		for (MetricsConfigurer configurer : this.configurers) {
+			final NamingStrategy namingStrategy = configurer.getNamingStrategy();
+			if (namingStrategy != null) {
+				candidates.add(namingStrategy);
+			}
+		}
+		NamingStrategy instance = selectSingleInstance(candidates, NamingStrategy.class);
+		if (instance == null) {
+			instance = new DefaultNamingStrategy();
 		}
 		return instance;
 	}

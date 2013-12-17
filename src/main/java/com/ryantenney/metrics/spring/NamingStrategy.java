@@ -6,27 +6,27 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.CachedGauge;
 import com.ryantenney.metrics.annotation.Counted;
-import com.ryantenney.metrics.annotation.InjectMetric;
+import com.ryantenney.metrics.annotation.Metric;
 
-import java.lang.reflect.Member;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-/**
- * @author orantius
- * @version $Id$
- * @since 12/8/13
- */
 public interface NamingStrategy {
-    String forTimedMethod(Class<?> klass, String beanName, Member member, Timed annotation);
 
-    String forMeteredMethod(Class<?> klass, String beanName, Member member, Metered annotation);
+	String forTimedMethod(Class<?> klass, String beanName, Method method, Timed annotation);
 
-    String forGauge(Class<?> klass, String beanName, Member member, Gauge annotation);
+	String forMeteredMethod(Class<?> klass, String beanName, Method method, Metered annotation);
 
-    String forCachedGauge(Class<?> klass, String beanName, Member member, CachedGauge annotation);
+	String forExceptionMeteredMethod(Class<?> klass, String beanName, Method method, ExceptionMetered annotation);
 
-    String forExceptionMeteredMethod(Class<?> klass, String beanName, Member member, ExceptionMetered annotation);
+	String forCountedMethod(Class<?> klass, String beanName, Method method, Counted annotation);
 
-    String forCountedMethod(Class<?> klass, String beanName, Member member, Counted annotation);
+	String forGaugeField(Class<?> klass, String beanName, Field field, Gauge annotation);
 
-    String forInjectMetricField(Class<?> klass, String beanName, Member member, InjectMetric annotation);
+	String forGaugeMethod(Class<?> klass, String beanName, Method method, Gauge annotation);
+
+	String forCachedGaugeMethod(Class<?> klass, String beanName, Method method, CachedGauge annotation);
+
+	String forMetricField(Class<?> klass, String beanName, Field field, Metric annotation);
+
 }

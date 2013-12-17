@@ -16,6 +16,7 @@
 package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.ryantenney.metrics.annotation.InjectMetric;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 @SuppressWarnings("deprecation")
 class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
@@ -41,22 +44,20 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	private static final AnnotationFilter FILTER = new AnnotationFilter(InjectMetric.class);
 
 	private final MetricRegistry metrics;
-    private final NamingStrategy namingStrategy;
 
-    InjectMetricAnnotationBeanPostProcessor(MetricRegistry metrics, NamingStrategy namingStrategy) {
-        this.metrics = metrics;
-        this.namingStrategy = namingStrategy;
-    }
+	InjectMetricAnnotationBeanPostProcessor(MetricRegistry metrics) {
+		this.metrics = metrics;
+	}
 
 	@Override
-	public Object postProcessBeforeInitialization(final Object bean, final String beanName) {
+	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
 		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalAccessException {
 				final InjectMetric annotation = field.getAnnotation(InjectMetric.class);
-				final String metricName = namingStrategy.forInjectMetricField(targetClass, beanName, field, annotation);
+				final String metricName = chooseName(annotation.name(), annotation.absolute(), targetClass, field);
 
 				final Class<?> type = field.getType();
 				Metric metric = null;
@@ -94,6 +95,16 @@ class InjectMetricAnnotationBeanPostProcessor implements BeanPostProcessor, Orde
 	@Override
 	public int getOrder() {
 		return LOWEST_PRECEDENCE - 2;
+	}
+
+	private static String chooseName(String explicitName, boolean absolute, Class<?> klass, Member member, String... suffixes) {
+		if (explicitName != null && !explicitName.isEmpty()) {
+			if (absolute) {
+				return explicitName;
+			}
+			return name(klass.getCanonicalName(), explicitName);
+		}
+		return name(name(klass.getCanonicalName(), member.getName()), suffixes);
 	}
 
 }
