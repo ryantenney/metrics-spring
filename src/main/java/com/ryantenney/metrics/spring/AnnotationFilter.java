@@ -27,7 +27,6 @@ import org.springframework.util.ReflectionUtils.FieldFilter;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import static org.springframework.util.ReflectionUtils.USER_DECLARED_METHODS;
-
 import static java.lang.reflect.Modifier.*;
 
 class AnnotationFilter implements MethodFilter, FieldFilter {
@@ -62,12 +61,32 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	@Override
 	public boolean matches(Method method) {
-		return USER_DECLARED_METHODS.matches(method) && method.isAnnotationPresent(clazz) && checkModifiers(method, methodModifiers);
+		if (USER_DECLARED_METHODS.matches(method) && method.isAnnotationPresent(clazz)) {
+			if (checkModifiers(method, methodModifiers)) {
+				return true;
+			}
+			else {
+				LOG.warn("Ignoring @{} on method {}.{} due to illegal modifiers: {}",
+						clazz.getSimpleName(), method.getDeclaringClass().getCanonicalName(),
+						method.getName(), Modifier.toString(method.getModifiers() & ~methodModifiers));
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public boolean matches(Field field) {
-		return field.isAnnotationPresent(clazz) && checkModifiers(field, fieldModifiers);
+		if (field.isAnnotationPresent(clazz)) {
+			if (checkModifiers(field, fieldModifiers)) {
+				return true;
+			}
+			else {
+				LOG.warn("Ignoring @{} on field {}.{} due to illegal modifiers: {}",
+						clazz.getSimpleName(), field.getDeclaringClass().getCanonicalName(),
+						field.getName(), Modifier.toString(field.getModifiers() & ~fieldModifiers));
+			}
+		}
+		return false;
 	}
 
 	private boolean checkModifiers(Member member, int allowed) {
