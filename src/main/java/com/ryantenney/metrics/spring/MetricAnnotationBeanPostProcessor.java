@@ -33,13 +33,12 @@ import com.codahale.metrics.Timer;
 import com.ryantenney.metrics.annotation.Metric;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_FIELDS;
-import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
 
 class MetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MetricAnnotationBeanPostProcessor.class);
 
-	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INSTANCE_METHODS, INJECTABLE_FIELDS);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INJECTABLE_FIELDS);
 
 	private final MetricRegistry metrics;
 
