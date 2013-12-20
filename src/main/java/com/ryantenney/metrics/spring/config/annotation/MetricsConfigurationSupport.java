@@ -86,8 +86,14 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public BeanPostProcessor gaugeAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.gauge(getMetricRegistry());
+	public BeanPostProcessor gaugeFieldAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.gaugeField(getMetricRegistry());
+	}
+
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public BeanPostProcessor gaugeMethodAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.gaugeMethod(getMetricRegistry());
 	}
 
 	@Bean

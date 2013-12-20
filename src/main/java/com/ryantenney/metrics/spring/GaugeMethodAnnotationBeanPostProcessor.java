@@ -21,18 +21,18 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
 import com.codahale.metrics.MetricRegistry;
-import com.ryantenney.metrics.annotation.CachedGauge;
+import com.codahale.metrics.annotation.Gauge;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
 
-class CachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
+class GaugeMethodAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 
-	private static final AnnotationFilter FILTER = new AnnotationFilter(CachedGauge.class, INSTANCE_METHODS);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(Gauge.class, INSTANCE_METHODS);
 
 	private final MetricRegistry metrics;
 
-	public CachedGaugeAnnotationBeanPostProcessor(final MetricRegistry metrics) {
-		super(Members.METHODS, Phase.POST_INIT, FILTER);
+	public GaugeMethodAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+		super(Members.ALL, Phase.POST_INIT, FILTER);
 		this.metrics = metrics;
 	}
 
@@ -40,20 +40,20 @@ class CachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 	protected void withMethod(final Object bean, String beanName, Class<?> targetClass, final Method method) {
 		if (method.getParameterTypes().length > 0) {
 			throw new IllegalStateException("Method " + method.getName() +
-				" is annotated with @CachedGauge but requires parameters.");
+				" is annotated with @Gauge but requires parameters.");
 		}
 
-		final CachedGauge annotation = method.getAnnotation(CachedGauge.class);
-		final String metricName = Util.forCachedGauge(targetClass, method, annotation);
+		final Gauge annotation = method.getAnnotation(Gauge.class);
+		final String metricName = Util.forGauge(targetClass, method, annotation);
 
-		metrics.register(metricName, new com.codahale.metrics.CachedGauge<Object>(annotation.timeout(), annotation.timeoutUnit()) {
+		metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 			@Override
-			protected Object loadValue() {
+			public Object getValue() {
 				return ReflectionUtils.invokeMethod(method, bean);
 			}
 		});
 
-		LOG.debug("Created cached gauge {} for method {}.{}", metricName, targetClass.getCanonicalName(), method.getName());
+		LOG.debug("Created gauge {} for method {}.{}", metricName, targetClass.getCanonicalName(), method.getName());
 	}
 
 	@Override

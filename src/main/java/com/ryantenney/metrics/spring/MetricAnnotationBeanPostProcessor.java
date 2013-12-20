@@ -17,13 +17,8 @@ package com.ryantenney.metrics.spring;
 
 import java.lang.reflect.Field;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
@@ -34,71 +29,61 @@ import com.ryantenney.metrics.annotation.Metric;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_FIELDS;
 
-class MetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
-
-	private static final Logger LOG = LoggerFactory.getLogger(MetricAnnotationBeanPostProcessor.class);
+class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 
 	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INJECTABLE_FIELDS);
 
 	private final MetricRegistry metrics;
 
 	public MetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+		super(Members.FIELDS, Phase.PRE_INIT, FILTER);
 		this.metrics = metrics;
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization(final Object bean, String beanName) {
-		final Class<?> targetClass = AopUtils.getTargetClass(bean);
+	protected void withField(Object bean, String beanName, Class<?> targetClass, Field field) {
+		final Metric annotation = field.getAnnotation(Metric.class);
+		final String metricName = Util.forMetricField(targetClass, field, annotation);
 
-		ReflectionUtils.doWithFields(targetClass, new FieldCallback() {
-			@Override
-			public void doWith(Field field) throws IllegalAccessException {
-				final Metric annotation = field.getAnnotation(Metric.class);
-				final String metricName = Util.forMetricField(targetClass, field, annotation);
+		final Class<?> type = field.getType();
+		if (!com.codahale.metrics.Metric.class.isAssignableFrom(type)) {
+			throw new IllegalArgumentException("Field " + targetClass.getCanonicalName() + "."
+					+ field.getName() + " must be a subtype of " + com.codahale.metrics.Metric.class.getCanonicalName());
+		}
 
-				final Class<?> type = field.getType();
-				if (!com.codahale.metrics.Metric.class.isAssignableFrom(type)) {
-					throw new IllegalArgumentException("Field " + targetClass.getCanonicalName() + "."
-							+ field.getName() + " must be a subtype of " + com.codahale.metrics.Metric.class.getCanonicalName());
-				}
+		ReflectionUtils.makeAccessible(field);
 
-				ReflectionUtils.makeAccessible(field);
+		// Get the value of the field annotated with @Metric
+		com.codahale.metrics.Metric metric = (com.codahale.metrics.Metric) ReflectionUtils.getField(field, bean);
 
-				// Get the value of the field annotated with @Metric
-				com.codahale.metrics.Metric metric = (com.codahale.metrics.Metric) ReflectionUtils.getField(field, bean);
-
-				if (metric == null) {
-					// If null, create a metric of the appropriate type and inject it
+		if (metric == null) {
+			// If null, create a metric of the appropriate type and inject it
+			metric = getMetric(metrics, type, metricName);
+			ReflectionUtils.setField(field, bean, metric);
+			LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
+		}
+		else {
+			// If non-null, register that instance of the metric
+			try {
+				// Attempt to register that instance of the metric
+				metrics.register(metricName, metric);
+				LOG.debug("Registered metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
+			}
+			catch (IllegalArgumentException ex1) {
+				// A metric is already registered under that name
+				// (Cannot determine the cause without parsing the Exception's message)
+				try {
 					metric = getMetric(metrics, type, metricName);
 					ReflectionUtils.setField(field, bean, metric);
 					LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
 				}
-				else {
-					// If non-null, register that instance of the metric
-					try {
-						// Attempt to register that instance of the metric
-						metrics.register(metricName, metric);
-						LOG.debug("Registered metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
-					}
-					catch (IllegalArgumentException ex1) {
-						// A metric is already registered under that name
-						// (Cannot determine the cause without parsing the Exception's message)
-						try {
-							metric = getMetric(metrics, type, metricName);
-							ReflectionUtils.setField(field, bean, metric);
-							LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
-						}
-						catch (IllegalArgumentException ex2) {
-							// A metric of a different type is already registered under that name
-							throw new IllegalArgumentException("Error injecting metric for field "
-									+ targetClass.getCanonicalName() + "." + field.getName(), ex2);
-						}
-					}
+				catch (IllegalArgumentException ex2) {
+					// A metric of a different type is already registered under that name
+					throw new IllegalArgumentException("Error injecting metric for field "
+							+ targetClass.getCanonicalName() + "." + field.getName(), ex2);
 				}
 			}
-		}, FILTER);
-
-		return bean;
+		}
 	}
 
 	private com.codahale.metrics.Metric getMetric(MetricRegistry metricRegistry, Class<?> type, String metricName) {
@@ -119,11 +104,6 @@ class MetricAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
 			throw new IllegalArgumentException("Invalid @Metric type " + type.getCanonicalName());
 		}
 		return metric;
-	}
-
-	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) {
-		return bean;
 	}
 
 	@Override
