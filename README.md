@@ -178,3 +178,7 @@ Copyright (c) 2012-2013 Ryan Tenney, Martello Technologies
 Published under Apache Software License 2.0, see LICENSE
 
 [![Rochester Made](http://rochestermade.com/media/images/rochester-made-dark-on-light.png)](http://rochestermade.com)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ryantenney/metrics-spring/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
