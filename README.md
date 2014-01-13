@@ -41,7 +41,7 @@ Spring Context XML:
            http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
            http://www.ryantenney.com/schema/metrics
-           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
+           http://ryantenney.github.io/metrics-spring/schema/metrics-3.0.xsd">
 
     <!-- Registry should be defined in only one context XML file -->
     <metrics:metric-registry id="metrics" />
