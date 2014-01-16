@@ -173,7 +173,9 @@ Javadocs are hosted at http://ryantenney.github.io/metrics-spring/docs/
 
 ### License
 
-Copyright (c) 2012-2013 Ryan Tenney, Martello Technologies
+Copyright (c) 2012-2014 Ryan Tenney
+
+Portions Copyright (c) 2012-2013 Martello Technologies
 
 Published under Apache Software License 2.0, see LICENSE
 
