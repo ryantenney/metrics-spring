@@ -263,7 +263,7 @@
 							org.springframework.cglib.core,
 							org.springframework.cglib.proxy,
 							org.springframework.cglib.reflect,
-                            javax.servlet;version="[3.0,4)";resolution:=optional,
+							javax.servlet;version="[3.0,4)";resolution:=optional,
 							*
 						]]></Import-Package>
 					</instructions>
