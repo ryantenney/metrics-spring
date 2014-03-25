@@ -45,8 +45,12 @@ public class MetricsBeanPostProcessorFactory {
 				CountedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
 
-	public static GaugeAnnotationBeanPostProcessor gauge(final MetricRegistry metricRegistry) {
-		return new GaugeAnnotationBeanPostProcessor(metricRegistry);
+	public static GaugeFieldAnnotationBeanPostProcessor gaugeField(final MetricRegistry metricRegistry) {
+		return new GaugeFieldAnnotationBeanPostProcessor(metricRegistry);
+	}
+
+	public static GaugeMethodAnnotationBeanPostProcessor gaugeMethod(final MetricRegistry metricRegistry) {
+		return new GaugeMethodAnnotationBeanPostProcessor(metricRegistry);
 	}
 
 	public static CachedGaugeAnnotationBeanPostProcessor cachedGauge(final MetricRegistry metricRegistry) {
