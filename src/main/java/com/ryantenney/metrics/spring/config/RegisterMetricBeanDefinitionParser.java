@@ -45,7 +45,7 @@ class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
 
 		final String metricRegistryBeanName = element.getAttribute("metric-registry");
 		if (!StringUtils.hasText(metricRegistryBeanName)) {
-			throw new RuntimeException(); // TODO
+			throw new RuntimeException();
 		}
 		final RuntimeBeanReference metricRegistryBeanRef = new RuntimeBeanReference(metricRegistryBeanName);
 
@@ -95,7 +95,17 @@ class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
-			metricRegistry.register(name, metric);
+			try {
+				metricRegistry.register(name, metric);
+			}
+			catch (IllegalArgumentException ex) {
+				if (metricRegistry.remove(name)) {
+					metricRegistry.register(name, metric);
+				}
+				else {
+					throw ex;
+				}
+			}
 		}
 
 	}
