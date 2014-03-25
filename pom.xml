@@ -6,7 +6,7 @@
 	<version>3.0.0-RC5-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Metrics Spring Integration</name>
-	<description>Spring integration for Yammer's Metrics Library</description>
+	<description>Spring integration for Coda Hale's Metrics Library</description>
 	<url>http://github.com/ryantenney/metrics-spring/</url>
 	<inceptionYear>2012</inceptionYear>
 	<licenses>
@@ -287,7 +287,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -428,7 +428,7 @@
 						</goals>
 						<configuration>
 							<rules>
-								<DependencyConvergence></DependencyConvergence>
+								<DependencyConvergence />
 							</rules>
 						</configuration>
 					</execution>
