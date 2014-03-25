@@ -15,13 +15,13 @@ This module does the following things:
 
 ###Maven
 
-Current version is 3.0.0-RC4, which is compatible with Metrics 3.0
+Current version is 3.0.0, which is compatible with Metrics 3.0
 
 ```xml
 <dependency>
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>3.0.0-RC4</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
