@@ -56,8 +56,7 @@ abstract class AbstractAnnotationBeanPostProcessor implements BeanPostProcessor 
 	 * @param targetClass
 	 * @param field
 	 */
-	protected void withField(Object bean, String beanName, Class<?> targetClass, Field field) {
-	}
+	protected void withField(Object bean, String beanName, Class<?> targetClass, Field field) {}
 
 	/**
 	 * @param bean
@@ -65,8 +64,7 @@ abstract class AbstractAnnotationBeanPostProcessor implements BeanPostProcessor 
 	 * @param targetClass
 	 * @param method
 	 */
-	protected void withMethod(Object bean, String beanName, Class<?> targetClass, Method method) {
-	}
+	protected void withMethod(Object bean, String beanName, Class<?> targetClass, Method method) {}
 
 	@Override
 	public final Object postProcessBeforeInitialization(Object bean, String beanName) {
@@ -78,7 +76,7 @@ abstract class AbstractAnnotationBeanPostProcessor implements BeanPostProcessor 
 	}
 
 	@Override
-	public final Object postProcessAfterInitialization(Object bean, String beanName){
+	public final Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (phase == Phase.POST_INIT) {
 			process(bean, beanName);
 		}
@@ -91,20 +89,20 @@ abstract class AbstractAnnotationBeanPostProcessor implements BeanPostProcessor 
 
 		if (members == Members.FIELDS || members == Members.ALL) {
 			doWithFields(targetClass, new FieldCallback() {
-					@Override
-					public void doWith(Field field) throws IllegalAccessException {
-						withField(bean, beanName, targetClass, field);
-					}
-				}, filter);
+				@Override
+				public void doWith(Field field) throws IllegalAccessException {
+					withField(bean, beanName, targetClass, field);
+				}
+			}, filter);
 		}
 
 		if (members == Members.METHODS || members == Members.ALL) {
 			doWithMethods(targetClass, new MethodCallback() {
-					@Override
-					public void doWith(final Method method) throws IllegalAccessException {
-						withMethod(bean, beanName, targetClass, method);
-					}
-				}, filter);
+				@Override
+				public void doWith(final Method method) throws IllegalAccessException {
+					withMethod(bean, beanName, targetClass, method);
+				}
+			}, filter);
 		}
 	}
 

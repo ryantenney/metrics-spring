@@ -109,10 +109,14 @@ public class CovariantReturnTypeTest {
 	public static class MeteredInterfaceImpl implements MeteredInterface {
 
 		@Override
-		public Integer timedMethod() { return 0; }
+		public Integer timedMethod() {
+			return 0;
+		}
 
 		@Override
-		public Long meteredMethod() { return 0L; }
+		public Long meteredMethod() {
+			return 0L;
+		}
 
 		@Override
 		public Byte exceptionMeteredMethod() throws Throwable {
@@ -120,12 +124,13 @@ public class CovariantReturnTypeTest {
 		}
 
 		@Override
-		public Double countedMethod() { return 0.0; }
+		public Double countedMethod() {
+			return 0.0;
+		}
 
 	}
 
 	@SuppressWarnings("serial")
 	public static class BogusException extends Throwable {}
-
 
 }

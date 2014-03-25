@@ -49,8 +49,8 @@ public class ProxyTargetClassTest {
 		try {
 			ctx = new ClassPathXmlApplicationContext("classpath:proxy-target-class-enabled.xml");
 			Assert.assertNotNull("Expected to be able to get ProxyTargetClass by class.", ctx.getBean(ProxyTargetClass.class));
-			Assert.assertNotNull("Expected to be able to get ProxyTargetClass from AutowiredCollaborator.",
-					ctx.getBean(AutowiredCollaborator.class).getDependency());
+			Assert.assertNotNull("Expected to be able to get ProxyTargetClass from AutowiredCollaborator.", ctx.getBean(AutowiredCollaborator.class)
+					.getDependency());
 		}
 		finally {
 			if (ctx != null) {

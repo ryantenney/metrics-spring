@@ -49,7 +49,7 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	protected Meter buildMetric(MetricRegistry metricRegistry, String metricName, Metered annotation) {
 		return metricRegistry.meter(metricName);
 	}
-	
+
 	@Override
 	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
 		return Util.forMeteredMethod(targetClass, method, annotation);

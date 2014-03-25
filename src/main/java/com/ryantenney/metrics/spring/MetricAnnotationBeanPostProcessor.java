@@ -47,8 +47,8 @@ class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProces
 
 		final Class<?> type = field.getType();
 		if (!com.codahale.metrics.Metric.class.isAssignableFrom(type)) {
-			throw new IllegalArgumentException("Field " + targetClass.getCanonicalName() + "."
-					+ field.getName() + " must be a subtype of " + com.codahale.metrics.Metric.class.getCanonicalName());
+			throw new IllegalArgumentException("Field " + targetClass.getCanonicalName() + "." + field.getName() + " must be a subtype of "
+					+ com.codahale.metrics.Metric.class.getCanonicalName());
 		}
 
 		ReflectionUtils.makeAccessible(field);
@@ -79,8 +79,7 @@ class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProces
 				}
 				catch (IllegalArgumentException ex2) {
 					// A metric of a different type is already registered under that name
-					throw new IllegalArgumentException("Error injecting metric for field "
-							+ targetClass.getCanonicalName() + "." + field.getName(), ex2);
+					throw new IllegalArgumentException("Error injecting metric for field " + targetClass.getCanonicalName() + "." + field.getName(), ex2);
 				}
 			}
 		}

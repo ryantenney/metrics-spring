@@ -39,8 +39,7 @@ class GaugeMethodAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 	@Override
 	protected void withMethod(final Object bean, String beanName, Class<?> targetClass, final Method method) {
 		if (method.getParameterTypes().length > 0) {
-			throw new IllegalStateException("Method " + method.getName() +
-				" is annotated with @Gauge but requires parameters.");
+			throw new IllegalStateException("Method " + method.getName() + " is annotated with @Gauge but requires parameters.");
 		}
 
 		final Gauge annotation = method.getAnnotation(Gauge.class);

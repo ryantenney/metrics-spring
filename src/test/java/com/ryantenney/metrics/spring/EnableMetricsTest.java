@@ -87,13 +87,13 @@ public class EnableMetricsTest {
 		assertSame(metricRegistry, applicationContext.getBean(MetricRegistry.class));
 		assertSame(healthCheckRegistry, applicationContext.getBean(HealthCheckRegistry.class));
 	}
-	
+
 	@Test
 	public void configureReportersInvoked() throws Throwable {
 		// Verify that the configureReporters method was invoked
 		assertThat(MetricsConfig.isConfigureReportersInvoked, is(true));
 	}
-	
+
 	@Test
 	public void beanIsProxied() throws Throwable {
 		// Assert that the bean has been proxied
@@ -101,7 +101,7 @@ public class EnableMetricsTest {
 		assertNotNull(testBean);
 		assertThat(AopUtils.isAopProxy(testBean), is(true));
 	}
-	
+
 	@Test
 	public void gaugeField() throws Throwable {
 		// Verify that the Gauge field's value is returned
@@ -109,7 +109,7 @@ public class EnableMetricsTest {
 		assertNotNull(fieldGauge);
 		assertThat(fieldGauge.getValue(), is(5));
 	}
-	
+
 	@Test
 	public void gaugeMethod() throws Throwable {
 		// Verify that the Gauge method's value is returned
@@ -135,7 +135,7 @@ public class EnableMetricsTest {
 		testBean.timedMethod();
 		assertThat(timedMethodTimer.getCount(), is(1L));
 	}
-	
+
 	@Test
 	public void meteredMethod() throws Throwable {
 		// Verify that the Meter's counter is incremented on method invocation
@@ -160,7 +160,7 @@ public class EnableMetricsTest {
 		});
 		assertThat(countedMethodMeter.getCount(), is(0L));
 	}
-	
+
 	@Test
 	public void exceptionMeteredMethod() throws Throwable {
 		// Verify that the Meter's counter is incremented on method invocation
@@ -212,7 +212,7 @@ public class EnableMetricsTest {
 			return 6;
 		}
 
-		@com.ryantenney.metrics.annotation.CachedGauge(timeout=100)
+		@com.ryantenney.metrics.annotation.CachedGauge(timeout = 100)
 		public int cachedGaugeMethod() {
 			return 7;
 		}

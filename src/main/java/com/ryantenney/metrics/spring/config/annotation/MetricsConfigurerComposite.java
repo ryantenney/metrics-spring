@@ -79,8 +79,7 @@ public class MetricsConfigurerComposite implements MetricsConfigurer {
 
 	private <T> T selectSingleInstance(final List<T> instances, final Class<T> instanceType) {
 		if (instances.size() > 1) {
-			throw new IllegalStateException("Only one [" + instanceType +
-					"] was expected but multiple instances were provided: " + instances);
+			throw new IllegalStateException("Only one [" + instanceType + "] was expected but multiple instances were provided: " + instances);
 		}
 		else if (instances.size() == 1) {
 			return instances.get(0);

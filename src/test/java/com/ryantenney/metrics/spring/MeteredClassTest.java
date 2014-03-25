@@ -152,7 +152,7 @@ public class MeteredClassTest {
 			@Override
 			public void run() {
 				assertEquals(1, countedMethod.getCount());
-				
+
 				meteredClass.countedMethod(new Runnable() {
 					@Override
 					public void run() {
@@ -276,7 +276,8 @@ public class MeteredClassTest {
 	@Test
 	public void overloadedCountedMethod() {
 		final Counter overloaded = metricRegistry.getCounters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-counted"));
-		final Counter overloaded_param = metricRegistry.getCounters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-counted-param"));
+		final Counter overloaded_param = metricRegistry.getCounters().get(
+				MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-counted-param"));
 
 		assertEquals(0, overloaded.getCount());
 		assertEquals(0, overloaded_param.getCount());
@@ -411,7 +412,7 @@ public class MeteredClassTest {
 			this.gaugedField = value;
 		}
 
-		@com.ryantenney.metrics.annotation.CachedGauge(timeout=1, timeoutUnit=TimeUnit.DAYS)
+		@com.ryantenney.metrics.annotation.CachedGauge(timeout = 1, timeoutUnit = TimeUnit.DAYS)
 		public int cachedGaugedMethod() {
 			return this.gaugedField;
 		}

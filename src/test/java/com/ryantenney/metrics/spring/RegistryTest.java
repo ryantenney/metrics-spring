@@ -59,8 +59,10 @@ public class RegistryTest {
 		ClassPathXmlApplicationContext ctx = null;
 		try {
 			ctx = new ClassPathXmlApplicationContext("classpath:custom-registries.xml");
-			Assert.assertSame("Should have a custom MetricRegistry bean.", MetricRegistry.class, ctx.getBean("metrics", MetricRegistry.class).getClass().getSuperclass());
-			Assert.assertSame("Should have a custom HealthCheckRegistry bean.", HealthCheckRegistry.class, ctx.getBean("health", HealthCheckRegistry.class).getClass().getSuperclass());
+			Assert.assertSame("Should have a custom MetricRegistry bean.", MetricRegistry.class, ctx.getBean("metrics", MetricRegistry.class).getClass()
+					.getSuperclass());
+			Assert.assertSame("Should have a custom HealthCheckRegistry bean.", HealthCheckRegistry.class, ctx.getBean("health", HealthCheckRegistry.class)
+					.getClass().getSuperclass());
 		}
 		finally {
 			if (ctx != null) {
@@ -70,6 +72,7 @@ public class RegistryTest {
 	}
 
 	public static class CustomMetricRegistry extends MetricRegistry {}
+
 	public static class CustomHealthCheckRegistry extends HealthCheckRegistry {}
 
 }

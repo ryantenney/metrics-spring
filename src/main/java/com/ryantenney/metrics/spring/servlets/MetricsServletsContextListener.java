@@ -39,18 +39,14 @@ public class MetricsServletsContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		WebApplicationContextUtils
-			.getRequiredWebApplicationContext(event.getServletContext())
-			.getAutowireCapableBeanFactory()
-			.autowireBean(this);
+		WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext()).getAutowireCapableBeanFactory().autowireBean(this);
 
 		metricsServletContextListener.contextInitialized(event);
 		healthCheckServletContextListener.contextInitialized(event);
 	}
 
 	@Override
-	public void contextDestroyed(ServletContextEvent event) {
-	}
+	public void contextDestroyed(ServletContextEvent event) {}
 
 	class MetricsServletContextListener extends MetricsServlet.ContextListener {
 

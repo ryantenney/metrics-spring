@@ -39,7 +39,8 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	private final Class<A> annotationClass;
 	private final Map<MethodKey, AnnotationMetricPair<A, M>> metrics;
 
-	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final Class<A> annotationClass, final MethodFilter methodFilter) {
+	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final Class<A> annotationClass,
+			final MethodFilter methodFilter) {
 		this.metricRegistry = metricRegistry;
 		this.targetClass = targetClass;
 		this.annotationClass = annotationClass;

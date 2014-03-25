@@ -31,8 +31,7 @@ import com.ryantenney.metrics.annotation.Metric;
 @SuppressWarnings("deprecation")
 class Util {
 
-	private Util() {
-	}
+	private Util() {}
 
 	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
@@ -77,4 +76,3 @@ class Util {
 	}
 
 }
-

@@ -22,27 +22,23 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 
 public class MetricsBeanPostProcessorFactory {
 
-	private MetricsBeanPostProcessorFactory() {
-	}
+	private MetricsBeanPostProcessorFactory() {}
 
 	public static AdvisingBeanPostProcessor exceptionMetered(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
-		return new AdvisingBeanPostProcessor(ExceptionMeteredMethodInterceptor.POINTCUT,
-				ExceptionMeteredMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+		return new AdvisingBeanPostProcessor(ExceptionMeteredMethodInterceptor.POINTCUT, ExceptionMeteredMethodInterceptor.adviceFactory(metricRegistry),
+				proxyConfig);
 	}
 
 	public static AdvisingBeanPostProcessor metered(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
-		return new AdvisingBeanPostProcessor(MeteredMethodInterceptor.POINTCUT,
-				MeteredMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+		return new AdvisingBeanPostProcessor(MeteredMethodInterceptor.POINTCUT, MeteredMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
 
 	public static AdvisingBeanPostProcessor timed(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
-		return new AdvisingBeanPostProcessor(TimedMethodInterceptor.POINTCUT,
-				TimedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+		return new AdvisingBeanPostProcessor(TimedMethodInterceptor.POINTCUT, TimedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
 
 	public static AdvisingBeanPostProcessor counted(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
-		return new AdvisingBeanPostProcessor(CountedMethodInterceptor.POINTCUT,
-				CountedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+		return new AdvisingBeanPostProcessor(CountedMethodInterceptor.POINTCUT, CountedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
 
 	public static GaugeFieldAnnotationBeanPostProcessor gaugeField(final MetricRegistry metricRegistry) {

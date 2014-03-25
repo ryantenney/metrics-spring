@@ -80,15 +80,9 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.withTMax(getProperty(TMAX, Integer.TYPE));
 		}
 
-		final GMetric gMetric = new GMetric(
-			getProperty(GROUP),
-			getProperty(PORT, Integer.TYPE),
-			getProperty(UDP_MODE, UDPAddressingMode.class),
-			getProperty(TTL, Integer.TYPE),
-			!hasProperty(PROTOCOL) || getProperty(PROTOCOL).contains("3.1"),
-			hasProperty(UUID) ? java.util.UUID.fromString(getProperty(UUID)) : null,
-			getProperty(SPOOF)
-		);
+		final GMetric gMetric = new GMetric(getProperty(GROUP), getProperty(PORT, Integer.TYPE), getProperty(UDP_MODE, UDPAddressingMode.class), getProperty(
+				TTL, Integer.TYPE), !hasProperty(PROTOCOL) || getProperty(PROTOCOL).contains("3.1"),
+				hasProperty(UUID) ? java.util.UUID.fromString(getProperty(UUID)) : null, getProperty(SPOOF));
 
 		return reporter.build(gMetric);
 	}

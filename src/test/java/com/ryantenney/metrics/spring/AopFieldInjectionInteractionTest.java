@@ -37,8 +37,10 @@ import com.ryantenney.metrics.annotation.Metric;
 @SuppressWarnings("deprecation")
 public class AopFieldInjectionInteractionTest {
 
-	@Autowired private MetricRegistry metricRegistry;
-	@Autowired private TestAspectTarget target;
+	@Autowired
+	private MetricRegistry metricRegistry;
+	@Autowired
+	private TestAspectTarget target;
 
 	@Test
 	public void testFieldInjectionShouldNotCauseErrorWhenTargetIsAopProxy() throws Exception {
@@ -74,9 +76,11 @@ interface TestAspectTarget {
 class TestAspectTargetImpl implements TestAspectTarget {
 
 	@SuppressWarnings("deprecation")
-	@InjectMetric(name = "targetCounter", absolute = true) private Counter counter;
+	@InjectMetric(name = "targetCounter", absolute = true)
+	private Counter counter;
 
-	@Metric(name = "targetCounter2", absolute = true) private Counter counter2;
+	@Metric(name = "targetCounter2", absolute = true)
+	private Counter counter2;
 
 	@Override
 	public int targetMethod() {

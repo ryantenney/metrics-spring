@@ -55,4 +55,3 @@ class HealthCheckBeanPostProcessor implements BeanPostProcessor, Ordered {
 	}
 
 }
-

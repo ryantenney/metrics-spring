@@ -62,9 +62,7 @@ class MethodKey {
 			return false;
 		}
 		final MethodKey other = (MethodKey) obj;
-		return name.equals(other.name)
-			&& returnType.equals(other.returnType)
-			&& Arrays.equals(parameterTypes, other.parameterTypes);
+		return name.equals(other.name) && returnType.equals(other.returnType) && Arrays.equals(parameterTypes, other.parameterTypes);
 	}
 
 	@Override

@@ -66,8 +66,7 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 				return true;
 			}
 			else {
-				LOG.warn("Ignoring @{} on method {}.{} due to illegal modifiers: {}",
-						clazz.getSimpleName(), method.getDeclaringClass().getCanonicalName(),
+				LOG.warn("Ignoring @{} on method {}.{} due to illegal modifiers: {}", clazz.getSimpleName(), method.getDeclaringClass().getCanonicalName(),
 						method.getName(), Modifier.toString(method.getModifiers() & ~methodModifiers));
 			}
 		}
@@ -81,8 +80,7 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 				return true;
 			}
 			else {
-				LOG.warn("Ignoring @{} on field {}.{} due to illegal modifiers: {}",
-						clazz.getSimpleName(), field.getDeclaringClass().getCanonicalName(),
+				LOG.warn("Ignoring @{} on field {}.{} due to illegal modifiers: {}", clazz.getSimpleName(), field.getDeclaringClass().getCanonicalName(),
 						field.getName(), Modifier.toString(field.getModifiers() & ~fieldModifiers));
 			}
 		}
@@ -96,7 +94,8 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	@Override
 	public String toString() {
-		return "[AnnotationFilter: @" + clazz.getSimpleName() + ", methodModifiers: (" + Modifier.toString(methodModifiers) + "), fieldModifiers: (" + Modifier.toString(fieldModifiers) + ")]";
+		return "[AnnotationFilter: @" + clazz.getSimpleName() + ", methodModifiers: (" + Modifier.toString(methodModifiers) + "), fieldModifiers: ("
+				+ Modifier.toString(fieldModifiers) + ")]";
 	}
 
 }

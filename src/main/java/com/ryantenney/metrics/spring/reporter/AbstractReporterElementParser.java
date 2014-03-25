@@ -50,8 +50,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		return null;
 	}
 
-	protected void parseReporter(Element element, BeanDefinitionBuilder beanDefinitionBuilder) {
-	}
+	protected void parseReporter(Element element, BeanDefinitionBuilder beanDefinitionBuilder) {}
 
 	@Override
 	public AbstractBeanDefinition parseReporter(Element element, ParserContext parserContext) {
@@ -117,8 +116,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		}
 	}
 
-	protected void validate(ValidationContext validator) {
-	}
+	protected void validate(ValidationContext validator) {}
 
 	protected static class ValidationException extends RuntimeException {
 
@@ -210,8 +208,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			if (!allowedProperties.containsAll(properties.keySet())) {
 				final Set<String> unmatchedProperties = new HashSet<String>(properties.keySet());
 				unmatchedProperties.removeAll(allowedProperties);
-				throw new ValidationException("Properties " + Arrays.toString(unmatchedProperties.toArray()) +
-						" are not permitted on this element.");
+				throw new ValidationException("Properties " + Arrays.toString(unmatchedProperties.toArray()) + " are not permitted on this element.");
 			}
 		}
 

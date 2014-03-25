@@ -56,7 +56,7 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	protected Counter buildMetric(MetricRegistry metricRegistry, String metricName, Counted annotation) {
 		return metricRegistry.counter(metricName);
 	}
-	
+
 	@Override
 	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
 		return Util.forCountedMethod(targetClass, method, annotation);

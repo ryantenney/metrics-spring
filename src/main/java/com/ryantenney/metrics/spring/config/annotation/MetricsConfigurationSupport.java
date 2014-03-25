@@ -50,10 +50,8 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
-		final AnnotationAttributes enableMetrics = AnnotationAttributes.fromMap(
-				importMetadata.getAnnotationAttributes(EnableMetrics.class.getName(), false));
-		Assert.notNull(enableMetrics, "@" + EnableMetrics.class.getSimpleName() +
-				" is not present on importing class " + importMetadata.getClassName());
+		final AnnotationAttributes enableMetrics = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(EnableMetrics.class.getName(), false));
+		Assert.notNull(enableMetrics, "@" + EnableMetrics.class.getSimpleName() + " is not present on importing class " + importMetadata.getClassName());
 
 		this.proxyConfig = new ProxyConfig();
 		this.proxyConfig.setExposeProxy(enableMetrics.getBoolean("exposeProxy"));
