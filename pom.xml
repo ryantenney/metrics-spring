@@ -508,8 +508,12 @@
 					<useTabs>true</useTabs>
 					<includes>
 						<include>**/*.xml</include>
+						<include>**/*.xsd</include>
 					</includes>
 					<excludes>
+						<exclude>checkstyle.xml</exclude>
+						<exclude>findbugs-exclude.xml</exclude>
+						<exclude>eclipse-formatter.xml</exclude>
 						<exclude>**/target/**</exclude>
 						<exclude>**/pom.xml</exclude>
 					</excludes>
