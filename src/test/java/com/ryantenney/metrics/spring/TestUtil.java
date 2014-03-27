@@ -35,10 +35,8 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.Counted;
-import com.ryantenney.metrics.annotation.InjectMetric;
 import com.ryantenney.metrics.annotation.Metric;
 
-@SuppressWarnings("deprecation")
 class TestUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
@@ -69,10 +67,6 @@ class TestUtil {
 
 	static String forMetricField(Class<?> klass, Member member, Metric annotation) {
 		return Util.forMetricField(klass, member, annotation);
-	}
-
-	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
-		return Util.forInjectMetricField(klass, member, annotation);
 	}
 
 	static Gauge<?> forGaugeField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {
@@ -122,13 +116,6 @@ class TestUtil {
 		String metricName = forCountedMethod(clazz, method, method.getAnnotation(Counted.class));
 		log.info("Looking up counted method named '{}'", metricName);
 		return metricRegistry.getCounters().get(metricName);
-	}
-
-	@Deprecated
-	static com.codahale.metrics.Metric forInjectMetricField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {
-		Field field = findField(clazz, fieldName);
-		String metricName = forInjectMetricField(clazz, field, field.getAnnotation(InjectMetric.class));
-		return getMetric(metricRegistry, field.getType(), metricName);
 	}
 
 	static com.codahale.metrics.Metric forMetricField(MetricRegistry metricRegistry, Class<?> clazz, String fieldName) {

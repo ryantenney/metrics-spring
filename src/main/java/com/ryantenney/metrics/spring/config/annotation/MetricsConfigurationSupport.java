@@ -108,13 +108,6 @@ public class MetricsConfigurationSupport implements ImportAware {
 
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	@SuppressWarnings("deprecation")
-	public BeanPostProcessor injectMetricAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.injectMetric(getMetricRegistry());
-	}
-
-	@Bean
-	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor healthCheckBeanPostProcessor() {
 		return MetricsBeanPostProcessorFactory.healthCheck(getHealthCheckRegistry());
 	}

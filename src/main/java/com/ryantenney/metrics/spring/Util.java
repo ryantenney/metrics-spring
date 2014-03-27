@@ -25,10 +25,8 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.CachedGauge;
 import com.ryantenney.metrics.annotation.Counted;
-import com.ryantenney.metrics.annotation.InjectMetric;
 import com.ryantenney.metrics.annotation.Metric;
 
-@SuppressWarnings("deprecation")
 class Util {
 
 	private Util() {}
@@ -54,10 +52,6 @@ class Util {
 	}
 
 	static String forCountedMethod(Class<?> klass, Member member, Counted annotation) {
-		return chooseName(annotation.name(), annotation.absolute(), klass, member);
-	}
-
-	static String forInjectMetricField(Class<?> klass, Member member, InjectMetric annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 

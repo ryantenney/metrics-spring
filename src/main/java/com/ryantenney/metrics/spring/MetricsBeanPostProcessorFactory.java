@@ -57,11 +57,6 @@ public class MetricsBeanPostProcessorFactory {
 		return new MetricAnnotationBeanPostProcessor(metricRegistry);
 	}
 
-	@Deprecated
-	public static InjectMetricAnnotationBeanPostProcessor injectMetric(final MetricRegistry metricRegistry) {
-		return new InjectMetricAnnotationBeanPostProcessor(metricRegistry);
-	}
-
 	public static HealthCheckBeanPostProcessor healthCheck(final HealthCheckRegistry healthRegistry) {
 		return new HealthCheckBeanPostProcessor(healthRegistry);
 	}
