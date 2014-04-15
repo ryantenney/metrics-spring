@@ -33,11 +33,18 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotationFilter.class);
 
-	public static final int FIELDS = fieldModifiers();
+	public static final int FIELDS =
+        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
+        Modifier.STATIC         | Modifier.FINAL        | Modifier.TRANSIENT |
+        Modifier.VOLATILE;
+
+	public static final int METHODS =
+        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
+        Modifier.ABSTRACT       | Modifier.STATIC       | Modifier.FINAL   |
+        Modifier.SYNCHRONIZED   | Modifier.NATIVE       | Modifier.STRICT;
+
 	public static final int INJECTABLE_FIELDS = FIELDS ^ (FINAL | STATIC);
 	public static final int INSTANCE_FIELDS = FIELDS ^ STATIC;
-
-	public static final int METHODS = methodModifiers();
 	public static final int INSTANCE_METHODS = METHODS ^ (ABSTRACT | STATIC);
 	public static final int PROXYABLE_METHODS = METHODS ^ (ABSTRACT | FINAL | PRIVATE | STATIC);
 
