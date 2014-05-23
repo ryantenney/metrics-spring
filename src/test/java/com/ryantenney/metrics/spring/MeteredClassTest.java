@@ -274,6 +274,17 @@ public class MeteredClassTest {
 	}
 
 	@Test
+	public void varargsMeteredMethod() {
+		Meter varargs = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "varargs-metered"));
+
+		assertEquals(0, varargs.getCount());
+
+		meteredClass.varargsMeteredMethod();
+
+		assertEquals(1, varargs.getCount());
+	}
+
+	@Test
 	public void overloadedCountedMethod() {
 		final Counter overloaded = metricRegistry.getCounters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-counted"));
 		final Counter overloaded_param = metricRegistry.getCounters().get(
@@ -461,6 +472,9 @@ public class MeteredClassTest {
 
 		@Metered(name = "overloaded-metered-param")
 		public void overloadedMeteredMethod(int param) {}
+
+		@Metered(name = "varargs-metered")
+		public void varargsMeteredMethod(int ... params) {}
 
 		@Counted(name = "overloaded-counted")
 		public void overloadedCountedMethod(Runnable runnable) {
