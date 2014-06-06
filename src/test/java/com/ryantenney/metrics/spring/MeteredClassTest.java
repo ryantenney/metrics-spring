@@ -23,6 +23,7 @@ import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
 import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -223,6 +224,19 @@ public class MeteredClassTest {
 		assertEquals(2, quadruple_Timed.getCount());
 		assertEquals(1, quadruple_ExceptionMetered.getCount());
 		assertEquals(0, quadruple_Counted.getCount());
+	}
+
+	@Test
+	public void varargsMeteredMethod() {
+		Meter varargs = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "varargs-metered"));
+
+		assertNotNull("Meter was not created for varargs method", varargs);
+
+		assertEquals(0, varargs.getCount());
+
+		meteredClass.varargsMeteredMethod();
+
+		assertEquals(1, varargs.getCount());
 	}
 
 	@Test
@@ -449,6 +463,9 @@ public class MeteredClassTest {
 		public void quadruplyMeteredMethod(Runnable runnable) throws Throwable {
 			runnable.run();
 		}
+
+		@Metered(name = "varargs-metered")
+		public void varargsMeteredMethod(int ... params) {}
 
 		@Timed(name = "overloaded-timed")
 		public void overloadedTimedMethod() {}
