@@ -46,7 +46,7 @@ public class GraphiteReporterElementParser extends AbstractReporterElementParser
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);
 		if (c.has(FILTER_PATTERN) && c.has(FILTER_REF)) {
-			c.reject(FILTER_REF, "Reporter element not specify both the 'filter' and 'filter-ref' attributes");
+			c.reject(FILTER_REF, "Reporter element must not specify both the 'filter' and 'filter-ref' attributes");
 		}
 
 		c.rejectUnmatchedProperties();
