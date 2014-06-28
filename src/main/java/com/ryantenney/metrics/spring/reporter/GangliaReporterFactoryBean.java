@@ -20,7 +20,6 @@ import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
 
 import java.util.concurrent.TimeUnit;
 
-import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.ganglia.GangliaReporter;
 
 public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactoryBean<GangliaReporter> {
@@ -36,8 +35,6 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String PREFIX = "prefix";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-	public static final String FILTER_PATTERN = "filter";
-	public static final String FILTER_REF = "filter-ref";
 	public static final String PROTOCOL = "protocol";
 	public static final String UUID = "uuid";
 	public static final String SPOOF = "spoof";
@@ -49,6 +46,7 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 		return GangliaReporter.class;
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	protected GangliaReporter createInstance() throws Exception {
 		final GangliaReporter.Builder reporter = GangliaReporter.forRegistry(getMetricRegistry());
@@ -65,12 +63,7 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.convertRatesTo(getProperty(RATE_UNIT, TimeUnit.class));
 		}
 
-		if (hasProperty(FILTER_PATTERN)) {
-			reporter.filter(metricFilterPattern(getProperty(FILTER_PATTERN)));
-		}
-		else if (hasProperty(FILTER_REF)) {
-			reporter.filter(getPropertyRef(FILTER_REF, MetricFilter.class));
-		}
+		reporter.filter(getMetricFilter());
 
 		if (hasProperty(DMAX)) {
 			reporter.withDMax(getProperty(DMAX, Integer.TYPE));
@@ -87,6 +80,7 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 		return reporter.build(gMetric);
 	}
 
+	@Override
 	protected long getPeriod() {
 		return convertDurationString(getProperty(PERIOD));
 	}

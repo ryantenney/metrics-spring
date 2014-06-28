@@ -16,7 +16,6 @@
 package com.ryantenney.metrics.spring.reporter;
 
 import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.MetricFilter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.SmartLifecycle;
 
@@ -29,8 +28,6 @@ public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxRepor
 	public static final String DOMAIN = "domain";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-	public static final String FILTER_PATTERN = "filter";
-	public static final String FILTER_REF = "filter-ref";
 	public static final String MBEAN_SERVER_REF = "mbean-server-ref";
 
 	private boolean running = false;
@@ -56,12 +53,7 @@ public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxRepor
 			reporter.convertRatesTo(getProperty(RATE_UNIT, TimeUnit.class));
 		}
 
-		if (hasProperty(FILTER_PATTERN)) {
-			reporter.filter(metricFilterPattern(getProperty(FILTER_PATTERN)));
-		}
-		else if (hasProperty(FILTER_REF)) {
-			reporter.filter(getPropertyRef(FILTER_REF, MetricFilter.class));
-		}
+		reporter.filter(getMetricFilter());
 
 		if (hasProperty(MBEAN_SERVER_REF)) {
 			reporter.registerWith(getPropertyRef(MBEAN_SERVER_REF, MBeanServer.class));

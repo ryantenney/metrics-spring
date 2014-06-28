@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.util.StringUtils;
 
 import com.codahale.metrics.Clock;
-import com.codahale.metrics.MetricFilter;
 import com.librato.metrics.HttpPoster;
 import com.librato.metrics.LibratoReporter;
 import com.librato.metrics.LibratoReporter.ExpandedMetric;
@@ -50,8 +49,6 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String CLOCK_REF = "clock-ref";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-	public static final String FILTER_PATTERN = "filter";
-	public static final String FILTER_REF = "filter-ref";
 
 	@Override
 	public Class<LibratoReporter> getObjectType() {
@@ -122,16 +119,12 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.setClock(getPropertyRef(CLOCK_REF, Clock.class));
 		}
 
-		if (hasProperty(FILTER_PATTERN)) {
-			reporter.setFilter(metricFilterPattern(getProperty(FILTER_PATTERN)));
-		}
-		else if (hasProperty(FILTER_REF)) {
-			reporter.setFilter(getPropertyRef(FILTER_REF, MetricFilter.class));
-		}
+		reporter.setFilter(getMetricFilter());
 
 		return reporter.build();
 	}
 
+	@Override
 	protected long getPeriod() {
 		return convertDurationString(getProperty(PERIOD));
 	}

@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 
-import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.Slf4jReporter;
 
 public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBean<Slf4jReporter> {
@@ -31,8 +30,6 @@ public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBe
 	// Optional
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-	public static final String FILTER_PATTERN = "filter";
-	public static final String FILTER_REF = "filter-ref";
 	public static final String MARKER = "marker";
 	public static final String LOGGER = "logger";
 
@@ -53,12 +50,7 @@ public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBe
 			reporter.convertRatesTo(getProperty(RATE_UNIT, TimeUnit.class));
 		}
 
-		if (hasProperty(FILTER_PATTERN)) {
-			reporter.filter(metricFilterPattern(getProperty(FILTER_PATTERN)));
-		}
-		else if (hasProperty(FILTER_REF)) {
-			reporter.filter(getPropertyRef(FILTER_REF, MetricFilter.class));
-		}
+		reporter.filter(getMetricFilter());
 
 		if (hasProperty(MARKER)) {
 			reporter.markWith(MarkerFactory.getMarker(getProperty(MARKER)));

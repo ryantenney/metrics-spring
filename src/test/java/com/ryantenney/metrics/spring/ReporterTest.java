@@ -40,6 +40,7 @@ import static org.hamcrest.Matchers.*;
 
 public class ReporterTest {
 
+	@SuppressWarnings("resource")
 	@Test
 	public void fakeReporters() throws Throwable {
 		ClassPathXmlApplicationContext ctx = null;
@@ -121,6 +122,7 @@ public class ReporterTest {
 		try {
 			ctx = new ClassPathXmlApplicationContext("classpath:reporter-placeholder-test.xml");
 
+			@SuppressWarnings("resource")
 			FakeReporter reporter = ctx.getBean(FakeReporter.class);
 			Assert.assertEquals("nanoseconds", reporter.getDurationUnit());
 			Assert.assertEquals("hour", reporter.getRateUnit());

@@ -17,18 +17,12 @@ package com.ryantenney.metrics.spring.reporter;
 
 import java.util.concurrent.TimeUnit;
 
-import com.codahale.metrics.MetricFilter;
-
 public class FakeReporterFactoryBean extends AbstractScheduledReporterFactoryBean<FakeReporter> {
 
 	// Required
 	public static final String PERIOD = "period";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-
-	// Optional
-	public static final String FILTER_PATTERN = "filter";
-	public static final String FILTER_REF = "filter-ref";
 
 	@Override
 	public Class<FakeReporter> getObjectType() {
@@ -37,23 +31,13 @@ public class FakeReporterFactoryBean extends AbstractScheduledReporterFactoryBea
 
 	@Override
 	protected FakeReporter createInstance() {
-		final MetricFilter filter;
-		if (hasProperty(FILTER_PATTERN)) {
-			filter = metricFilterPattern(getProperty(FILTER_PATTERN));
-		}
-		else if (hasProperty(FILTER_REF)) {
-			filter = getPropertyRef(FILTER_REF, MetricFilter.class);
-		}
-		else {
-			filter = MetricFilter.ALL;
-		}
+		TimeUnit durationUnit = getProperty(DURATION_UNIT, TimeUnit.class);
+		TimeUnit rateUnit = getProperty(RATE_UNIT, TimeUnit.class);
 
-		final TimeUnit durationUnit = getProperty(DURATION_UNIT, TimeUnit.class);
-		final TimeUnit rateUnit = getProperty(RATE_UNIT, TimeUnit.class);
-
-		return new FakeReporter(getMetricRegistry(), filter, rateUnit, durationUnit);
+		return new FakeReporter(getMetricRegistry(), getMetricFilter(), rateUnit, durationUnit);
 	}
 
+	@Override
 	protected long getPeriod() {
 		return convertDurationString(getProperty(PERIOD));
 	}

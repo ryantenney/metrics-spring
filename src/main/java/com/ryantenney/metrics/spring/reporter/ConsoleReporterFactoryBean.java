@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.codahale.metrics.Clock;
 import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.MetricFilter;
 
 public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactoryBean<ConsoleReporter> {
 
@@ -36,8 +35,6 @@ public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String TIMEZONE = "timezone";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-	public static final String FILTER_PATTERN = "filter";
-	public static final String FILTER_REF = "filter-ref";
 
 	@Override
 	public Class<ConsoleReporter> getObjectType() {
@@ -56,12 +53,7 @@ public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.convertRatesTo(getProperty(RATE_UNIT, TimeUnit.class));
 		}
 
-		if (hasProperty(FILTER_PATTERN)) {
-			reporter.filter(metricFilterPattern(getProperty(FILTER_PATTERN)));
-		}
-		else if (hasProperty(FILTER_REF)) {
-			reporter.filter(getPropertyRef(FILTER_REF, MetricFilter.class));
-		}
+		reporter.filter(getMetricFilter());
 
 		if (hasProperty(CLOCK_REF)) {
 			reporter.withClock(getPropertyRef(CLOCK_REF, Clock.class));
@@ -82,6 +74,7 @@ public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactory
 		return reporter.build();
 	}
 
+	@Override
 	protected long getPeriod() {
 		return convertDurationString(getProperty(PERIOD));
 	}
