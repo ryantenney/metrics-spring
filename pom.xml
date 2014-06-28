@@ -53,6 +53,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<metrics.version>3.0.2</metrics.version>
 		<librato.version>3.0.1.0</librato.version>
+		<metrics-influxdb.version>0.3.0</metrics-influxdb.version>
 		<spring.version>3.2.8.RELEASE</spring.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<logback.version>1.0.13</logback.version>
@@ -200,6 +201,11 @@
 			<artifactId>metrics-librato</artifactId>
 			<version>${librato.version}</version>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.novaquark</groupId>
+			<artifactId>metrics-influxdb</artifactId>
+			<version>${metrics-influxdb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.codahale.metrics</groupId>
