@@ -169,11 +169,11 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		}
 
 		public String require(String key) {
-			return require(key, null, null);
+			return require(key, null, "is required");
 		}
 
 		public String require(String key, String pattern) {
-			return require(key, pattern, null);
+			return require(key, pattern, "must match the pattern '" + pattern + "'");
 		}
 
 		public String require(String key, String pattern, String message) {
@@ -191,7 +191,7 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		}
 
 		public boolean optional(String key, String pattern) {
-			return optional(key, pattern, null);
+			return optional(key, pattern, "must match the pattern '" + pattern + "'");
 		}
 
 		public boolean optional(String key, String pattern, String message) {
@@ -219,7 +219,6 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		private void check(String key, String value, String pattern, String message) {
 			if (pattern != null && !(value.matches(pattern) || value.matches("^\\$\\{.*\\}$"))) {
 				reject(key, message);
-				return;
 			}
 		}
 
