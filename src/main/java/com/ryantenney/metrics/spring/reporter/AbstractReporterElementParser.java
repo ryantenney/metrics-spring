@@ -177,12 +177,12 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		}
 
 		public String require(String key, String pattern, String message) {
+			allowedProperties.add(key);
 			final String value = get(key);
 			if (!StringUtils.hasText(value)) {
 				reject(key, message);
 			}
 			check(key, value, pattern, message);
-			allowedProperties.add(key);
 			return value;
 		}
 
@@ -195,10 +195,10 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 		}
 
 		public boolean optional(String key, String pattern, String message) {
+			allowedProperties.add(key);
 			final String value = get(key);
 			if (StringUtils.hasText(value)) {
 				check(key, value, pattern, message);
-				allowedProperties.add(key);
 				return true;
 			}
 			return false;
