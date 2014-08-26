@@ -18,6 +18,7 @@ package com.ryantenney.metrics.spring;
 import java.lang.reflect.Method;
 
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
 import com.codahale.metrics.MetricRegistry;
@@ -42,7 +43,7 @@ class CachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 			throw new IllegalStateException("Method " + method.getName() + " is annotated with @CachedGauge but requires parameters.");
 		}
 
-		final CachedGauge annotation = method.getAnnotation(CachedGauge.class);
+		final CachedGauge annotation = AnnotationUtils.findAnnotation(method, CachedGauge.class);
 		final String metricName = Util.forCachedGauge(targetClass, method, annotation);
 
 		metrics.register(metricName, new com.codahale.metrics.CachedGauge<Object>(annotation.timeout(), annotation.timeoutUnit()) {

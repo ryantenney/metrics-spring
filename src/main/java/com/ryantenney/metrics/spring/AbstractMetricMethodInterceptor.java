@@ -24,6 +24,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
@@ -65,10 +66,11 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	@Override
 	public void doWith(Method method) throws IllegalAccessException {
-		final A annotation = method.getAnnotation(annotationClass);
+		final A annotation = AnnotationUtils.findAnnotation(method, annotationClass);
 		if (annotation != null) {
+			Class declaringClass = getAnnotationDeclaringClass(method);
 			final MethodKey methodKey = MethodKey.forMethod(method);
-			final String metricName = buildMetricName(targetClass, method, annotation);
+			final String metricName = buildMetricName(declaringClass, method, annotation);
 			final M metric = buildMetric(metricRegistry, metricName, annotation);
 
 			if (metric != null) {
@@ -79,6 +81,26 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 				}
 			}
 		}
+	}
+
+	private Class getAnnotationDeclaringClass(Method method) {
+		Class declaringClass = AnnotationUtils.findAnnotationDeclaringClass(annotationClass, targetClass);
+		if (declaringClass == null) {
+			for(Class interfaceClass : targetClass.getInterfaces()) {
+				try {
+					Method interfaceMethod = interfaceClass.getMethod(method.getName(), method.getParameterTypes());
+					Annotation interfaceAnnotation = AnnotationUtils.getAnnotation(interfaceMethod, annotationClass);
+					if (interfaceAnnotation != null) {
+						declaringClass = interfaceClass;
+						break;
+					}
+				}
+				catch (NoSuchMethodException ex) {
+					// Skip this interface - it doesn't have the method...
+				}
+			}
+		}
+		return declaringClass == null ? targetClass : declaringClass;
 	}
 
 	protected abstract String buildMetricName(Class<?> targetClass, Method method, A annotation);
