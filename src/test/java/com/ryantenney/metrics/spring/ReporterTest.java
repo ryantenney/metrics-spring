@@ -106,8 +106,13 @@ public class ReporterTest {
 			Assert.assertNotNull(ctx.getBean(ConsoleReporter.class));
 			Assert.assertNotNull(ctx.getBean(JmxReporter.class));
 			Assert.assertNotNull(ctx.getBean(Slf4jReporter.class));
-			Assert.assertNotNull(ctx.getBean(GraphiteReporter.class));
 			Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
+
+			Assert.assertNotNull(ctx.getBean("graphite", GraphiteReporter.class));
+			Assert.assertNotNull(ctx.getBean("graphite-tcp", GraphiteReporter.class));
+			Assert.assertNotNull(ctx.getBean("graphite-udp", GraphiteReporter.class));
+			Assert.assertNotNull(ctx.getBean("graphite-pickle", GraphiteReporter.class));
+			Assert.assertNotNull(ctx.getBean("graphite-rabbitmq", GraphiteReporter.class));
 		}
 		finally {
 			if (ctx != null) {

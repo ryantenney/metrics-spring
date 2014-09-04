@@ -31,11 +31,25 @@ public class GraphiteReporterElementParser extends AbstractReporterElementParser
 
 	@Override
 	protected void validate(ValidationContext c) {
-		c.require(HOST);
-		c.require(PORT, PORT_NUMBER_REGEX, "Port number is required and must be between 1-65536");
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 
-		c.optional(CHARSET);
+		c.optional(TRANSPORT);
+
+		// TCP, UDP, Pickle
+		if (!c.has(TRANSPORT) || c.get(TRANSPORT).matches("^tcp|udp|pickle$")) {
+			c.require(HOST);
+			c.require(PORT, PORT_NUMBER_REGEX, "Port number is required and must be between 1-65536");
+
+			c.optional(CHARSET);
+
+			if ("pickle".equals(c.get(TRANSPORT))) {
+				c.optional(BATCH_SIZE);
+			}
+		}
+		else if (c.get(TRANSPORT).equals("rabbitmq")) {
+			c.require(CONNECTION_FACTORY_REF);
+			c.require(EXCHANGE);
+		}
 
 		c.optional(PREFIX);
 		c.optional(CLOCK_REF);
