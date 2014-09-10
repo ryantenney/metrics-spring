@@ -43,6 +43,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  * </p>
  */
+@com.codahale.metrics.annotation.Metric
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Metric {
