@@ -18,8 +18,10 @@ package com.ryantenney.metrics.spring.reporter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -204,13 +206,25 @@ public abstract class AbstractReporterElementParser implements ReporterElementPa
 			return false;
 		}
 
-		public void rejectUnmatchedProperties() {
-			if (!allowedProperties.containsAll(properties.keySet())) {
-				final Set<String> unmatchedProperties = new HashSet<String>(properties.keySet());
-				unmatchedProperties.removeAll(allowedProperties);
-				throw new ValidationException("Properties " + Arrays.toString(unmatchedProperties.toArray()) + " are not permitted on this element.");
-			}
-		}
+        private static final Pattern namespacePattern = Pattern.compile("[A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*:[A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*");
+
+        public void rejectUnmatchedProperties() {
+            Set<String> unmatchedProperties = new HashSet<String>(properties.keySet());
+
+            // Remove any attrs from other namespaces.
+            for (Iterator<String> propNameItr = unmatchedProperties.iterator(); propNameItr.hasNext();) {
+                String propName = propNameItr.next();
+                if (namespacePattern.matcher(propName).matches()) {
+                    propNameItr.remove();
+                }
+            }
+
+            if (!allowedProperties.containsAll(unmatchedProperties)) {
+                unmatchedProperties.removeAll(allowedProperties);
+                throw new ValidationException("Properties " + Arrays.toString(unmatchedProperties.toArray()) + " are not permitted on this element.");
+            }
+        }
+
 
 		private String errorMessage(String key, String message) {
 			return "Attribute '" + key + "'" + (message != null ? ": " + message : "");
