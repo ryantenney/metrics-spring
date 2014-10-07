@@ -15,17 +15,25 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
+
 import com.codahale.metrics.Clock;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 
 public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactoryBean<GraphiteReporter> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(GraphiteReporterFactoryBean.class);
 
 	// Required
 	public static final String HOST = "host";
@@ -39,6 +47,9 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
 
+	// GraphiteSender FQCN
+	private static final String GRAPHITE_SENDER = "com.codahale.metrics.graphite.GraphiteSender";
+
 	@Override
 	public Class<GraphiteReporter> getObjectType() {
 		return GraphiteReporter.class;
@@ -46,7 +57,7 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 
 	@SuppressWarnings("resource")
 	@Override
-	protected GraphiteReporter createInstance() {
+	protected GraphiteReporter createInstance() throws Exception {
 		final GraphiteReporter.Builder reporter = GraphiteReporter.forRegistry(getMetricRegistry());
 
 		if (hasProperty(PREFIX)) {
@@ -79,6 +90,16 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 		final InetSocketAddress address = new InetSocketAddress(getProperty(HOST), getProperty(PORT, Integer.TYPE));
 		final SocketFactory socketFactory = SocketFactory.getDefault();
 		final Graphite graphite = new Graphite(address, socketFactory, charset);
+
+		// I broke binary compatibility in Metrics 3.1 by introducing GraphiteSender
+		if (ClassUtils.isPresent(GRAPHITE_SENDER, Graphite.class.getClassLoader())) {
+			Class<?> graphiteSender = ClassUtils.forName(GRAPHITE_SENDER, Graphite.class.getClassLoader());
+			Method buildMethod = ClassUtils.getMethodIfAvailable(GraphiteReporter.Builder.class, "build", graphiteSender);
+			if (buildMethod != null && ClassUtils.isAssignableValue(graphiteSender, graphite)) {
+				LOG.info("Metrics 3.1 detected, invoking GraphiteReporter build method via reflection");
+				return (GraphiteReporter) ReflectionUtils.invokeMethod(buildMethod, reporter, graphite);
+			}
+		}
 
 		return reporter.build(graphite);
 	}
