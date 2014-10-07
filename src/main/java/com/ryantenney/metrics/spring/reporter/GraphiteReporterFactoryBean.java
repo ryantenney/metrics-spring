@@ -91,17 +91,19 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 		final SocketFactory socketFactory = SocketFactory.getDefault();
 		final Graphite graphite = new Graphite(address, socketFactory, charset);
 
-		// I broke binary compatibility in Metrics 3.1 by introducing GraphiteSender
-		if (ClassUtils.isPresent(GRAPHITE_SENDER, Graphite.class.getClassLoader())) {
-			Class<?> graphiteSender = ClassUtils.forName(GRAPHITE_SENDER, Graphite.class.getClassLoader());
-			Method buildMethod = ClassUtils.getMethodIfAvailable(GraphiteReporter.Builder.class, "build", graphiteSender);
-			if (buildMethod != null && ClassUtils.isAssignableValue(graphiteSender, graphite)) {
-				LOG.info("Metrics 3.1 detected, invoking GraphiteReporter build method via reflection");
-				return (GraphiteReporter) ReflectionUtils.invokeMethod(buildMethod, reporter, graphite);
-			}
+		try {
+			return reporter.build(graphite);
 		}
-
-		return reporter.build(graphite);
+		catch (NoSuchMethodError err) {
+			// I broke binary compatibility in Metrics 3.1 by introducing GraphiteSender
+			LOG.info("Metrics 3.1.0 detected, attempting to invoke GraphiteReporter.Builder#build(GraphiteSender) via reflection");
+			Class<?> graphiteSender = ClassUtils.forName(GRAPHITE_SENDER, Graphite.class.getClassLoader());
+			if (!ClassUtils.isAssignableValue(graphiteSender, graphite)) {
+				throw new IllegalStateException("Graphite instance doesn't implement GraphiteSender");
+			}
+			Method buildMethod = ClassUtils.getMethod(GraphiteReporter.Builder.class, "build", graphiteSender); // throws an exception if not found
+			return (GraphiteReporter) ReflectionUtils.invokeMethod(buildMethod, reporter, graphite);
+		}
 	}
 
 	@Override
