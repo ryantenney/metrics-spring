@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -21,7 +21,7 @@
       <div class="inner">
         <h1>metrics-spring</h1>
         <h2>Spring integration for Dropwizard Metrics</h2>
-        <a href="https://github.com/ryantenney/metrics-spring" class="button"><small>View project on</small>GitHub</a>
+        <a href="https://github.com/ryantenney/metrics-spring" class="button"><small>View project on</small> GitHub</a>
       </div>
     </header>
 
@@ -35,7 +35,7 @@
 <h2>
 <a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About</h2>
 
-<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Dropwizard Metrics</a> with Spring, and provides XML and Java configuration.</p>
+<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Coda Hale's Metrics library</a> with Spring, and provides XML and Java configuration.</p>
 
 <p>This module does the following things:</p>
 
@@ -53,16 +53,16 @@
 </ul><h3>
 <a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h3>
 
-<p>Current version is 3.0.0-RC4, which is compatible with Metrics 3.0</p>
+<p>Current version is 3.0.3, which is compatible with Metrics 3.0 and 3.1 (but lacks support for new features in 3.1)</p>
 
 <div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>com.ryantenney.metrics<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>metrics-spring<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.0-RC4<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.3<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 
-<p>This module was formerly contained in the <a href="https://github.com/dropwizard/metrics">Metrics repository</a>.</p>
+<p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Metrics repository</a>.</p>
 
 <h3>
 <a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
