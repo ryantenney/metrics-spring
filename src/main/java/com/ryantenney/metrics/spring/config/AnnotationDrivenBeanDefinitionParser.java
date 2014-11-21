@@ -27,11 +27,15 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 
+import java.util.List;
+import java.util.ArrayList;
 class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 	@Override
