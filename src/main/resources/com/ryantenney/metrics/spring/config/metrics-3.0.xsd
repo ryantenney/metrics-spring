@@ -35,6 +35,9 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element id="customInterceptors" ref="util:list" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
 			<xsd:attribute name="metric-registry" type="xsd:string" use="optional">
 				<xsd:annotation>
 					<xsd:appinfo>
