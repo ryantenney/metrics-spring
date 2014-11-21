@@ -113,7 +113,25 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 					.addConstructorArgReference(healthCheckBeanName));
 
 		//@formatter:on
-
+	//Begin: Registor CustomInterceptors
+		List<String> customInterceptors = new ArrayList<String>();
+		if(element.getFirstChild()!=null){
+			Node customInterceptorsNode = element.getFirstChild().getNextSibling();
+			NodeList customInterceptorNodeList = customInterceptorsNode.getChildNodes();
+			for(int i=0; i<customInterceptorNodeList.getLength(); i++){
+				String customInterceptor=customInterceptorNodeList.item(i).getTextContent().trim();
+				if(!StringUtils.isEmpty(customInterceptor)){
+					customInterceptors.add(customInterceptor);
+				}
+			}
+		}
+		
+		for(String customInterceptor:customInterceptors){
+			registerComponent(parserContext, build(MetricsBeanPostProcessFactory.class, source, ROLE_INFRASTRUCTURE)
+			.setFactoryMethod("customInterceptorFactoryMethod").addConstructorArgValue(customInterceptor).addConstructorArgReference(metricsBeanName)
+			.addConstructorArgValue(proxyConfig);
+		}
+	// End: Registor CustomInterceptors 
 		parserContext.popAndRegisterContainingComponent();
 
 		return null;
