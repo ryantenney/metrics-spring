@@ -20,6 +20,7 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:tool="http://www.springframework.org/schema/tool"
+	xmlns:util="http://www.springframework.org/schema/util"
 	targetNamespace="http://www.ryantenney.com/schema/metrics"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
