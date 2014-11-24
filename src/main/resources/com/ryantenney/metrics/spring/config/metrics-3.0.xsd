@@ -27,8 +27,6 @@
 	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"/>
 	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool-3.2.xsd"/>
 	<xsd:import namespace="http://www.springframework.org/schema/util" schemaLocation="http://www.springframework.org/schema/tool/spring-util-3.2.xsd"/>
-		
-	</xsd:import>
 
 	<xsd:element name="annotation-driven">
 		<xsd:annotation>
