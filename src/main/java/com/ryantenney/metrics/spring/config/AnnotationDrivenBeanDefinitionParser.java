@@ -133,7 +133,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		for(String customInterceptor:customInterceptors){
 			registerComponent(parserContext, build(MetricsBeanPostProcessFactory.class, source, ROLE_INFRASTRUCTURE)
 			.setFactoryMethod("customInterceptorFactoryMethod").addConstructorArgValue(customInterceptor).addConstructorArgReference(metricsBeanName)
-			.addConstructorArgValue(proxyConfig);
+			.addConstructorArgValue(proxyConfig));
 		}
 	// End: Registor CustomInterceptors 
 		parserContext.popAndRegisterContainingComponent();
