@@ -90,6 +90,9 @@ public class MetricsBeanPostProcessorFactory {
 		catch(IllegalArgumentException e){
 			e.printStackTrace();
 		}
+		catch(IllegalAccessException e){
+			e.printStackTrace();
+		}
 		catch(InvocationTargetException e){
 			e.printStackTrace();
 		}
