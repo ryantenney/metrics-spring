@@ -73,7 +73,7 @@ public class MetricsBeanPostProcessorFactory {
 			Pointcut pointcut = (Pointcut) fieldPointCut.get(null);
 			Method factoryMethod = interceptorClass.getDeclaredMethod("adviceFactory",MetricRegistry.class);
 			AdviceFactory adviceFactory = (AdviceFactory) factoryMethod.invoke(null, metricRegistry);
-			return new AdvisingBeanPostProcessor(pointcut, adviceFacoty, proxyConfig);
+			return new AdvisingBeanPostProcessor(pointcut, adviceFactory, proxyConfig);
 		}
 		catch(ClassNotFoundException e){
 			e.printStackTrace();
