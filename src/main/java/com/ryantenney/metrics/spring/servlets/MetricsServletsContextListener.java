@@ -15,6 +15,7 @@
  */
 package com.ryantenney.metrics.spring.servlets;
 
+import java.util.concurrent.ExecutorService;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -33,6 +34,9 @@ public class MetricsServletsContextListener implements ServletContextListener {
 
 	@Autowired
 	private HealthCheckRegistry healthCheckRegistry;
+
+    @Autowired(required = false)
+    private ExecutorService healthChecksExecutorService;
 
 	private final MetricsServletContextListener metricsServletContextListener = new MetricsServletContextListener();
 	private final HealthCheckServletContextListener healthCheckServletContextListener = new HealthCheckServletContextListener();
@@ -64,6 +68,14 @@ public class MetricsServletsContextListener implements ServletContextListener {
 			return healthCheckRegistry;
 		}
 
-	}
+        @Override
+        protected ExecutorService getExecutorService() {
+            if (healthChecksExecutorService != null) {
+                return healthChecksExecutorService;
+            } else {
+                return super.getExecutorService();
+            }
+        }
+    }
 
 }
