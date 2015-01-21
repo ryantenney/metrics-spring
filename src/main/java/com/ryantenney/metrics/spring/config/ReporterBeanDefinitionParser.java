@@ -59,13 +59,33 @@ class ReporterBeanDefinitionParser extends AbstractBeanDefinitionParser {
 			return null;
 		}
 
-		parserContext.getReaderContext().error("No ReporterElementParser found for reporter type '" + type + "'", element);
+		// Unable to locate a ReporterElementParser for the given type.
+		// Check to see if we're in Spring Tool Suite and if so, we won't throw an error.
+		if (!isInvokedBySts()) {
+			parserContext.getReaderContext().error("No ReporterElementParser found for reporter type '" + type + "'", element);
+		}
+
 		return null;
 	}
 
 	@Override
 	protected boolean shouldGenerateIdAsFallback() {
 		return true;
+	}
+
+	private boolean isInvokedBySts() {
+		try {
+			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+			for (StackTraceElement stackTraceElement : stackTrace) {
+				if (stackTraceElement.getClassName().startsWith("org.springframework.ide.eclipse.")) {
+					return true;
+				}
+			}
+		}
+		catch (SecurityException ignored) {
+		}
+
+		return false;
 	}
 
 }
