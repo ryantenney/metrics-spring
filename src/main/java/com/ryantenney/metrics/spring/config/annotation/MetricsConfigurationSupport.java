@@ -28,11 +28,12 @@ import org.springframework.util.Assert;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * This is the main class providing the configuration behind the Metrics Java config.
  * It is typically imported by adding {@link EnableMetrics @EnableMetrics} to an
- * application {@link Configuration @Configuration} class.
+ * application {@link Configuration } class.
  *
  * @see MetricsConfigurer
  * @see MetricsConfigurerAdapter
