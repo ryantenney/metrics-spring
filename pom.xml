@@ -370,6 +370,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -417,7 +420,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.5.2</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<goals>

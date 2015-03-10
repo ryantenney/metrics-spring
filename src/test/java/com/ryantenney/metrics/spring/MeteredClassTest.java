@@ -321,9 +321,8 @@ public class MeteredClassTest {
 
 	@Test
 	public void overloadedExceptionMeteredMethod() throws Throwable {
-		Meter overloaded = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-exception-metered"));
-		Meter overloaded_param = metricRegistry.getMeters().get(
-				MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-exception-metered-param"));
+		Meter overloaded = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-exception-metered.exceptions"));
+		Meter overloaded_param = metricRegistry.getMeters().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-exception-metered-param.exceptions"));
 
 		assertEquals(0, overloaded.getCount());
 		assertEquals(0, overloaded_param.getCount());
