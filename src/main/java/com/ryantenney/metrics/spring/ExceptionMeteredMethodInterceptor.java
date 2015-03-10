@@ -59,8 +59,8 @@ class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<
 	}
 
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, ExceptionMetered annotation) {
-		return Util.forExceptionMeteredMethod(targetClass, method, annotation);
+	protected String buildMetricName(Class<?> targetClass, Method method, ExceptionMetered annotation, Object...arguments) {
+		return Util.forExceptionMeteredMethod(targetClass, method, annotation, arguments);
 	}
 
 	@Override

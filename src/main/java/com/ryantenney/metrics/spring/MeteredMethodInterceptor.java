@@ -51,8 +51,8 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	}
 
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
-		return Util.forMeteredMethod(targetClass, method, annotation);
+	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation, Object...arguments) {
+		return Util.forMeteredMethod(targetClass, method, annotation, arguments);
 	}
 
 	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {

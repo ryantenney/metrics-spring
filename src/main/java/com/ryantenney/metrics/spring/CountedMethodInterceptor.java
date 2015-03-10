@@ -58,8 +58,8 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	}
 
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
-		return Util.forCountedMethod(targetClass, method, annotation);
+	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation, Object...parameters) {
+		return Util.forCountedMethod(targetClass, method, annotation, parameters);
 	}
 
 	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
