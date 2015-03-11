@@ -20,7 +20,6 @@ import static com.codahale.metrics.MetricRegistry.name;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Collection;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
@@ -88,26 +87,28 @@ class Util {
 	}
 
     static String resolveName(String explicitName, Method method, Object...arguments) {
-        Parameter[] parameters = method.getParameters();
+        String resolvedName = explicitName;
         MetricParam mp;
         int i = 0;
-        String resolvedName = explicitName;
-        for (Parameter p : parameters) {
-            mp = p.getAnnotation(MetricParam.class);
-            if (mp != null && i < arguments.length && arguments[i] != null) {
-                String token = mp.value();
-                if (StringUtils.isEmpty(token)) {
-                    token = Integer.toString(i);
+        Annotation[][] parametersAnnotations = method.getParameterAnnotations();
+        for (Annotation[] parameterAnnotations : parametersAnnotations) {
+            for (Annotation parameterAnnotation : parameterAnnotations) {
+                if (parameterAnnotation != null && parameterAnnotation instanceof MetricParam && i < arguments.length && arguments[i] != null) {
+                    mp = (MetricParam)parameterAnnotation;
+                    String token = mp.value();
+                    if (StringUtils.isEmpty(token)) {
+                        token = Integer.toString(i);
+                    }
+                    token = "{"+token+"}";
+                    String value= "";
+                    if (mp.collection() && arguments[i] instanceof Collection<?>) {
+                        value = "(" + Integer.toString(((Collection<?>)arguments[i]).size())+ ")";
+                    }
+                    else {
+                        value = arguments[i].toString();
+                    }
+                    resolvedName = explicitName.replace(token, value);
                 }
-                token = "{"+token+"}";
-                String value= "";
-                if (mp.collection() && arguments[i] instanceof Collection<?>) {
-                    value = "(" + Integer.toString(((Collection<?>)arguments[i]).size())+ ")";
-                }
-                else {
-                    value = arguments[i].toString();
-                }
-                resolvedName = explicitName.replace(token, value);
             }
             i++;
         }

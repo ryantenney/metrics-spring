@@ -17,7 +17,6 @@ package com.ryantenney.metrics.spring;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +56,7 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
         //register with parameter values if there is a parameter value in the metric name
-        if (hasParameterAnnotation(invocation.getMethod(), MetricParam.class)) {
+        if (hasMetricParamAnnotation(invocation.getMethod())) {
             final A annotation = invocation.getMethod().getAnnotation(annotationClass);
             registerMetric(invocation.getMethod(), annotation, invocation.getArguments());
         }
@@ -75,7 +74,7 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	public void doWith(Method method) throws IllegalAccessException {
 		final A annotation = method.getAnnotation(annotationClass);
 		if (annotation != null) {
-            if (!hasParameterAnnotation(method, MetricParam.class)) {
+            if (!hasMetricParamAnnotation(method)) {
                 //register without parameter values
                 registerMetric(method, annotation);
             }
@@ -89,13 +88,15 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
      * @param metricParamClass
      * @return
      */
-    private boolean hasParameterAnnotation(Method method, Class<MetricParam> metricParamClass) {
+    private boolean hasMetricParamAnnotation(Method method) {
         boolean result = false;
-        for (Parameter p : method.getParameters()) {
-            Annotation mp = p.getAnnotation(metricParamClass);
-            if (mp != null) {
-                result = true;
-                break;
+        Annotation[][] parametersAnnotations = method.getParameterAnnotations();
+        for (Annotation[] parameterAnnotations : parametersAnnotations) {
+            for (Annotation parameterAnnotation : parameterAnnotations) {
+                if (parameterAnnotation != null && parameterAnnotation instanceof MetricParam) {
+                    result = true;
+                    break;
+                }
             }
         }
         return result;
