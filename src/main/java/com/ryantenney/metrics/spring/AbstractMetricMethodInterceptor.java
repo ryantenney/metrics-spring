@@ -56,12 +56,14 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
+        //register with parameter values if there is a parameter value in the metric name
+        if (hasParameterAnnotation(invocation.getMethod(), MetricParam.class)) {
+            final A annotation = invocation.getMethod().getAnnotation(annotationClass);
+            registerMetric(invocation.getMethod(), annotation, invocation.getArguments());
+        }
+        //get the metric and invoke
 		final AnnotationMetricPair<A, M> annotationMetricPair = metrics.get(MethodKey.forMethod(invocation.getMethod()));
 		if (annotationMetricPair != null) {
-            if (hasParameterAnnotation(invocation.getMethod(), MetricParam.class)) {
-                //register with parameter values
-                registerMetric(invocation.getMethod(), annotationMetricPair.getAnnotation(), invocation.getArguments());
-            }
 			return invoke(invocation, annotationMetricPair.getMeter(), annotationMetricPair.getAnnotation());
 		}
 		else {
@@ -81,7 +83,7 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	}
 
     /**
-     * Detect if method parameters are annotatiopn with @MetricParam.
+     * Detect if method parameters are annotation with @MetricParam.
      *
      * @param method
      * @param metricParamClass

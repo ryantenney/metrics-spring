@@ -21,11 +21,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by a566589 on 3/10/15.
+ * This annotation allows parameter values to be injected into metric names.
+ * 
+ * @Timed(absolute=true, name="testmetric.{param}")
+ * public void timedMethod(@MetricParam(value = "param") int value) {} 
+ * 
+ * Called with value=12, registers a metric with the name "testmetric.12".
+ * 
+ * Applies only to parameters of methods annotated with:
+ * {@link Timed @Timed}, {@link Counted @Counted}, {@link Metered @Metered}, {@link ExceptionMetered @ExceptionMetered}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER })
 public @interface MetricParam {
 
     String value() default "";
+
+    /**
+     * Marks this as a collection, such that instead of the value, the number of elements 
+     * will be substituted into the metric name inside parentheses, e.g. (12), if the parameter is of Collection<?> type.
+     *
+     * @return
+     */
+    boolean collection() default false;
 }

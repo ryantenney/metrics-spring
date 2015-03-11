@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Collection;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Gauge;
@@ -37,11 +38,11 @@ class Util {
 	private Util() {}
 
 	static String forTimedMethod(Class<?> klass, Member member, Timed annotation, Object...arguments) {
-		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+		return chooseName(annotation.name(), annotation.absolute(), klass, member, arguments);
 	}
 
 	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation, Object...arguments) {
-		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+		return chooseName(annotation.name(), annotation.absolute(), klass, member, arguments);
 	}
 
 	static String forGauge(Class<?> klass, Member member, Gauge annotation) {
@@ -57,7 +58,7 @@ class Util {
 	}
 
 	static String forCountedMethod(Class<?> klass, Member member, Counted annotation, Object...arguments) {
-		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+		return chooseName(annotation.name(), annotation.absolute(), klass, member, arguments);
 	}
 
 	static String forMetricField(Class<?> klass, Member member, Metric annotation) {
@@ -73,7 +74,7 @@ class Util {
             //if a method annotation, check arguments for @MetricParam and substitute values in explicitName
             String resolvedName = "";
             if (member instanceof Method) {
-                resolvedName = resolveName(explicitName, (Method)member);
+                resolvedName = resolveName(explicitName, (Method)member, arguments);
             }
             else {
                 resolvedName = explicitName;
@@ -92,14 +93,20 @@ class Util {
         int i = 0;
         String resolvedName = explicitName;
         for (Parameter p : parameters) {
-            mp = p.getDeclaredAnnotation(MetricParam.class);
+            mp = p.getAnnotation(MetricParam.class);
             if (mp != null && i < arguments.length && arguments[i] != null) {
                 String token = mp.value();
                 if (StringUtils.isEmpty(token)) {
                     token = Integer.toString(i);
                 }
                 token = "{"+token+"}";
-                String value = arguments[i].toString();
+                String value= "";
+                if (mp.collection() && arguments[i] instanceof Collection<?>) {
+                    value = "(" + Integer.toString(((Collection<?>)arguments[i]).size())+ ")";
+                }
+                else {
+                    value = arguments[i].toString();
+                }
                 resolvedName = explicitName.replace(token, value);
             }
             i++;

@@ -31,6 +31,7 @@ import com.codahale.metrics.SharedMetricRegistries;
 		HealthCheckTest.class,
 		MeteredClassImpementsInterfaceTest.class,
 		MeteredClassTest.class,
+        MetricParamAnnotationTest.class,
 		MeteredInterfaceTest.class,
 		MetricAnnotationTest.class,
 		ProxyTargetClassTest.class,
