@@ -87,13 +87,21 @@ class Util {
 	}
 
     static String resolveName(String explicitName, Method method, Object...arguments) {
+        //single arg methods where the arg is null need to be initialized with one null element, since the array comes in as null sometimes
+        Object[] args;
+        if (arguments == null) {
+            args = new Object[]{ null };
+        }
+        else {
+            args = arguments;
+        }
         String resolvedName = explicitName;
         MetricParam mp;
         int i = 0;
         Annotation[][] parametersAnnotations = method.getParameterAnnotations();
         for (Annotation[] parameterAnnotations : parametersAnnotations) {
             for (Annotation parameterAnnotation : parameterAnnotations) {
-                if (parameterAnnotation != null && parameterAnnotation instanceof MetricParam && i < arguments.length && arguments[i] != null) {
+                if (parameterAnnotation != null && parameterAnnotation instanceof MetricParam && i < args.length) {
                     mp = (MetricParam)parameterAnnotation;
                     String token = mp.value();
                     if (StringUtils.isEmpty(token)) {
@@ -101,11 +109,20 @@ class Util {
                     }
                     token = "{"+token+"}";
                     String value= "";
-                    if (mp.collection() && arguments[i] instanceof Collection<?>) {
-                        value = "(" + Integer.toString(((Collection<?>)arguments[i]).size())+ ")";
+                    if (mp.collection()) {
+                        int size = 0;
+                        if (args[i] != null) {
+                            size = ((Collection<?>)args[i]).size();
+                        }
+                        value = "(" + Integer.toString(size)+ ")";
                     }
                     else {
-                        value = arguments[i].toString();
+                        if (args[i] != null) {
+                            value = args[i].toString();
+                        }
+                        else {
+                            value = "null";
+                        }
                     }
                     resolvedName = explicitName.replace(token, value);
                 }
