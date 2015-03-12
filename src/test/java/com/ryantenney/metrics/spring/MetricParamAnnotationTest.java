@@ -151,11 +151,41 @@ public class MetricParamAnnotationTest {
         assertEquals("timed-collection-param.(3)", metricName);
     }
 
+    @Test
+    public void timedNullParameterMethod() {
+        Timer timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedParameterMethod", null);
+        assertNull(timedMethod);
+
+        metricParamClass.timedParameterMethod(null);
+        timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedParameterMethod", null);
+        assertNotNull(timedMethod);
+        assertEquals(1, timedMethod.getCount());
+
+        Method method = findMethod(MetricParamClass.class, "timedParameterMethod");
+        String metricName = forTimedMethod(MetricParamClass.class, method, method.getAnnotation(Timed.class), null);
+        assertEquals("timed-param.null", metricName);
+    }
+    
+    @Test
+    public void timedNullCollectionParameterMethod() {
+        List<String> list = null;
+        Timer timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedCollectionParameterMethod", list);
+        assertNull(timedMethod);
+
+        metricParamClass.timedCollectionParameterMethod(list);
+        timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedCollectionParameterMethod", list);
+        assertNotNull(timedMethod);
+        assertEquals(1, timedMethod.getCount());
+
+        Method method = findMethod(MetricParamClass.class, "timedCollectionParameterMethod");
+        String metricName = forTimedMethod(MetricParamClass.class, method, method.getAnnotation(Timed.class), list);
+        assertEquals("timed-collection-param.(0)", metricName);
+    }
 
     public static class MetricParamClass {
 
         @Timed(absolute = true, name = "timed-param.{param}")
-        public void timedParameterMethod(@MetricParam(value = "param") int param) {}
+        public void timedParameterMethod(@MetricParam(value = "param") Integer param) {}
 
         @Counted(absolute = true, name = "counted-param.{param}", monotonic = true)
         public void countedParameterMethod(@MetricParam(value = "param") String param) {}
@@ -164,7 +194,7 @@ public class MetricParamAnnotationTest {
         public void meteredParameterMethod(@MetricParam(value = "param") BigDecimal param) {}
 
         @ExceptionMetered(cause = BogusException.class, absolute = true, name = "exception-metered-param.{param}")
-        public <T extends Throwable> void exceptionMeteredParameterMethod(Class<T> clazz, @MetricParam(value = "param") int param) throws Throwable {
+        public <T extends Throwable> void exceptionMeteredParameterMethod(Class<T> clazz, @MetricParam(value = "param") Integer param) throws Throwable {
             if (clazz != null) {
                 throw clazz.newInstance();
             }
