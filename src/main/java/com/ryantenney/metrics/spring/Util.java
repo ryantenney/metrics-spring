@@ -114,7 +114,7 @@ class Util {
                         if (args[i] != null) {
                             size = ((Collection<?>)args[i]).size();
                         }
-                        value = "(" + Integer.toString(size)+ ")";
+                        value = "size." + Integer.toString(size);
                     }
                     else {
                         if (args[i] != null) {

@@ -39,7 +39,7 @@ public @interface MetricParam {
 
     /**
      * Marks this as a collection, such that instead of the value, the number of elements 
-     * will be substituted into the metric name inside parentheses, e.g. (12), if the parameter is of Collection<?> type.
+     * will be substituted into the metric name prefixed with 'size' e.g. size.12, if the parameter is of Collection<?> type.
      *
      * @return
      */

@@ -148,7 +148,7 @@ public class MetricParamAnnotationTest {
 
         Method method = findMethod(MetricParamClass.class, "timedCollectionParameterMethod");
         String metricName = forTimedMethod(MetricParamClass.class, method, method.getAnnotation(Timed.class), list);
-        assertEquals("timed-collection-param.(3)", metricName);
+        assertEquals("timed-collection-param.size.3", metricName);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class MetricParamAnnotationTest {
 
         Method method = findMethod(MetricParamClass.class, "timedCollectionParameterMethod");
         String metricName = forTimedMethod(MetricParamClass.class, method, method.getAnnotation(Timed.class), list);
-        assertEquals("timed-collection-param.(0)", metricName);
+        assertEquals("timed-collection-param.size.0", metricName);
     }
 
     public static class MetricParamClass {
