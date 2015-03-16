@@ -153,16 +153,16 @@ public class MetricParamAnnotationTest {
 
     @Test
     public void timedNullParameterMethod() {
-        Timer timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedParameterMethod", null);
+        Timer timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedParameterMethod", (Object[])null);
         assertNull(timedMethod);
 
         metricParamClass.timedParameterMethod(null);
-        timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedParameterMethod", null);
+        timedMethod = forTimedMethod(metricRegistry, MetricParamClass.class, "timedParameterMethod", (Object[])null);
         assertNotNull(timedMethod);
         assertEquals(1, timedMethod.getCount());
 
         Method method = findMethod(MetricParamClass.class, "timedParameterMethod");
-        String metricName = forTimedMethod(MetricParamClass.class, method, method.getAnnotation(Timed.class), null);
+        String metricName = forTimedMethod(MetricParamClass.class, method, method.getAnnotation(Timed.class), (Object[])null);
         assertEquals("timed-param.null", metricName);
     }
     
