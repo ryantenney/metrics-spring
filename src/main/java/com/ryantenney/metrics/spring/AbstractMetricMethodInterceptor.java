@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ryantenney.metrics.annotation.MetricParam;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -54,6 +55,12 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
+        //register with parameter values if there is a parameter value in the metric name
+        if (hasMetricParamAnnotation(invocation.getMethod())) {
+            final A annotation = invocation.getMethod().getAnnotation(annotationClass);
+            registerMetric(invocation.getMethod(), annotation, invocation.getArguments());
+        }
+        //get the metric and invoke
 		final AnnotationMetricPair<A, M> annotationMetricPair = metrics.get(MethodKey.forMethod(invocation.getMethod()));
 		if (annotationMetricPair != null) {
 			return invoke(invocation, annotationMetricPair.getMeter(), annotationMetricPair.getAnnotation());
@@ -67,21 +74,55 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	public void doWith(Method method) throws IllegalAccessException {
 		final A annotation = method.getAnnotation(annotationClass);
 		if (annotation != null) {
-			final MethodKey methodKey = MethodKey.forMethod(method);
-			final String metricName = buildMetricName(targetClass, method, annotation);
-			final M metric = buildMetric(metricRegistry, metricName, annotation);
-
-			if (metric != null) {
-				metrics.put(methodKey, new AnnotationMetricPair<A, M>(annotation, metric));
-
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Created {} {} for method {}", metric.getClass().getSimpleName(), metricName, methodKey);
-				}
-			}
+            if (!hasMetricParamAnnotation(method)) {
+                //register without parameter values
+                registerMetric(method, annotation);
+            }
 		}
 	}
 
-	protected abstract String buildMetricName(Class<?> targetClass, Method method, A annotation);
+    /**
+     * Detect if method parameters are annotation with @MetricParam.
+     *
+     * @param method
+     * @param metricParamClass
+     * @return
+     */
+    private boolean hasMetricParamAnnotation(Method method) {
+        boolean result = false;
+        Annotation[][] parametersAnnotations = method.getParameterAnnotations();
+        for (Annotation[] parameterAnnotations : parametersAnnotations) {
+            for (Annotation parameterAnnotation : parameterAnnotations) {
+                if (parameterAnnotation != null && parameterAnnotation instanceof MetricParam) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Register a metric, optionally with parameter value substitution.
+     * 
+     * @param method
+     * @param annotation
+     */
+    private void registerMetric(Method method, A annotation, Object...arguments) {
+        final MethodKey methodKey = MethodKey.forMethod(method);
+        final String metricName = buildMetricName(targetClass, method, annotation, arguments);
+        final M metric = buildMetric(metricRegistry, metricName, annotation);
+
+        if (metric != null) {
+            metrics.put(methodKey, new AnnotationMetricPair<A, M>(annotation, metric));
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Created {} {} for method {}", metric.getClass().getSimpleName(), metricName, methodKey);
+            }
+        }
+    }
+
+	protected abstract String buildMetricName(Class<?> targetClass, Method method, A annotation, Object...arguments);
 
 	protected abstract M buildMetric(MetricRegistry metricRegistry, String metricName, A annotation);
 

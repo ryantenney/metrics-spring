@@ -58,8 +58,8 @@ class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Time
 	}
 
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Timed annotation) {
-		return Util.forTimedMethod(targetClass, method, annotation);
+	protected String buildMetricName(Class<?> targetClass, Method method, Timed annotation, Object...arguments) {
+		return Util.forTimedMethod(targetClass, method, annotation, arguments);
 	}
 
 	@Override

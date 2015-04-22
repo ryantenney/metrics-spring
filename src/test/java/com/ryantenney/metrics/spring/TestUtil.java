@@ -41,12 +41,12 @@ class TestUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
 
-	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
-		return Util.forTimedMethod(klass, member, annotation);
+	static String forTimedMethod(Class<?> klass, Member member, Timed annotation, Object...params) {
+		return Util.forTimedMethod(klass, member, annotation, params);
 	}
 
-	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation) {
-		return Util.forMeteredMethod(klass, member, annotation);
+	static String forMeteredMethod(Class<?> klass, Member member, Metered annotation, Object...params) {
+		return Util.forMeteredMethod(klass, member, annotation, params);
 	}
 
 	static String forGauge(Class<?> klass, Member member, com.codahale.metrics.annotation.Gauge annotation) {
@@ -57,12 +57,12 @@ class TestUtil {
 		return Util.forCachedGauge(klass, member, annotation);
 	}
 
-	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation) {
-		return Util.forExceptionMeteredMethod(klass, member, annotation);
+	static String forExceptionMeteredMethod(Class<?> klass, Member member, ExceptionMetered annotation, Object...args) {
+		return Util.forExceptionMeteredMethod(klass, member, annotation, args);
 	}
 
-	static String forCountedMethod(Class<?> klass, Member member, Counted annotation) {
-		return Util.forCountedMethod(klass, member, annotation);
+	static String forCountedMethod(Class<?> klass, Member member, Counted annotation, Object...params) {
+		return Util.forCountedMethod(klass, member, annotation, params);
 	}
 
 	static String forMetricField(Class<?> klass, Member member, Metric annotation) {
@@ -90,30 +90,30 @@ class TestUtil {
 		return (CachedGauge<?>) metricRegistry.getGauges().get(metricName);
 	}
 
-	static Timer forTimedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+	static Timer forTimedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName, Object...params) {
 		Method method = findMethod(clazz, methodName);
-		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class));
-		log.info("Looking up timed method named '{}'", metricName);
+		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class), params);
+		log.info("Looking up timed metric named '{}'", metricName);
 		return metricRegistry.getTimers().get(metricName);
 	}
 
-	static Meter forMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+	static Meter forMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName, Object...params) {
 		Method method = findMethod(clazz, methodName);
-		String metricName = forMeteredMethod(clazz, method, method.getAnnotation(Metered.class));
+		String metricName = forMeteredMethod(clazz, method, method.getAnnotation(Metered.class), params);
 		log.info("Looking up metered method named '{}'", metricName);
 		return metricRegistry.getMeters().get(metricName);
 	}
 
-	static Meter forExceptionMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+	static Meter forExceptionMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName, Object...args) {
 		Method method = findMethod(clazz, methodName);
-		String metricName = forExceptionMeteredMethod(clazz, method, method.getAnnotation(ExceptionMetered.class));
+		String metricName = forExceptionMeteredMethod(clazz, method, method.getAnnotation(ExceptionMetered.class), args);
 		log.info("Looking up exception metered method named '{}'", metricName);
 		return metricRegistry.getMeters().get(metricName);
 	}
 
-	static Counter forCountedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+	static Counter forCountedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName, Object...params) {
 		Method method = findMethod(clazz, methodName);
-		String metricName = forCountedMethod(clazz, method, method.getAnnotation(Counted.class));
+		String metricName = forCountedMethod(clazz, method, method.getAnnotation(Counted.class), params);
 		log.info("Looking up counted method named '{}'", metricName);
 		return metricRegistry.getCounters().get(metricName);
 	}
@@ -124,7 +124,7 @@ class TestUtil {
 		return getMetric(metricRegistry, field.getType(), metricName);
 	}
 
-	private static com.codahale.metrics.Metric getMetric(MetricRegistry metricRegistry, Class<?> type, String metricName) {
+	static com.codahale.metrics.Metric getMetric(MetricRegistry metricRegistry, Class<?> type, String metricName) {
 		log.info("Looking up injected metric field named '{}'", metricName);
 		if (type.isAssignableFrom(Meter.class)) {
 			return metricRegistry.getMeters().get(metricName);
@@ -141,7 +141,7 @@ class TestUtil {
 		return null;
 	}
 
-	private static Field findField(Class<?> clazz, String fieldName) {
+	static Field findField(Class<?> clazz, String fieldName) {
 		List<Field> fieldsFound = new ArrayList<Field>();
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.getName().equals(fieldName)) {
@@ -156,7 +156,7 @@ class TestUtil {
 		}
 	}
 
-	private static Method findMethod(Class<?> clazz, String methodName) {
+	static Method findMethod(Class<?> clazz, String methodName) {
 		log.info("Looking for method {}.{}", clazz, methodName);
 		List<Method> methodsFound = new ArrayList<Method>();
 		for (Method method : clazz.getDeclaredMethods()) {
