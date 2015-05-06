@@ -15,11 +15,13 @@
  */
 package com.ryantenney.metrics.spring;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
@@ -32,7 +34,9 @@ import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, Counter> {
 
 	public static final Class<Counted> ANNOTATION = Counted.class;
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
+	public static final Pointcut POINTCUT = new ComposablePointcut()
+			.union(AnnotationMatchingPointcut.forClassAnnotation(ANNOTATION))
+			.union(new AnnotationMatchingPointcut(null, ANNOTATION));
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public CountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {

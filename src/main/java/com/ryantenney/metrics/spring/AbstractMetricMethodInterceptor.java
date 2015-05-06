@@ -24,6 +24,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
@@ -65,7 +66,9 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 
 	@Override
 	public void doWith(Method method) throws IllegalAccessException {
-		final A annotation = method.getAnnotation(annotationClass);
+		final A classAnnotation = method.getDeclaringClass().getAnnotation(annotationClass);
+		final A methodAnnotation = method.getAnnotation(annotationClass);
+		final A annotation = methodAnnotation != null ? methodAnnotation : classAnnotation;
 		if (annotation != null) {
 			final MethodKey methodKey = MethodKey.forMethod(method);
 			final String metricName = buildMetricName(targetClass, method, annotation);

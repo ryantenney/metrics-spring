@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils.MethodFilter;
@@ -34,7 +35,9 @@ import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Timer> implements Ordered {
 
 	public static final Class<Timed> ANNOTATION = Timed.class;
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
+	public static final Pointcut POINTCUT = new ComposablePointcut()
+		.union(AnnotationMatchingPointcut.forMethodAnnotation(ANNOTATION))
+		.union(AnnotationMatchingPointcut.forClassAnnotation(ANNOTATION));
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public TimedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {

@@ -69,7 +69,7 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	@Override
 	public boolean matches(Method method) {
-		if (USER_DECLARED_METHODS.matches(method) && method.isAnnotationPresent(clazz)) {
+		if (USER_DECLARED_METHODS.matches(method) && (method.isAnnotationPresent(clazz) || method.getDeclaringClass().isAnnotationPresent(clazz))) {
 			if (checkModifiers(method, methodModifiers)) {
 				return true;
 			}
