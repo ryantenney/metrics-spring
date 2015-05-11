@@ -17,6 +17,8 @@ package com.ryantenney.metrics.spring.config;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
@@ -37,6 +39,7 @@ import com.codahale.metrics.MetricSet;
 import static com.ryantenney.metrics.spring.config.MetricsNamespaceHandler.METRICS_NAMESPACE;
 
 class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
+	private static final Logger logger = LoggerFactory.getLogger( RegisterMetricBeanDefinitionParser.class );
 
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
@@ -95,7 +98,12 @@ class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
-			metricRegistry.register(name, metric);
+			try {
+				metricRegistry.register(name, metric);
+			}
+			catch (IllegalArgumentException e) {
+				logger.warn( "Ignoring previosly registered metric", e );
+			}
 		}
 
 	}
