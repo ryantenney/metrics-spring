@@ -110,7 +110,7 @@
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="enabled" type="xsd:string" use="optional"/>
-			<xsd:anyAttribute processContents="lax"/>
+			<xsd:anyAttribute namespace="##any" processContents="lax"/>
 		</xsd:complexType>
 	</xsd:element>
 
