@@ -38,22 +38,23 @@ import com.ryantenney.metrics.annotation.Counted;
 
 /**
  * Purpose of test:
- * Verify that calling a method from a class implementing an interface 
+ * Verify that calling a method from a class implementing an interface
  * but annotated at the class level doesn't throw an NPE
  * Also verifies that it does register metrics.
  */
 public class MeteredClassImpementsInterfaceTest {
 
-	MeteredClassInterface meteredClass;
+	MeteredClassInterface<Object, Object> meteredClass;
 
 	ClassPathXmlApplicationContext ctx;
 	MetricRegistry metricRegistry;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void init() {
 		this.ctx = new ClassPathXmlApplicationContext("classpath:metered-interface-impl.xml");
 		this.metricRegistry = this.ctx.getBean(MetricRegistry.class);
-		this.meteredClass = (MeteredClassInterface) this.ctx.getBean("metered-class-interface");
+		this.meteredClass = (MeteredClassInterface<Object, Object>) this.ctx.getBean("metered-class-interface");
 	}
 
 	@After
@@ -68,19 +69,19 @@ public class MeteredClassImpementsInterfaceTest {
 
 	@Test
 	public void testMeteredClassInterface() {
-		MeteredClassInterface mi = ctx.getBean(MeteredClassInterface.class);
-		Assert.assertNotNull("Expected to be able to get MeteredInterface by interface and not by class.", mi);
+		Assert.assertNotNull("Expected to be able to get MeteredInterface by interface and not by class.",
+				ctx.getBean(MeteredClassInterface.class));
 	}
 
 	@Test(expected = NoSuchBeanDefinitionException.class)
 	public void testMeteredInterfaceImpl() {
-		MeteredClassInterface mc = ctx.getBean(MeteredClassImpl.class);
+		MeteredClassInterface<?, ?> mc = ctx.getBean(MeteredClassImpl.class);
 		Assert.assertNull("Expected to be unable to get MeteredInterfaceImpl by class.", mc);
 	}
 
 	@Test
 	public void testTimedMethod() {
-		ctx.getBean(MeteredClassInterface.class).timedMethod();
+		meteredClass.timedMethod(null);
 		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getTimers().isEmpty());
 	}
 
@@ -112,8 +113,7 @@ public class MeteredClassImpementsInterfaceTest {
 		Timer timedMethod = forTimedMethod(metricRegistry, MeteredClassImpl.class, "timedMethod");
 
 		assertEquals(0, timedMethod.getCount());
-
-		meteredClass.timedMethod();
+		meteredClass.timedMethod(new BogusClassBExtension());
 		assertEquals(1, timedMethod.getCount());
 	}
 
@@ -143,37 +143,38 @@ public class MeteredClassImpementsInterfaceTest {
 		assertEquals(0, countedMethod.getCount());
 	}
 
-	public interface MeteredClassInterface {
+	public interface MeteredClassInterface<A, B> {
 
-		public void timedMethod();
+		public A timedMethod(B arg);
 
-		public void meteredMethod();
+		public A meteredMethod();
 
-		public void countedMethod(Runnable runnable);
+		public A countedMethod(Runnable runnable);
 
-		public void exceptionMeteredMethod() throws Throwable;
+		public A exceptionMeteredMethod() throws Throwable;
 
 	}
 
-	public static class MeteredClassImpl implements MeteredClassInterface {
+	public static class MeteredClassImpl implements MeteredClassInterface<BogusClassA, BogusClassB> {
 
 		@Override
 		@Timed
-		public void timedMethod() {}
+		public BogusClassA timedMethod(BogusClassB arg) {return new BogusClassA();}
 
 		@Override
 		@Metered
-		public void meteredMethod() {}
+		public BogusClassA meteredMethod() {return null; }
 
 		@Override
 		@Counted
-		public void countedMethod(Runnable runnable) {
+		public BogusClassA countedMethod(Runnable runnable) {
 			if (runnable != null) runnable.run();
+			return null;
 		}
 
 		@Override
 		@ExceptionMetered
-		public void exceptionMeteredMethod() throws Throwable {
+		public BogusClassA exceptionMeteredMethod() throws Throwable {
 			throw new BogusException();
 		}
 
@@ -181,5 +182,10 @@ public class MeteredClassImpementsInterfaceTest {
 
 	@SuppressWarnings("serial")
 	public static class BogusException extends Throwable {}
+
+	public static class BogusClassA {}
+	public static class BogusClassAExtension extends BogusClassA {}
+	public static class BogusClassB {}
+	public static class BogusClassBExtension extends BogusClassB {}
 
 }

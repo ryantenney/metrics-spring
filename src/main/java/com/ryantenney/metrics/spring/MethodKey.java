@@ -18,6 +18,8 @@ package com.ryantenney.metrics.spring;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import org.aopalliance.intercept.MethodInvocation;
+
 class MethodKey {
 
 	private final String name;
@@ -34,6 +36,32 @@ class MethodKey {
 		this.returnType = method.getReturnType();
 		this.parameterTypes = method.getParameterTypes();
 		this.hashCode = computeHashCode();
+	}
+
+	public boolean isCompatibleWith(MethodInvocation invocation) {
+		final Method invokedMethod = invocation.getMethod();
+		final Object[] invokedParameters = invocation.getArguments();
+
+		if (!name.equals(invokedMethod.getName())) {
+			return false;
+		}
+		if (!invokedMethod.getReturnType().isAssignableFrom(returnType)) {
+			return false;
+		}
+		if (invokedParameters.length != parameterTypes.length) {
+			return false;
+		}
+		for (int i=0; i<invokedParameters.length; i++) {
+			if (invokedParameters[i] == null) {
+				continue;
+			}
+			Class<?> invokedParameterClass = invokedParameters[i].getClass();
+			Class<?> parameterClass = parameterTypes[i];
+			if (!parameterClass.isAssignableFrom(invokedParameterClass)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
