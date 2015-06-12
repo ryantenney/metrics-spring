@@ -27,17 +27,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import io.dropwizard.metrics.annotation.ExceptionMetered;
-import io.dropwizard.metrics.annotation.Metered;
-import io.dropwizard.metrics.annotation.Timed;
 
 import io.dropwizard.metrics.CachedGauge;
 import io.dropwizard.metrics.Counter;
@@ -46,8 +40,12 @@ import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.RatioGauge;
 import io.dropwizard.metrics.Timer;
+import io.dropwizard.metrics.annotation.Counted;
+import io.dropwizard.metrics.annotation.ExceptionMetered;
+import io.dropwizard.metrics.annotation.Metered;
+import io.dropwizard.metrics.annotation.Timed;
 
-import com.ryantenney.metrics.annotation.Counted;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -428,7 +426,7 @@ public class MeteredClassTest {
 			this.gaugedField = value;
 		}
 
-		@com.ryantenney.metrics.annotation.CachedGauge(timeout = 1, timeoutUnit = TimeUnit.DAYS)
+		@io.dropwizard.metrics.annotation.CachedGauge(timeout = 1, timeoutUnit = TimeUnit.DAYS)
 		public int cachedGaugedMethod() {
 			return this.gaugedField;
 		}

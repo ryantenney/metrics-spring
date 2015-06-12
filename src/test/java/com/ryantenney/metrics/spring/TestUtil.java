@@ -15,18 +15,8 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.dropwizard.metrics.annotation.ExceptionMetered;
-import io.dropwizard.metrics.annotation.Metered;
-import io.dropwizard.metrics.annotation.Timed;
 
 import io.dropwizard.metrics.CachedGauge;
 import io.dropwizard.metrics.Counter;
@@ -36,9 +26,17 @@ import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
+import io.dropwizard.metrics.annotation.Counted;
+import io.dropwizard.metrics.annotation.ExceptionMetered;
+import io.dropwizard.metrics.annotation.Metered;
+import io.dropwizard.metrics.annotation.Metric;
+import io.dropwizard.metrics.annotation.Timed;
 
-import com.ryantenney.metrics.annotation.Counted;
-import com.ryantenney.metrics.annotation.Metric;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 class TestUtil {
 
@@ -56,7 +54,7 @@ class TestUtil {
 		return Util.forGauge(klass, member, annotation);
 	}
 
-	static MetricName forCachedGauge(Class<?> klass, Member member, com.ryantenney.metrics.annotation.CachedGauge annotation) {
+	static MetricName forCachedGauge(Class<?> klass, Member member, io.dropwizard.metrics.annotation.CachedGauge annotation) {
 		return Util.forCachedGauge(klass, member, annotation);
 	}
 
@@ -88,7 +86,7 @@ class TestUtil {
 
 	static CachedGauge<?> forCachedGaugeMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
 		Method method = findMethod(clazz, methodName);
-		MetricName metricName = forCachedGauge(clazz, method, method.getAnnotation(com.ryantenney.metrics.annotation.CachedGauge.class));
+		MetricName metricName = forCachedGauge(clazz, method, method.getAnnotation(io.dropwizard.metrics.annotation.CachedGauge.class));
 		log.info("Looking up cached gauge method named '{}'", metricName);
 		return (CachedGauge<?>) metricRegistry.getGauges().get(metricName);
 	}

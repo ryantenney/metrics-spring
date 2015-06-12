@@ -20,15 +20,14 @@ import java.lang.reflect.Field;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
+import io.dropwizard.metrics.annotation.Metric;
+
 import io.dropwizard.metrics.Counter;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
-
-import com.ryantenney.metrics.annotation.Metric;
-
 import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_FIELDS;
 
 class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {

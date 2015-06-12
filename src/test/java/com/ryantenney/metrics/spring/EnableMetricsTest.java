@@ -27,6 +27,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,25 +38,21 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.dropwizard.metrics.health.HealthCheckRegistry;
-
-import io.dropwizard.metrics.annotation.ExceptionMetered;
-import io.dropwizard.metrics.annotation.Metered;
-import io.dropwizard.metrics.annotation.Timed;
 import io.dropwizard.metrics.CachedGauge;
 import io.dropwizard.metrics.Counter;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
-
-import com.ryantenney.metrics.annotation.Counted;
-import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
-import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
+import io.dropwizard.metrics.annotation.Counted;
+import io.dropwizard.metrics.annotation.ExceptionMetered;
+import io.dropwizard.metrics.annotation.Metered;
+import io.dropwizard.metrics.annotation.Timed;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
 
 /**
  * Tests use of {@link EnableMetrics @EnableMetrics} on {@code @Configuration} classes.
- * 
+ *
  * @author Ryan Tenney
  * @since 3.0
  */
@@ -214,7 +213,7 @@ public class EnableMetricsTest {
 			return 6;
 		}
 
-		@com.ryantenney.metrics.annotation.CachedGauge(timeout = 100)
+		@io.dropwizard.metrics.annotation.CachedGauge(timeout = 100)
 		public int cachedGaugeMethod() {
 			return 7;
 		}

@@ -15,7 +15,8 @@
  */
 package com.ryantenney.metrics.spring;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -30,8 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import io.dropwizard.metrics.Counter;
 import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
-
-import com.ryantenney.metrics.annotation.Metric;
+import io.dropwizard.metrics.annotation.Metric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aop-field-injection-interaction.xml")

@@ -32,8 +32,7 @@ import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
 import io.dropwizard.metrics.UniformReservoir;
-
-import com.ryantenney.metrics.annotation.Metric;
+import io.dropwizard.metrics.annotation.Metric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metric-annotation.xml")

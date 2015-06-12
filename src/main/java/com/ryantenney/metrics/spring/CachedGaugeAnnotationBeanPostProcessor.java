@@ -15,17 +15,16 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Method;
+import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
 
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
 import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.annotation.CachedGauge;
 
-import com.ryantenney.metrics.annotation.CachedGauge;
-
-import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
+import java.lang.reflect.Method;
 
 class CachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 

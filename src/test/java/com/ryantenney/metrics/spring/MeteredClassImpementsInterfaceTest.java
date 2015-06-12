@@ -27,20 +27,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import io.dropwizard.metrics.annotation.ExceptionMetered;
-import io.dropwizard.metrics.annotation.Metered;
-import io.dropwizard.metrics.annotation.Timed;
-
 import io.dropwizard.metrics.Counter;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
-
-import com.ryantenney.metrics.annotation.Counted;
+import io.dropwizard.metrics.annotation.Counted;
+import io.dropwizard.metrics.annotation.ExceptionMetered;
+import io.dropwizard.metrics.annotation.Metered;
+import io.dropwizard.metrics.annotation.Timed;
 
 /**
  * Purpose of test:
- * Verify that calling a method from a class implementing an interface 
+ * Verify that calling a method from a class implementing an interface
  * but annotated at the class level doesn't throw an NPE
  * Also verifies that it does register metrics.
  */

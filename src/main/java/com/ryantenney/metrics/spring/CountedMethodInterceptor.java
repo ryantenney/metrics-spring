@@ -15,7 +15,7 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Method;
+import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
@@ -26,10 +26,9 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
 import io.dropwizard.metrics.Counter;
 import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.annotation.Counted;
 
-import com.ryantenney.metrics.annotation.Counted;
-
-import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
+import java.lang.reflect.Method;
 
 class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, Counter> {
 
