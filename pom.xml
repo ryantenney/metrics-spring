@@ -36,6 +36,18 @@
 		<system>github</system>
 		<url>http://github.com/ryantenney/metrics-spring/issues</url>
 	</issueManagement>
+	<repositories>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
 			<id>sonatype-nexus-staging</id>
