@@ -6,7 +6,7 @@
 	<version>4.0.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Metrics Spring Integration</name>
-	<description>Spring integration for Coda Hale's Metrics Library</description>
+	<description>Spring integration for Dropwizard Metrics</description>
 	<url>http://github.com/ryantenney/metrics-spring/</url>
 	<inceptionYear>2012</inceptionYear>
 	<licenses>
