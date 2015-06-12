@@ -23,8 +23,8 @@
 	targetNamespace="http://www.ryantenney.com/schema/metrics"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"/>
-	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool-3.2.xsd"/>
+	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-4.1.xsd"/>
+	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool-4.1.xsd"/>
 
 	<xsd:element name="annotation-driven">
 		<xsd:annotation>
@@ -39,7 +39,7 @@
 				<xsd:annotation>
 					<xsd:appinfo>
 						<tool:annotation kind="ref">
-							<tool:expected-type type="com.codahale.metrics.MetricRegistry"/>
+							<tool:expected-type type="io.dropwizard.metrics.MetricRegistry"/>
 						</tool:annotation>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -48,7 +48,7 @@
 				<xsd:annotation>
 					<xsd:appinfo>
 						<tool:annotation kind="ref">
-							<tool:expected-type type="com.codahale.metrics.health.HealthCheckRegistry"/>
+							<tool:expected-type type="io.dropwizard.metrics.health.HealthCheckRegistry"/>
 						</tool:annotation>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -62,7 +62,7 @@
 		<xsd:annotation>
 			<xsd:appinfo>
 				<tool:annotation>
-					<tool:exports type="com.codahale.metrics.MetricRegistry"/>
+					<tool:exports type="io.dropwizard.metrics.MetricRegistry"/>
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -76,7 +76,7 @@
 		<xsd:annotation>
 			<xsd:appinfo>
 				<tool:annotation>
-					<tool:exports type="com.codahale.metrics.health.HealthCheckRegistry"/>
+					<tool:exports type="io.dropwizard.metrics.health.HealthCheckRegistry"/>
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -89,11 +89,11 @@
 		<xsd:annotation>
 			<xsd:appinfo>
 				<tool:annotation>
-					<tool:exports type="com.codahale.metrics.Slf4jReporter"/>
-					<tool:exports type="com.codahale.metrics.ConsoleReporter"/>
-					<tool:exports type="com.codahale.metrics.JmxReporter"/>
-					<tool:exports type="com.codahale.metrics.ganglia.GangliaReporter"/>
-					<tool:exports type="com.codahale.metrics.graphite.GraphiteReporter"/>
+					<tool:exports type="io.dropwizard.metrics.Slf4jReporter"/>
+					<tool:exports type="io.dropwizard.metrics.ConsoleReporter"/>
+					<tool:exports type="io.dropwizard.metrics.JmxReporter"/>
+					<tool:exports type="io.dropwizard.metrics.ganglia.GangliaReporter"/>
+					<tool:exports type="io.dropwizard.metrics.graphite.GraphiteReporter"/>
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -104,7 +104,7 @@
 				<xsd:annotation>
 					<xsd:appinfo>
 						<tool:annotation kind="ref">
-							<expected-type type="com.codahale.metrics.MetricRegistry"/>
+							<expected-type type="io.dropwizard.metrics.MetricRegistry"/>
 						</tool:annotation>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -130,7 +130,7 @@
 				<xsd:annotation>
 					<xsd:appinfo>
 						<tool:annotation kind="ref">
-							<expected-type type="com.codahale.metrics.MetricRegistry"/>
+							<expected-type type="io.dropwizard.metrics.MetricRegistry"/>
 						</tool:annotation>
 					</xsd:appinfo>
 				</xsd:annotation>

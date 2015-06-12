@@ -19,7 +19,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
 
 public class RegisterElementTest {
 
@@ -30,8 +31,8 @@ public class RegisterElementTest {
 			ctx = new ClassPathXmlApplicationContext("classpath:register-element-test.xml");
 			MetricRegistry registry = ctx.getBean(MetricRegistry.class);
 			Assert.assertTrue(registry.getMetrics().size() > 0);
-			for (String metricName : registry.getMetrics().keySet()) {
-				Assert.assertTrue(metricName.startsWith("jvm."));
+			for (MetricName metricName : registry.getMetrics().keySet()) {
+				Assert.assertTrue(metricName.getKey().startsWith("jvm."));
 			}
 		}
 		finally {

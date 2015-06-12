@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 
-import com.codahale.metrics.Slf4jReporter;
+import io.dropwizard.metrics.Slf4jReporter;
 
 public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBean<Slf4jReporter> {
 

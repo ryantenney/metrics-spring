@@ -18,12 +18,13 @@ package com.ryantenney.metrics.spring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistryListener;
-import com.codahale.metrics.Timer;
+import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.Gauge;
+import io.dropwizard.metrics.Histogram;
+import io.dropwizard.metrics.Meter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistryListener;
+import io.dropwizard.metrics.Timer;
 
 /**
 * Created with IntelliJ IDEA.
@@ -37,52 +38,52 @@ class LoggingMetricRegistryListener implements MetricRegistryListener {
 	private static final Logger log = LoggerFactory.getLogger(LoggingMetricRegistryListener.class);
 
 	@Override
-	public void onGaugeAdded(String s, Gauge<?> gauge) {
+	public void onGaugeAdded(MetricName s, Gauge<?> gauge) {
 		log.info("Gauge added: {}", s);
 	}
 
 	@Override
-	public void onGaugeRemoved(String s) {
+	public void onGaugeRemoved(MetricName s) {
 		log.info("Gauge removed: {}", s);
 	}
 
 	@Override
-	public void onCounterAdded(String s, Counter counter) {
+	public void onCounterAdded(MetricName s, Counter counter) {
 		log.info("Counter added: {}", s);
 	}
 
 	@Override
-	public void onCounterRemoved(String s) {
+	public void onCounterRemoved(MetricName s) {
 		log.info("Counter removed: {}", s);
 	}
 
 	@Override
-	public void onHistogramAdded(String s, Histogram histogram) {
+	public void onHistogramAdded(MetricName s, Histogram histogram) {
 		log.info("Histogram added: {}", s);
 	}
 
 	@Override
-	public void onHistogramRemoved(String s) {
+	public void onHistogramRemoved(MetricName s) {
 		log.info("Histogram removed: {}", s);
 	}
 
 	@Override
-	public void onMeterAdded(String s, Meter meter) {
+	public void onMeterAdded(MetricName s, Meter meter) {
 		log.info("Meter added: {}", s);
 	}
 
 	@Override
-	public void onMeterRemoved(String s) {
+	public void onMeterRemoved(MetricName s) {
 		log.info("Meter removed: {}", s);
 	}
 
 	@Override
-	public void onTimerAdded(String s, Timer timer) {
+	public void onTimerAdded(MetricName s, Timer timer) {
 		log.info("Timer added: {}", s);
 	}
 
 	@Override
-	public void onTimerRemoved(String s) {
+	public void onTimerRemoved(MetricName s) {
 		log.info("Timer removed: {}", s);
 	}
 }

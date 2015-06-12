@@ -35,16 +35,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.codahale.metrics.CachedGauge;
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.RatioGauge;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Metered;
-import com.codahale.metrics.annotation.Timed;
+import io.dropwizard.metrics.annotation.ExceptionMetered;
+import io.dropwizard.metrics.annotation.Metered;
+import io.dropwizard.metrics.annotation.Timed;
+
+import io.dropwizard.metrics.CachedGauge;
+import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.Gauge;
+import io.dropwizard.metrics.Meter;
+import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.RatioGauge;
+import io.dropwizard.metrics.Timer;
+
 import com.ryantenney.metrics.annotation.Counted;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -406,10 +408,10 @@ public class MeteredClassTest {
 
 	public static class MeteredClass {
 
-		@com.codahale.metrics.annotation.Gauge
+		@io.dropwizard.metrics.annotation.Gauge
 		private int gaugedField = 999;
 
-		@com.codahale.metrics.annotation.Gauge
+		@io.dropwizard.metrics.annotation.Gauge
 		private RatioGauge gaugedGaugeField = new RatioGauge() {
 			@Override
 			protected Ratio getRatio() {
@@ -417,7 +419,7 @@ public class MeteredClassTest {
 			}
 		};
 
-		@com.codahale.metrics.annotation.Gauge
+		@io.dropwizard.metrics.annotation.Gauge
 		public int gaugedMethod() {
 			return this.gaugedField;
 		}

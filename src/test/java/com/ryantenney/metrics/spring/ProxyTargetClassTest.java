@@ -21,7 +21,7 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.codahale.metrics.annotation.Timed;
+import io.dropwizard.metrics.annotation.Timed;
 
 /**
  * Purpose of test:

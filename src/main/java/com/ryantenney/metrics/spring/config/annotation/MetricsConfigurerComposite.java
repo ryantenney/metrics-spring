@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
+
+import io.dropwizard.metrics.MetricRegistry;
 
 /**
  * A {@link MetricsConfigurer} implementation that delegates to other {@link MetricsConfigurer} instances.

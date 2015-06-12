@@ -25,8 +25,10 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
+
+import io.dropwizard.metrics.MetricRegistry;
+
 import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 
 /**

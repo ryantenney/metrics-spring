@@ -27,13 +27,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
+
 import com.ryantenney.metrics.annotation.Metric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aop-field-injection-interaction.xml")
 public class AopFieldInjectionInteractionTest {
+
+	private static final MetricName TARGET_COUNTER = MetricName.build("targetCounter");
 
 	@Autowired
 	private MetricRegistry metricRegistry;
@@ -45,8 +49,8 @@ public class AopFieldInjectionInteractionTest {
 		// verify that AOP interception is working
 		assertThat(target.targetMethod(), is(5));
 
-		assertThat(metricRegistry.getCounters(), hasKey("targetCounter"));
-		assertThat(metricRegistry.getCounters().get("targetCounter").getCount(), is(1L));
+		assertThat(metricRegistry.getCounters(), hasKey(TARGET_COUNTER));
+		assertThat(metricRegistry.getCounters().get(TARGET_COUNTER).getCount(), is(1L));
 	}
 
 }

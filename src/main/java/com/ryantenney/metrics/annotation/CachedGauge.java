@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * A gauge for the defining class with the name queueSize will be created which uses the annotated method's
  * return value as its value, and which caches the result for 30 seconds.
  */
-@com.codahale.metrics.annotation.CachedGauge(timeout = 0)
+@io.dropwizard.metrics.annotation.CachedGauge(timeout = 0)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface CachedGauge {

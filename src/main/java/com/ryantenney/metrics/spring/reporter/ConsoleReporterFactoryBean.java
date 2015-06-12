@@ -20,8 +20,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import com.codahale.metrics.Clock;
-import com.codahale.metrics.ConsoleReporter;
+import io.dropwizard.metrics.Clock;
+import io.dropwizard.metrics.ConsoleReporter;
 
 public class ConsoleReporterFactoryBean extends AbstractScheduledReporterFactoryBean<ConsoleReporter> {
 

@@ -20,7 +20,7 @@ import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
 
 import java.util.concurrent.TimeUnit;
 
-import com.codahale.metrics.ganglia.GangliaReporter;
+import io.dropwizard.metrics.ganglia.GangliaReporter;
 
 public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactoryBean<GangliaReporter> {
 

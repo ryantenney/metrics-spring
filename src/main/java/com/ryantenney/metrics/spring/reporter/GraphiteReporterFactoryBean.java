@@ -20,14 +20,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
 
-import com.codahale.metrics.Clock;
-import com.codahale.metrics.graphite.Graphite;
-import com.codahale.metrics.graphite.GraphiteRabbitMQ;
-import com.codahale.metrics.graphite.GraphiteReporter;
-import com.codahale.metrics.graphite.GraphiteSender;
-import com.codahale.metrics.graphite.GraphiteUDP;
-import com.codahale.metrics.graphite.PickledGraphite;
 import com.rabbitmq.client.ConnectionFactory;
+
+import io.dropwizard.metrics.graphite.Graphite;
+import io.dropwizard.metrics.graphite.GraphiteRabbitMQ;
+import io.dropwizard.metrics.graphite.GraphiteReporter;
+import io.dropwizard.metrics.graphite.GraphiteSender;
+import io.dropwizard.metrics.graphite.GraphiteUDP;
+import io.dropwizard.metrics.graphite.PickledGraphite;
+
+import io.dropwizard.metrics.Clock;
 
 public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactoryBean<GraphiteReporter> {
 

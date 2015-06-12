@@ -30,9 +30,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.MetricSet;
+import io.dropwizard.metrics.Metric;
+import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.MetricSet;
 
 import static com.ryantenney.metrics.spring.config.MetricsNamespaceHandler.METRICS_NAMESPACE;
 

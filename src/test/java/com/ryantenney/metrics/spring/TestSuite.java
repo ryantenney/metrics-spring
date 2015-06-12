@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.codahale.metrics.SharedMetricRegistries;
+import io.dropwizard.metrics.SharedMetricRegistries;
 
 @RunWith(Suite.class)
 // @formatter:off

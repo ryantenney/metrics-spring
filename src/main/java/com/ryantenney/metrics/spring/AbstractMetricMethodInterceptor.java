@@ -28,7 +28,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
 
 abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implements MethodInterceptor, MethodCallback {
 
@@ -68,7 +69,7 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 		final A annotation = method.getAnnotation(annotationClass);
 		if (annotation != null) {
 			final MethodKey methodKey = MethodKey.forMethod(method);
-			final String metricName = buildMetricName(targetClass, method, annotation);
+			final MetricName metricName = buildMetricName(targetClass, method, annotation);
 			final M metric = buildMetric(metricRegistry, metricName, annotation);
 
 			if (metric != null) {
@@ -81,9 +82,9 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 		}
 	}
 
-	protected abstract String buildMetricName(Class<?> targetClass, Method method, A annotation);
+	protected abstract MetricName buildMetricName(Class<?> targetClass, Method method, A annotation);
 
-	protected abstract M buildMetric(MetricRegistry metricRegistry, String metricName, A annotation);
+	protected abstract M buildMetric(MetricRegistry metricRegistry, MetricName metricName, A annotation);
 
 	protected abstract Object invoke(MethodInvocation invocation, M metric, A annotation) throws Throwable;
 

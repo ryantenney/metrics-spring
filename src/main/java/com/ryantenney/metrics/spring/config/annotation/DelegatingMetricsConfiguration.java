@@ -21,8 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
+
+import io.dropwizard.metrics.MetricRegistry;
 
 /**
  * This is the class imported by {@link EnableMetrics @EnableMetrics}.

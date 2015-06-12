@@ -27,9 +27,10 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricFilter;
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics.Metric;
+import io.dropwizard.metrics.MetricFilter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
 
 public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, InitializingBean, BeanFactoryAware {
 
@@ -46,6 +47,7 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 	private boolean enabled = true;
 	private boolean initialized = false;
 
+	@Override
 	public abstract Class<? extends T> getObjectType();
 
 	@Override
@@ -171,8 +173,8 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 		return new MetricFilter() {
 
 			@Override
-			public boolean matches(String name, Metric metric) {
-				return filter.matcher(name).matches();
+			public boolean matches(MetricName name, Metric metric) {
+				return filter.matcher(name.getKey()).matches();
 			}
 
 			@Override

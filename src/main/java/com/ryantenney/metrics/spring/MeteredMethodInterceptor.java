@@ -23,10 +23,11 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Metered;
+import io.dropwizard.metrics.annotation.Metered;
 
+import io.dropwizard.metrics.Meter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
 import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 
 class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, Meter> {
@@ -46,12 +47,12 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	}
 
 	@Override
-	protected Meter buildMetric(MetricRegistry metricRegistry, String metricName, Metered annotation) {
+	protected Meter buildMetric(MetricRegistry metricRegistry, MetricName metricName, Metered annotation) {
 		return metricRegistry.meter(metricName);
 	}
 
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
+	protected MetricName buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
 		return Util.forMeteredMethod(targetClass, method, annotation);
 	}
 

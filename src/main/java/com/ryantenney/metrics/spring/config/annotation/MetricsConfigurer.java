@@ -15,8 +15,9 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
+
+import io.dropwizard.metrics.MetricRegistry;
 
 /**
  * Defines callback methods to customize the Java-based configuration

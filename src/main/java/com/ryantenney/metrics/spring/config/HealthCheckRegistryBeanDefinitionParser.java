@@ -18,7 +18,7 @@ package com.ryantenney.metrics.spring.config;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.w3c.dom.Element;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
 
 class HealthCheckRegistryBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 

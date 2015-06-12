@@ -20,11 +20,13 @@ import java.lang.reflect.Field;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
+import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.Histogram;
+import io.dropwizard.metrics.Meter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.Timer;
+
 import com.ryantenney.metrics.annotation.Metric;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_FIELDS;
@@ -43,18 +45,18 @@ class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProces
 	@Override
 	protected void withField(Object bean, String beanName, Class<?> targetClass, Field field) {
 		final Metric annotation = field.getAnnotation(Metric.class);
-		final String metricName = Util.forMetricField(targetClass, field, annotation);
+		final MetricName metricName = Util.forMetricField(targetClass, field, annotation);
 
 		final Class<?> type = field.getType();
-		if (!com.codahale.metrics.Metric.class.isAssignableFrom(type)) {
+		if (!io.dropwizard.metrics.Metric.class.isAssignableFrom(type)) {
 			throw new IllegalArgumentException("Field " + targetClass.getCanonicalName() + "." + field.getName() + " must be a subtype of "
-					+ com.codahale.metrics.Metric.class.getCanonicalName());
+					+ io.dropwizard.metrics.Metric.class.getCanonicalName());
 		}
 
 		ReflectionUtils.makeAccessible(field);
 
 		// Get the value of the field annotated with @Metric
-		com.codahale.metrics.Metric metric = (com.codahale.metrics.Metric) ReflectionUtils.getField(field, bean);
+		io.dropwizard.metrics.Metric metric = (io.dropwizard.metrics.Metric) ReflectionUtils.getField(field, bean);
 
 		if (metric == null) {
 			// If null, create a metric of the appropriate type and inject it
@@ -85,8 +87,8 @@ class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProces
 		}
 	}
 
-	private com.codahale.metrics.Metric getMetric(MetricRegistry metricRegistry, Class<?> type, String metricName) {
-		com.codahale.metrics.Metric metric;
+	private io.dropwizard.metrics.Metric getMetric(MetricRegistry metricRegistry, Class<?> type, MetricName metricName) {
+		io.dropwizard.metrics.Metric metric;
 		if (Meter.class == type) {
 			metric = metrics.meter(metricName);
 		}

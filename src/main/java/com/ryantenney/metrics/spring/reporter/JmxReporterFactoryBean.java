@@ -15,11 +15,13 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
-import com.codahale.metrics.JmxReporter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.SmartLifecycle;
 
+import io.dropwizard.metrics.JmxReporter;
+
 import javax.management.MBeanServer;
+
 import java.util.concurrent.TimeUnit;
 
 public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxReporter> implements SmartLifecycle, DisposableBean {

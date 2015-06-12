@@ -18,14 +18,15 @@ package com.ryantenney.metrics.spring.reporter;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Histogram;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricFilter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.ScheduledReporter;
-import com.codahale.metrics.Timer;
+import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.Gauge;
+import io.dropwizard.metrics.Histogram;
+import io.dropwizard.metrics.Meter;
+import io.dropwizard.metrics.MetricFilter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.ScheduledReporter;
+import io.dropwizard.metrics.Timer;
 
 public class FakeReporter extends ScheduledReporter {
 
@@ -50,10 +51,12 @@ public class FakeReporter extends ScheduledReporter {
 		return filter;
 	}
 
+	@Override
 	public String getRateUnit() {
 		return super.getRateUnit();
 	}
 
+	@Override
 	public String getDurationUnit() {
 		return super.getDurationUnit();
 	}
@@ -85,8 +88,8 @@ public class FakeReporter extends ScheduledReporter {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public void report(SortedMap<String, Gauge> gauges, SortedMap<String, Counter> counters, SortedMap<String, Histogram> histograms,
-			SortedMap<String, Meter> meters, SortedMap<String, Timer> timers) {
+	public void report(SortedMap<MetricName, Gauge> gauges, SortedMap<MetricName, Counter> counters, SortedMap<MetricName, Histogram> histograms,
+			SortedMap<MetricName, Meter> meters, SortedMap<MetricName, Timer> timers) {
 		calls++;
 	}
 

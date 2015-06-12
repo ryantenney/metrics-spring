@@ -25,9 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.codahale.metrics.health.HealthCheck;
-import com.codahale.metrics.health.HealthCheck.Result;
-import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheck;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.HealthCheck.Result;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:health-check.xml")

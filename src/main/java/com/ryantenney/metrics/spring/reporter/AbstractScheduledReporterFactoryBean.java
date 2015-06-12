@@ -15,9 +15,10 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
-import com.codahale.metrics.ScheduledReporter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.SmartLifecycle;
+
+import io.dropwizard.metrics.ScheduledReporter;
 
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;

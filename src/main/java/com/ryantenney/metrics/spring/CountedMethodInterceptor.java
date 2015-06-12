@@ -23,8 +23,10 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
+
 import com.ryantenney.metrics.annotation.Counted;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
@@ -53,12 +55,12 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	}
 
 	@Override
-	protected Counter buildMetric(MetricRegistry metricRegistry, String metricName, Counted annotation) {
+	protected Counter buildMetric(MetricRegistry metricRegistry, MetricName metricName, Counted annotation) {
 		return metricRegistry.counter(metricName);
 	}
 
 	@Override
-	protected String buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
+	protected MetricName buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
 		return Util.forCountedMethod(targetClass, method, annotation);
 	}
 

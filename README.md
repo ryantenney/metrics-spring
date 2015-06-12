@@ -6,7 +6,7 @@
 
 ##About
 
-The `metrics-spring` module integrates [Coda Hale's Metrics library](http://metrics.codahale.com/) with Spring, and provides XML and Java configuration.
+The `metrics-spring` module integrates [Dropwizard Metrics](http://metrics.dropwizard.io/) with Spring, and provides XML and Java configuration.
 
 This module does the following things:
 
@@ -19,17 +19,17 @@ This module does the following things:
 
 ###Maven
 
-Current version is 3.1.0, which is compatible with Metrics 3.1.2
+Current development version is 4.0.0-SNAPSHOT, which is compatible with Metrics 4.0.0-SNAPSHOT
 
 ```xml
 <dependency>
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>3.1.0</version>
+    <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
-This module was formerly contained in the [Metrics repository](https://github.com/codahale/metrics).
+This module was formerly contained in the [Metrics repository](https://github.com/dropwizard/metrics).
 
 ###Basic Usage
 
@@ -45,7 +45,7 @@ Spring Context XML:
            http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
            http://www.ryantenney.com/schema/metrics
-           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
+           http://www.ryantenney.com/schema/metrics/metrics-4.0.xsd">
 
     <!-- Registry should be defined in only one context XML file -->
     <metrics:metric-registry id="metrics" />
@@ -58,10 +58,10 @@ Spring Context XML:
 
     <!-- (Optional) The metrics in this example require the metrics-jvm jar-->
     <metrics:register metric-registry="metrics">
-        <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
-        <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet" />
-        <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
-        <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
+        <bean metrics:name="jvm.gc" class="io.dropwizard.metrics.jvm.GarbageCollectorMetricSet" />
+        <bean metrics:name="jvm.memory" class="io.dropwizard.metrics.jvm.MemoryUsageGaugeSet" />
+        <bean metrics:name="jvm.thread-states" class="io.dropwizard.metrics.jvm.ThreadStatesGaugeSet" />
+        <bean metrics:name="jvm.fd.usage" class="io.dropwizard.metrics.jvm.FileDescriptorRatioGauge" />
     </metrics:register>
 
     <!-- Beans and other Spring config -->
@@ -74,9 +74,9 @@ Java Annotation Config:
 ```java
 import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Configuration;
-import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
+import io.dropwizard.metrics.ConsoleReporter;
+import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.SharedMetricRegistries;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 

@@ -20,7 +20,9 @@ import java.lang.reflect.Method;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
-import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
+
 import com.ryantenney.metrics.annotation.CachedGauge;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
@@ -43,9 +45,9 @@ class CachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 		}
 
 		final CachedGauge annotation = method.getAnnotation(CachedGauge.class);
-		final String metricName = Util.forCachedGauge(targetClass, method, annotation);
+		final MetricName metricName = Util.forCachedGauge(targetClass, method, annotation);
 
-		metrics.register(metricName, new com.codahale.metrics.CachedGauge<Object>(annotation.timeout(), annotation.timeoutUnit()) {
+		metrics.register(metricName, new io.dropwizard.metrics.CachedGauge<Object>(annotation.timeout(), annotation.timeoutUnit()) {
 			@Override
 			protected Object loadValue() {
 				return ReflectionUtils.invokeMethod(method, bean);

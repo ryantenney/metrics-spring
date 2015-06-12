@@ -20,9 +20,10 @@ import java.lang.reflect.Method;
 import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Gauge;
+import io.dropwizard.metrics.annotation.Gauge;
 
+import io.dropwizard.metrics.MetricName;
+import io.dropwizard.metrics.MetricRegistry;
 import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
 
 class GaugeMethodAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
@@ -43,9 +44,9 @@ class GaugeMethodAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 		}
 
 		final Gauge annotation = method.getAnnotation(Gauge.class);
-		final String metricName = Util.forGauge(targetClass, method, annotation);
+		final MetricName metricName = Util.forGauge(targetClass, method, annotation);
 
-		metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
+		metrics.register(metricName, new io.dropwizard.metrics.Gauge<Object>() {
 			@Override
 			public Object getValue() {
 				return ReflectionUtils.invokeMethod(method, bean);
