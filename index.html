@@ -1,41 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
+    <meta charset="UTF-8">
     <title>metrics-spring by ryantenney</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>metrics-spring</h1>
-        <h2>Spring integration for Dropwizard Metrics</h2>
-        <a href="https://github.com/ryantenney/metrics-spring" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">metrics-spring</h1>
+      <h2 class="project-tagline">Spring integration for Dropwizard Metrics</h2>
+      <a href="https://github.com/ryantenney/metrics-spring" class="btn">View on GitHub</a>
+      <a href="https://github.com/ryantenney/metrics-spring/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ryantenney/metrics-spring/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
-<a name="metrics-for-spring-" class="anchor" href="#metrics-for-spring-"><span class="octicon octicon-link"></span></a>Metrics for Spring <a href="https://drone.io/github.com/ryantenney/metrics-spring/latest"><img src="https://drone.io/github.com/ryantenney/metrics-spring/status.png" alt="Build Status"></a>
-</h1>
+    <section class="main-content">
+      <h1>
+<a id="metrics-for-spring" class="anchor" href="#metrics-for-spring" aria-hidden="true"><span class="octicon octicon-link"></span></a>Metrics for Spring</h1>
+
+<p><a href="https://travis-ci.org/ryantenney/metrics-spring"><img src="https://img.shields.io/travis/ryantenney/metrics-spring.svg?style=flat-square" alt="Build Status"></a>
+<img src="https://img.shields.io/maven-central/v/com.ryantenney.metrics/metrics-spring.svg?style=flat-square" alt="Maven Central">
+<img src="https://img.shields.io/github/license/ryantenney/metrics-spring.svg?style=flat-square" alt="GitHub license"></p>
 
 <h2>
-<a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About</h2>
+<a id="about" class="anchor" href="#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
 
-<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.codahale.com/">Coda Hale's Metrics library</a> with Spring, and provides XML and Java configuration.</p>
+<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.dropwizard.io/">Dropwizard Metrics</a> with Spring, and provides XML and Java configuration.</p>
 
 <p>This module does the following things:</p>
 
@@ -50,85 +44,84 @@
 </li>
 <li>Creates reporters from XML config and binds them to the Spring lifecycle</li>
 <li>Registers metrics and metric sets in XML</li>
-</ul><h3>
-<a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h3>
-
-<p>Current version is 3.0.3, which is compatible with Metrics 3.0 and 3.1 (but lacks support for new features in 3.1)</p>
-
-<div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>com.ryantenney.metrics<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>metrics-spring<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.3<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</pre></div>
-
-<p>This module was formerly contained in the <a href="https://github.com/codahale/metrics">Metrics repository</a>.</p>
+</ul>
 
 <h3>
-<a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
+<a id="maven" class="anchor" href="#maven" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maven</h3>
+
+<p>Current version is 3.1.0, which is compatible with Metrics 3.1.2</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;com.ryantenney.metrics&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;metrics-spring&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;3.1.0&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<p>This module was formerly contained in the <a href="https://github.com/dropwizard/metrics">Metrics repository</a>.</p>
+
+<h3>
+<a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
 
 <p>As of version 3, <code>metrics-spring</code> may be configured using XML or Java, depending on your personal preference.</p>
 
 <p>Spring Context XML:</p>
 
-<div class="highlight highlight-xml"><pre><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
-       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-       <span class="na">xmlns:metrics=</span><span class="s">"http://www.ryantenney.com/schema/metrics"</span>
-       <span class="na">xsi:schemaLocation=</span><span class="s">"</span>
-<span class="s">           http://www.springframework.org/schema/beans</span>
-<span class="s">           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span>
-<span class="s">           http://www.ryantenney.com/schema/metrics</span>
-<span class="s">           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd"</span><span class="nt">&gt;</span>
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">beans</span> <span class="pl-e">xmlns</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.springframework.org/schema/beans<span class="pl-pds">"</span></span>
+       <span class="pl-e">xmlns</span><span class="pl-e">:</span><span class="pl-e">xsi</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="pl-pds">"</span></span>
+       <span class="pl-e">xmlns</span><span class="pl-e">:</span><span class="pl-e">metrics</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.ryantenney.com/schema/metrics<span class="pl-pds">"</span></span>
+       <span class="pl-e">xsi</span><span class="pl-e">:</span><span class="pl-e">schemaLocation</span>=<span class="pl-s"><span class="pl-pds">"</span></span>
+<span class="pl-s">           http://www.springframework.org/schema/beans</span>
+<span class="pl-s">           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span>
+<span class="pl-s">           http://www.ryantenney.com/schema/metrics</span>
+<span class="pl-s">           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd<span class="pl-pds">"</span></span>&gt;
 
-    <span class="c">&lt;!-- Registry should be defined in only one context XML file --&gt;</span>
-    <span class="nt">&lt;metrics:metric-registry</span> <span class="na">id=</span><span class="s">"metrics"</span> <span class="nt">/&gt;</span>
+    <span class="pl-c">&lt;!-- Registry should be defined in only one context XML file --&gt;</span>
+    &lt;<span class="pl-ent">metrics</span><span class="pl-ent">:</span><span class="pl-ent">metric-registry</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>metrics<span class="pl-pds">"</span></span> /&gt;
 
-    <span class="c">&lt;!-- annotation-driven must be included in all context files --&gt;</span>
-    <span class="nt">&lt;metrics:annotation-driven</span> <span class="na">metric-registry=</span><span class="s">"metrics"</span> <span class="nt">/&gt;</span>
+    <span class="pl-c">&lt;!-- annotation-driven must be included in all context files --&gt;</span>
+    &lt;<span class="pl-ent">metrics</span><span class="pl-ent">:</span><span class="pl-ent">annotation-driven</span> <span class="pl-e">metric-registry</span>=<span class="pl-s"><span class="pl-pds">"</span>metrics<span class="pl-pds">"</span></span> /&gt;
 
-    <span class="c">&lt;!-- (Optional) Registry should be defined in only one context XML file --&gt;</span>
-    <span class="nt">&lt;metrics:reporter</span> <span class="na">type=</span><span class="s">"console"</span> <span class="na">metric-registry=</span><span class="s">"metrics"</span> <span class="na">period=</span><span class="s">"1m"</span> <span class="nt">/&gt;</span>
+    <span class="pl-c">&lt;!-- (Optional) Registry should be defined in only one context XML file --&gt;</span>
+    &lt;<span class="pl-ent">metrics</span><span class="pl-ent">:</span><span class="pl-ent">reporter</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>console<span class="pl-pds">"</span></span> <span class="pl-e">metric-registry</span>=<span class="pl-s"><span class="pl-pds">"</span>metrics<span class="pl-pds">"</span></span> <span class="pl-e">period</span>=<span class="pl-s"><span class="pl-pds">"</span>1m<span class="pl-pds">"</span></span> /&gt;
 
-    <span class="c">&lt;!-- (Optional) The metrics in this example require the metrics-jvm jar--&gt;</span>
-    <span class="nt">&lt;metrics:register</span> <span class="na">metric-registry=</span><span class="s">"metrics"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.gc"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.GarbageCollectorMetricSet"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.memory"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.MemoryUsageGaugeSet"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.thread-states"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.ThreadStatesGaugeSet"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">metrics:name=</span><span class="s">"jvm.fd.usage"</span> <span class="na">class=</span><span class="s">"com.codahale.metrics.jvm.FileDescriptorRatioGauge"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/metrics:register&gt;</span>
+    <span class="pl-c">&lt;!-- (Optional) The metrics in this example require the metrics-jvm jar--&gt;</span>
+    &lt;<span class="pl-ent">metrics</span><span class="pl-ent">:</span><span class="pl-ent">register</span> <span class="pl-e">metric-registry</span>=<span class="pl-s"><span class="pl-pds">"</span>metrics<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">bean</span> <span class="pl-e">metrics</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>jvm.gc<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.codahale.metrics.jvm.GarbageCollectorMetricSet<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">bean</span> <span class="pl-e">metrics</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>jvm.memory<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.codahale.metrics.jvm.MemoryUsageGaugeSet<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">bean</span> <span class="pl-e">metrics</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>jvm.thread-states<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.codahale.metrics.jvm.ThreadStatesGaugeSet<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">bean</span> <span class="pl-e">metrics</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>jvm.fd.usage<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.codahale.metrics.jvm.FileDescriptorRatioGauge<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">metrics</span><span class="pl-ent">:</span><span class="pl-ent">register</span>&gt;
 
-    <span class="c">&lt;!-- Beans and other Spring config --&gt;</span>
+    <span class="pl-c">&lt;!-- Beans and other Spring config --&gt;</span>
 
-<span class="nt">&lt;/beans&gt;</span>
-</pre></div>
+&lt;/<span class="pl-ent">beans</span>&gt;</pre></div>
 
 <p>Java Annotation Config:</p>
 
-<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.codahale.metrics.ConsoleReporter</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.codahale.metrics.MetricRegistry</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.codahale.metrics.SharedMetricRegistries</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.ryantenney.metrics.spring.config.annotation.EnableMetrics</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre><span class="pl-k">import</span> <span class="pl-smi">java.util.concurrent.TimeUnit</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.springframework.context.annotation.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.codahale.metrics.ConsoleReporter</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.codahale.metrics.MetricRegistry</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.codahale.metrics.SharedMetricRegistries</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ryantenney.metrics.spring.config.annotation.EnableMetrics</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter</span>;
 
-<span class="nd">@Configuration</span>
-<span class="nd">@EnableMetrics</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringConfiguringClass</span> <span class="kd">extends</span> <span class="n">MetricsConfigurerAdapter</span> <span class="o">{</span>
+@<span class="pl-smi">Configuration</span>
+@<span class="pl-smi">EnableMetrics</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">SpringConfiguringClass</span> <span class="pl-k">extends</span> <span class="pl-e">MetricsConfigurerAdapter</span> {
 
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">configureReporters</span><span class="o">(</span><span class="n">MetricRegistry</span> <span class="n">metricRegistry</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">ConsoleReporter</span>
-            <span class="o">.</span><span class="na">forRegistry</span><span class="o">(</span><span class="n">metricRegistry</span><span class="o">)</span>
-            <span class="o">.</span><span class="na">build</span><span class="o">()</span>
-            <span class="o">.</span><span class="na">start</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MINUTES</span><span class="o">);</span>
-    <span class="o">}</span>
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">configureReporters</span>(<span class="pl-smi">MetricRegistry</span> <span class="pl-v">metricRegistry</span>) {
+        <span class="pl-smi">ConsoleReporter</span>
+            .forRegistry(metricRegistry)
+            .build()
+            .start(<span class="pl-c1">1</span>, <span class="pl-smi">TimeUnit</span><span class="pl-c1"><span class="pl-k">.</span>MINUTES</span>);
+    }
 
-<span class="o">}</span>
-</pre></div>
+}</pre></div>
 
 <h3>
-<a name="xml-config-documentation" class="anchor" href="#xml-config-documentation"><span class="octicon octicon-link"></span></a>XML Config Documentation</h3>
+<a id="xml-config-documentation" class="anchor" href="#xml-config-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>XML Config Documentation</h3>
 
 <p>The <code>&lt;metrics:annotation-driven /&gt;</code> element is required, and has 4 optional arguments:</p>
 
@@ -146,7 +139,9 @@
 <code>expose-proxy</code> - if set to true, the target can access the proxy which wraps it by calling <code>AopContext.currentProxy()</code>.</li>
 </ul>
 </li>
-</ul><p>The <code>&lt;metrics:metric-registry /&gt;</code> element constructs a new MetricRegistry or retrieves a shared registry:</p>
+</ul>
+
+<p>The <code>&lt;metrics:metric-registry /&gt;</code> element constructs a new MetricRegistry or retrieves a shared registry:</p>
 
 <ul>
 <li>Attributes
@@ -158,7 +153,9 @@
 <code>name</code> - the name of the MetricRegistry, if present, this calls SharedMetricRegistries.getOrCreate(name)</li>
 </ul>
 </li>
-</ul><p>The <code>&lt;metrics:health-check-registry /&gt;</code> element constructs a new HealthCheckRegistry:</p>
+</ul>
+
+<p>The <code>&lt;metrics:health-check-registry /&gt;</code> element constructs a new HealthCheckRegistry:</p>
 
 <ul>
 <li>Attributes
@@ -168,7 +165,9 @@
 <code>id</code> - the bean name with which to register the HealthCheckRegistry bean</li>
 </ul>
 </li>
-</ul><p>The <code>&lt;metrics:reporter /&gt;</code> element creates and starts a reporter:</p>
+</ul>
+
+<p>The <code>&lt;metrics:reporter /&gt;</code> element creates and starts a reporter:</p>
 
 <ul>
 <li>Attributes
@@ -192,7 +191,9 @@
 <code>graphite</code>: GraphiteReporter (requires <code>metrics-graphite</code>)</li>
 </ul>
 </li>
-</ul><p>The <code>&lt;metrics:register /&gt;</code> element registers with the MetricRegistry a bean which extends implements Metric or MetricSet</p>
+</ul>
+
+<p>The <code>&lt;metrics:register /&gt;</code> element registers with the MetricRegistry a bean which extends implements Metric or MetricSet</p>
 
 <ul>
 <li>Attributes
@@ -211,8 +212,10 @@
 <code>metrics:name</code> attribute on the bean element - specifies the name with which the metric will be registered. Optional if the bean is a MetricSet.</li>
 </ul>
 </li>
-</ul><h3>
-<a name="java-config-documentation" class="anchor" href="#java-config-documentation"><span class="octicon octicon-link"></span></a>Java Config Documentation</h3>
+</ul>
+
+<h3>
+<a id="java-config-documentation" class="anchor" href="#java-config-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Java Config Documentation</h3>
 
 <p>A <code>@Configuration</code> class annotated with <code>@EnableMetrics</code> is functionally equivalent to using the <code>&lt;metrics:annotation-driven /&gt;</code> element.</p>
 
@@ -221,7 +224,9 @@
 <code>proxyTargetClass</code> - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This <em>may</em> be necessary if you use class-based autowiring.</li>
 <li>
 <code>exposeProxy</code> - if set to true, the target can access the proxy which wraps it by calling <code>AopContext.currentProxy()</code>.</li>
-</ul><p>The class may also implement the interface <code>MetricsConfigurer</code>, or extend the abstract class <code>MetricsConfigurerAdapter</code></p>
+</ul>
+
+<p>The class may also implement the interface <code>MetricsConfigurer</code>, or extend the abstract class <code>MetricsConfigurerAdapter</code></p>
 
 <ul>
 <li>
@@ -230,41 +235,42 @@
 <code>getHealthCheckRegistry()</code> - return the <code>HealthCheckRegsitry</code> instance with which to register any beans which extend the class <code>HealthCheck</code>. If omitted a new <code>HealthCheckRegistry</code> instance is created.</li>
 <li>
 <code>configureReporters(MetricRegistry)</code> - configure reporters</li>
-</ul><h3>
-<a name="a-note-on-the-limitations-of-spring-aop" class="anchor" href="#a-note-on-the-limitations-of-spring-aop"><span class="octicon octicon-link"></span></a>A Note on the Limitations of Spring AOP</h3>
+</ul>
+
+<h3>
+<a id="a-note-on-the-limitations-of-spring-aop" class="anchor" href="#a-note-on-the-limitations-of-spring-aop" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Note on the Limitations of Spring AOP</h3>
 
 <p>Due to limitations of Spring AOP only public methods can be proxied, so <code>@Timed</code>, <code>@Metered</code>, <code>@ExceptionMetered</code>, and <code>@Counted</code> have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.</p>
 
-<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+<div class="highlight highlight-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Foo</span> {
 
-    <span class="nd">@Timed</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span> <span class="cm">/* … */</span> <span class="o">}</span>
+    <span class="pl-k">@Timed</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">bar</span>() { <span class="pl-c">/* … */</span> }
 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">bar</span><span class="o">();</span> <span class="c1">// doesn't pass through the proxy</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">baz</span>() {
+        <span class="pl-v">this</span><span class="pl-k">.</span>bar(); <span class="pl-c">// doesn't pass through the proxy</span>
 
-        <span class="c1">// fix: reengineer</span>
-        <span class="c1">// workaround: enable `expose-proxy` and change to:</span>
-        <span class="o">((</span><span class="n">Foo</span><span class="o">)</span> <span class="n">AopContext</span><span class="o">.</span><span class="na">currentProxy</span><span class="o">()).</span><span class="na">bar</span><span class="o">();</span> <span class="c1">// hideous, but it works</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
+        <span class="pl-c">// fix: reengineer</span>
+        <span class="pl-c">// workaround: enable `expose-proxy` and change to:</span>
+        ((<span class="pl-smi">Foo</span>) <span class="pl-smi">AopContext</span><span class="pl-k">.</span>currentProxy())<span class="pl-k">.</span>bar(); <span class="pl-c">// hideous, but it works</span>
+    }
+}</pre></div>
 
 <p>As <code>@Gauge</code> doesn’t involve a proxy, it may be used on non-public fields and methods.
 Additionally, <code>@InjectMetric</code> may be used on non-public, non-final fields.</p>
 
 <h3>
-<a name="users-of-the-maven-shade-plugin" class="anchor" href="#users-of-the-maven-shade-plugin"><span class="octicon octicon-link"></span></a>Users of the Maven Shade plugin</h3>
+<a id="users-of-the-maven-shade-plugin" class="anchor" href="#users-of-the-maven-shade-plugin" aria-hidden="true"><span class="octicon octicon-link"></span></a>Users of the Maven Shade plugin</h3>
 
 <p>Please see the <a href="SHADE-README.md">Shade Readme</a></p>
 
 <h3>
-<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h3>
 
 <p>Javadocs are hosted at <a href="http://ryantenney.github.io/metrics-spring/docs/">http://ryantenney.github.io/metrics-spring/docs/</a></p>
 
 <h3>
-<a name="acknowledgements" class="anchor" href="#acknowledgements"><span class="octicon octicon-link"></span></a>Acknowledgements</h3>
+<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h3>
 
 <p>YourKit is kindly supporting this open source project with its full-featured Java Profiler.
 YourKit, LLC is the creator of innovative and intelligent tools for profiling
@@ -273,7 +279,7 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.</p>
 
 <h3>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
 
 <p>Copyright (c) 2012-2014 Ryan Tenney</p>
 
@@ -282,24 +288,14 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 <p>Published under Apache Software License 2.0, see LICENSE</p>
 
 <p><a href="http://rochestermade.com"><img src="http://rochestermade.com/media/images/rochester-made-dark-on-light.png" alt="Rochester Made"></a></p>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/ryantenney/metrics-spring/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/ryantenney/metrics-spring/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ryantenney/metrics-spring">metrics-spring</a> is maintained by <a href="https://github.com/ryantenney">ryantenney</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/ryantenney/metrics-spring"></a> is maintained by <a href="https://github.com/ryantenney">ryantenney</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
             <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -314,3 +310,4 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 
   </body>
 </html>
+
