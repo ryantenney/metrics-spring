@@ -23,13 +23,13 @@ import java.lang.annotation.Target;
 /**
  * An annotation requesting that a metric be injected or registered.
  *
- * <p/>
+ * <p></p>
  * Given a field like this:
  * <pre><code>
  *     {@literal @}Metric
  *     public Histogram histogram;
  * </code></pre>
- * <p/>
+ * <p></p>
  * A meter of the field's type will be created and injected into Spring-managed beans after construction
  * but before initialization. It will be up to the user to interact with the metric. This annotation
  * can be used on fields of type Meter, Timer, Counter, and Histogram.
@@ -37,11 +37,12 @@ import java.lang.annotation.Target;
  * <p>
  * This may also be used to register a metric, which is useful for creating a histogram with
  * a custom Reservoir.
+ * </p>
  * <pre><code>
  *     {@literal @}Metric
  *     public Histogram uniformHistogram = new Histogram(new UniformReservoir());
  * </code></pre>
- * </p>
+ *
  */
 @com.codahale.metrics.annotation.Metric
 @Retention(RetentionPolicy.RUNTIME)
