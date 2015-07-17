@@ -29,7 +29,7 @@
 <h2>
 <a id="about" class="anchor" href="#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
 
-<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.dropwizard.io/">Dropwizard Metrics</a> with Spring, and provides XML and Java configuration.</p>
+<p>The <code>metrics-spring</code> module integrates <a href="http://metrics.dropwizard.io/">Dropwizard Metrics library</a> with Spring, and provides XML and Java configuration.</p>
 
 <p>This module does the following things:</p>
 
@@ -56,8 +56,6 @@
     &lt;<span class="pl-ent">artifactId</span>&gt;metrics-spring&lt;/<span class="pl-ent">artifactId</span>&gt;
     &lt;<span class="pl-ent">version</span>&gt;3.1.0&lt;/<span class="pl-ent">version</span>&gt;
 &lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
-
-<p>This module was formerly contained in the <a href="https://github.com/dropwizard/metrics">Metrics repository</a>.</p>
 
 <h3>
 <a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usage</h3>
@@ -112,9 +110,11 @@
 
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">configureReporters</span>(<span class="pl-smi">MetricRegistry</span> <span class="pl-v">metricRegistry</span>) {
-        <span class="pl-smi">ConsoleReporter</span>
+        <span class="pl-c">// registerReporter allows the MetricsConfigurerAdapter to</span>
+        <span class="pl-c">// shut down the reporter when the Spring context is closed</span>
+        registerReporter(<span class="pl-smi">ConsoleReporter</span>
             .forRegistry(metricRegistry)
-            .build()
+            .build())
             .start(<span class="pl-c1">1</span>, <span class="pl-smi">TimeUnit</span><span class="pl-c1"><span class="pl-k">.</span>MINUTES</span>);
     }
 
@@ -281,7 +281,7 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 <h3>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
 
-<p>Copyright (c) 2012-2014 Ryan Tenney</p>
+<p>Copyright (c) 2012-2015 Ryan Tenney</p>
 
 <p>Portions Copyright (c) 2012-2013 Martello Technologies</p>
 
