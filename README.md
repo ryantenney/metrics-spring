@@ -86,9 +86,11 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 
     @Override
     public void configureReporters(MetricRegistry metricRegistry) {
-        ConsoleReporter
+        // registerReporter allows the MetricsConfigurerAdapter to
+        // shut down the reporter when the Spring context is closed
+        registerReporter(ConsoleReporter
             .forRegistry(metricRegistry)
-            .build()
+            .build())
             .start(1, TimeUnit.MINUTES);
     }
 
