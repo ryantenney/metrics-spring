@@ -6,7 +6,7 @@
 
 ##About
 
-The `metrics-spring` module integrates [Coda Hale's Metrics library](http://metrics.codahale.com/) with Spring, and provides XML and Java configuration.
+The `metrics-spring` module integrates [Dropwizard Metrics library](http://metrics.dropwizard.io/) with Spring, and provides XML and Java configuration.
 
 This module does the following things:
 
@@ -28,8 +28,6 @@ Current version is 3.1.0, which is compatible with Metrics 3.1.2
     <version>3.1.0</version>
 </dependency>
 ```
-
-This module was formerly contained in the [Metrics repository](https://github.com/codahale/metrics).
 
 ###Basic Usage
 
