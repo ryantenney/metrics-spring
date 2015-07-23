@@ -41,17 +41,17 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.ryantenney.metrics.annotation.Counted;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurer;
 
 /**
  * Tests use of {@link EnableMetrics @EnableMetrics} on {@code @Configuration} classes.
- * 
+ *
  * @author Ryan Tenney
  * @since 3.0
  */
@@ -212,7 +212,7 @@ public class EnableMetricsTest {
 			return 6;
 		}
 
-		@com.ryantenney.metrics.annotation.CachedGauge(timeout = 100)
+		@com.codahale.metrics.annotation.CachedGauge(timeout = 100)
 		public int cachedGaugeMethod() {
 			return 7;
 		}

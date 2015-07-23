@@ -31,14 +31,14 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
-import com.ryantenney.metrics.annotation.Counted;
 
 /**
  * Purpose of test:
- * Verify that calling a method from a class implementing an interface 
+ * Verify that calling a method from a class implementing an interface
  * but annotated at the class level doesn't throw an NPE
  * Also verifies that it does register metrics.
  */

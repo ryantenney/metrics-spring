@@ -25,17 +25,18 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Metric;
+import com.ryantenney.metrics.annotation.Metric;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_FIELDS;
 
-class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
+@Deprecated
+class LegacyMetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 
 	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INJECTABLE_FIELDS);
 
 	private final MetricRegistry metrics;
 
-	public MetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+	public LegacyMetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
 		super(Members.FIELDS, Phase.PRE_INIT, FILTER);
 		this.metrics = metrics;
 	}
