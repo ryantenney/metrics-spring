@@ -29,8 +29,6 @@ Current development version is 4.0.0-SNAPSHOT, which is compatible with Metrics 
 </dependency>
 ```
 
-This module was formerly contained in the [Metrics repository](https://github.com/dropwizard/metrics).
-
 ###Basic Usage
 
 As of version 3, `metrics-spring` may be configured using XML or Java, depending on your personal preference.
@@ -86,9 +84,11 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 
     @Override
     public void configureReporters(MetricRegistry metricRegistry) {
-        ConsoleReporter
+        // registerReporter allows the MetricsConfigurerAdapter to
+        // shut down the reporter when the Spring context is closed
+        registerReporter(ConsoleReporter
             .forRegistry(metricRegistry)
-            .build()
+            .build())
             .start(1, TimeUnit.MINUTES);
     }
 
