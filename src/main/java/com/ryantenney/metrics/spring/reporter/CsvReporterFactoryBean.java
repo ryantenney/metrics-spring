@@ -62,7 +62,9 @@ public class CsvReporterFactoryBean extends AbstractScheduledReporterFactoryBean
 		}
 
 		File dir = new File(getProperty(DIRECTORY));
-		dir.mkdirs();
+		if (!dir.mkdirs() && !dir.isDirectory()) {
+			throw new IllegalArgumentException("Directory doesn't exist or couldn't be created");
+		}
 
 		return reporter.build(dir);
 	}
