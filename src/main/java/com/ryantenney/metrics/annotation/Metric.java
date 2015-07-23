@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * A meter of the field's type will be created and injected into Spring-managed beans after construction
  * but before initialization. It will be up to the user to interact with the metric. This annotation
  * can be used on fields of type Meter, Timer, Counter, and Histogram.
- * 
+ *
  * <p>
  * This may also be used to register a metric, which is useful for creating a histogram with
  * a custom Reservoir.
@@ -43,6 +43,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  * </p>
  */
+@Deprecated
 @com.codahale.metrics.annotation.Metric
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

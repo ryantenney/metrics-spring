@@ -35,6 +35,7 @@ import java.lang.annotation.Target;
  * A counter for the defining class with the name {@code fancyName} will be created and each time the
  * {@code #fancyName(String)} method is invoked, the counter will be marked.
  */
+@Deprecated
 @com.codahale.metrics.annotation.Counted
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
