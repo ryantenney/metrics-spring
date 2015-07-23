@@ -25,10 +25,10 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import io.dropwizard.metrics.graphite.GraphiteReporter;
-
 import io.dropwizard.metrics.ganglia.GangliaReporter;
+import io.dropwizard.metrics.graphite.GraphiteReporter;
 import io.dropwizard.metrics.ConsoleReporter;
+import io.dropwizard.metrics.CsvReporter;
 import io.dropwizard.metrics.JmxReporter;
 import io.dropwizard.metrics.Metric;
 import io.dropwizard.metrics.MetricFilter;
@@ -107,6 +107,7 @@ public class ReporterTest {
 			// intentionally avoids calling ctx.start()
 
 			Assert.assertNotNull(ctx.getBean(ConsoleReporter.class));
+			Assert.assertNotNull(ctx.getBean(CsvReporter.class));
 			Assert.assertNotNull(ctx.getBean(JmxReporter.class));
 			Assert.assertNotNull(ctx.getBean(Slf4jReporter.class));
 			Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
