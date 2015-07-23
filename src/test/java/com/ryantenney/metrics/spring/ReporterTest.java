@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
@@ -104,6 +105,7 @@ public class ReporterTest {
 			// intentionally avoids calling ctx.start()
 
 			Assert.assertNotNull(ctx.getBean(ConsoleReporter.class));
+			Assert.assertNotNull(ctx.getBean(CsvReporter.class));
 			Assert.assertNotNull(ctx.getBean(JmxReporter.class));
 			Assert.assertNotNull(ctx.getBean(Slf4jReporter.class));
 			Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
