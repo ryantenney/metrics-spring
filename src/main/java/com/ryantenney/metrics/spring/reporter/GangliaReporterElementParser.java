@@ -39,7 +39,6 @@ public class GangliaReporterElementParser extends AbstractReporterElementParser 
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.require(TTL, INTEGER_REGEX);
 
-		c.optional(PREFIX);
 		c.optional(SPOOF);
 		c.optional(PROTOCOL, "^v?3\\.[01]$", "Protocol version must be 'v3.0' or 'v3.1'");
 		c.optional(DMAX, INTEGER_REGEX);
@@ -49,6 +48,12 @@ public class GangliaReporterElementParser extends AbstractReporterElementParser 
 		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 
 		c.optional(UUID, UUID_STRING_REGEX);
+
+		c.optional(PREFIX);
+		c.optional(PREFIX_SUPPLIER_REF);
+		if (c.has(PREFIX) && c.has(PREFIX_SUPPLIER_REF)) {
+			c.reject(PREFIX_SUPPLIER_REF, "Reporter element must not specify both the 'prefix' and 'prefix-supplier-ref' attributes");
+		}
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);

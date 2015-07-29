@@ -36,6 +36,9 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 	protected static final String FILTER_PATTERN = "filter";
 	protected static final String FILTER_REF = "filter-ref";
 
+	protected static final String PREFIX = "prefix";
+	protected static final String PREFIX_SUPPLIER_REF = "prefix-supplier-ref";
+
 	private MetricRegistry metricRegistry;
 	private BeanFactory beanFactory;
 	private ConversionService conversionService;
@@ -165,6 +168,16 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 			return getPropertyRef(FILTER_REF, MetricFilter.class);
 		}
 		return MetricFilter.ALL;
+	}
+
+	protected String getPrefix() {
+		if (hasProperty(PREFIX)) {
+			return getProperty(PREFIX);
+		}
+		else if (hasProperty(PREFIX_SUPPLIER_REF)) {
+			return getPropertyRef(PREFIX_SUPPLIER_REF, MetricPrefixSupplier.class).getPrefix();
+		}
+		return null;
 	}
 
 	protected MetricFilter metricFilterPattern(String pattern) {

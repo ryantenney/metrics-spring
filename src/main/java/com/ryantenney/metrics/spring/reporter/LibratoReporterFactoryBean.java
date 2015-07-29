@@ -45,7 +45,6 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String EXPANSION_CONFIG = "expansion-config";
 	public static final String EXPANSION_CONFIG_REF = "expansion-config-ref";
 	public static final String HTTP_POSTER_REF = "http-poster-ref";
-	public static final String PREFIX = "prefix";
 	public static final String HTTP_CLIENT_CONFIG_REF = "http-client-config-ref";
 
 	public static final String DELETE_IDLE_STATS = "delete-idle-stats";
@@ -100,10 +99,6 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.setExpansionConfig(getProperty(EXPANSION_CONFIG, MetricExpansionConfig.class));
 		}
 
-		if (hasProperty(PREFIX)) {
-			reporter.setPrefix(getProperty(PREFIX));
-		}
-
 		if (hasProperty(HTTP_POSTER_REF)) {
 			reporter.setHttpPoster(getPropertyRef(HTTP_POSTER_REF, HttpPoster.class));
 		}
@@ -119,6 +114,8 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 		if (hasProperty(OMIT_COMPLEX_GAUGES)) {
 			reporter.setOmitComplexGauges(getPropertyRef(OMIT_COMPLEX_GAUGES, boolean.class));
 		}
+
+		reporter.setPrefix(getPrefix());
 
 		if (hasProperty(PREFIX_DELIMITER)) {
 			reporter.setPrefixDelimiter(getProperty(PREFIX_DELIMITER));

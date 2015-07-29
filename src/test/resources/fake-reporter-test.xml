@@ -31,9 +31,10 @@
 	<metrics:metric-registry id="metrics" name="reporterTestRegistry" />
 
 	<bean id="barFilter" class="com.ryantenney.metrics.spring.ReporterTest.BarFilter" />
+	<bean id="prefixSupplier" class="com.ryantenney.metrics.spring.ReporterTest.TestMetricPrefixSupplier" />
 
-	<metrics:reporter id="fakeReporterOne" type="fake" metric-registry="metrics" duration-unit="MILLISECONDS" rate-unit="SECONDS" filter="foo" period="100ms" />
-	<metrics:reporter id="fakeReporterTwo" type="fake" metric-registry="metrics" duration-unit="NANOSECONDS" rate-unit="HOURS" filter-ref="barFilter" period="100ms" />
+	<metrics:reporter id="fakeReporterOne" type="fake" metric-registry="metrics" duration-unit="MILLISECONDS" rate-unit="SECONDS" filter="foo" prefix="some.crummy.prefix" period="100ms" />
+	<metrics:reporter id="fakeReporterTwo" type="fake" metric-registry="metrics" duration-unit="NANOSECONDS" rate-unit="HOURS" filter-ref="barFilter" prefix-supplier-ref="prefixSupplier" period="100ms" />
 	<metrics:reporter id="fakeReporterThree" type="fake" metric-registry="metrics" enabled="false" duration-unit="NANOSECONDS" rate-unit="HOURS" filter-ref="barFilter" period="100ms" />
 
 	<bean class="com.ryantenney.metrics.spring.ReporterTest.ReporterCollaborator" />

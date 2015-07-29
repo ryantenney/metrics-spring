@@ -39,7 +39,6 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 	// Optional
 	public static final String TRANSPORT = "transport";
 	public static final String CHARSET = "charset";
-	public static final String PREFIX = "prefix";
 	public static final String CLOCK_REF = "clock-ref";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
@@ -61,10 +60,6 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 	protected GraphiteReporter createInstance() {
 		final GraphiteReporter.Builder reporter = GraphiteReporter.forRegistry(getMetricRegistry());
 
-		if (hasProperty(PREFIX)) {
-			reporter.prefixedWith(getProperty(PREFIX));
-		}
-
 		if (hasProperty(CLOCK_REF)) {
 			reporter.withClock(getPropertyRef(CLOCK_REF, Clock.class));
 		}
@@ -78,6 +73,7 @@ public class GraphiteReporterFactoryBean extends AbstractScheduledReporterFactor
 		}
 
 		reporter.filter(getMetricFilter());
+		reporter.prefixedWith(getPrefix());
 
 		final String transport = getProperty(TRANSPORT, "tcp");
 		final Charset charset = Charset.forName(getProperty(CHARSET, "UTF-8"));

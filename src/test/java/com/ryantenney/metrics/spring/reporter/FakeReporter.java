@@ -31,15 +31,17 @@ public class FakeReporter extends ScheduledReporter {
 
 	private final MetricRegistry registry;
 	private final MetricFilter filter;
+	private final String prefix;
 
 	private long period;
 	private int calls = 0;
 	private boolean running = false;
 
-	public FakeReporter(MetricRegistry registry, MetricFilter filter, TimeUnit rateUnit, TimeUnit durationUnit) {
+	public FakeReporter(MetricRegistry registry, MetricFilter filter, String prefix, TimeUnit rateUnit, TimeUnit durationUnit) {
 		super(registry, "test-reporter", filter, rateUnit, durationUnit);
 		this.registry = registry;
 		this.filter = filter;
+		this.prefix = prefix;
 	}
 
 	public MetricRegistry getRegistry() {
@@ -50,10 +52,16 @@ public class FakeReporter extends ScheduledReporter {
 		return filter;
 	}
 
+	public String getPrefix() {
+		return prefix;
+	}
+
+	@Override
 	public String getRateUnit() {
 		return super.getRateUnit();
 	}
 
+	@Override
 	public String getDurationUnit() {
 		return super.getDurationUnit();
 	}

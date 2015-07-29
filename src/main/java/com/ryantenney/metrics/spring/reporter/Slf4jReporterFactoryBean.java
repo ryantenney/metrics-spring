@@ -53,6 +53,7 @@ public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBe
 		}
 
 		reporter.filter(getMetricFilter());
+		reporter.prefixedWith(getPrefix());
 
 		if (hasProperty(MARKER)) {
 			reporter.markWith(MarkerFactory.getMarker(getProperty(MARKER)));

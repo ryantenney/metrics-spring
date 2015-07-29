@@ -32,7 +32,6 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String PERIOD = "period";
 
 	// Optional
-	public static final String PREFIX = "prefix";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
 	public static final String PROTOCOL = "protocol";
@@ -51,10 +50,6 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 	protected GangliaReporter createInstance() throws Exception {
 		final GangliaReporter.Builder reporter = GangliaReporter.forRegistry(getMetricRegistry());
 
-		if (hasProperty(PREFIX)) {
-			reporter.prefixedWith(getProperty(PREFIX));
-		}
-
 		if (hasProperty(DURATION_UNIT)) {
 			reporter.convertDurationsTo(getProperty(DURATION_UNIT, TimeUnit.class));
 		}
@@ -64,6 +59,7 @@ public class GangliaReporterFactoryBean extends AbstractScheduledReporterFactory
 		}
 
 		reporter.filter(getMetricFilter());
+		reporter.prefixedWith(getPrefix());
 
 		if (hasProperty(DMAX)) {
 			reporter.withDMax(getProperty(DMAX, Integer.TYPE));

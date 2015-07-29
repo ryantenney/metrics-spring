@@ -51,11 +51,16 @@ public class GraphiteReporterElementParser extends AbstractReporterElementParser
 			c.require(EXCHANGE);
 		}
 
-		c.optional(PREFIX);
 		c.optional(CLOCK_REF);
 
 		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
+
+		c.optional(PREFIX);
+		c.optional(PREFIX_SUPPLIER_REF);
+		if (c.has(PREFIX) && c.has(PREFIX_SUPPLIER_REF)) {
+			c.reject(PREFIX_SUPPLIER_REF, "Reporter element must not specify both the 'prefix' and 'prefix-supplier-ref' attributes");
+		}
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);
