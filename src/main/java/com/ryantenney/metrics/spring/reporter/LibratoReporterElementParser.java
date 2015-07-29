@@ -33,8 +33,16 @@ public class LibratoReporterElementParser extends AbstractReporterElementParser 
 	protected void validate(ValidationContext c) {
 		c.require(USERNAME);
 		c.require(TOKEN);
-		c.require(SOURCE);
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
+
+		c.optional(SOURCE);
+		c.optional(SOURCE_SUPPLIER_REF);
+		if (!c.has(SOURCE) && !c.has(SOURCE_SUPPLIER_REF)) {
+			c.require(SOURCE);
+		}
+		else if (c.has(SOURCE) && c.has(SOURCE_SUPPLIER_REF)) {
+			c.reject(SOURCE_SUPPLIER_REF, "Reporter element must not specify both the 'source' and 'source-supplier-ref' attributes");
+		}
 
 		c.optional(TIMEOUT, DURATION_STRING_REGEX, "Timeout must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.optional(NAME);

@@ -36,8 +36,10 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	// Required
 	public static final String USERNAME = "username";
 	public static final String TOKEN = "token";
-	public static final String SOURCE = "source";
 	public static final String PERIOD = "period";
+
+	public static final String SOURCE = "source";
+	public static final String SOURCE_SUPPLIER_REF = "source-supplier-ref";
 
 	// Optional
 	public static final String TIMEOUT = "timeout";
@@ -65,7 +67,14 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	protected LibratoReporter createInstance() {
 		final String username = getProperty(USERNAME);
 		final String token = getProperty(TOKEN);
-		final String source = getProperty(SOURCE);
+
+		final String source;
+		if (hasProperty(SOURCE_SUPPLIER_REF)) {
+			source = getProperty(SOURCE_SUPPLIER_REF, MetricPrefixSupplier.class).getPrefix();
+		}
+		else {
+			source = getProperty(SOURCE);
+		}
 
 		final LibratoReporter.Builder reporter = LibratoReporter.builder(getMetricRegistry(), username, token, source);
 
