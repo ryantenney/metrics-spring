@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.springframework.util.StringUtils;
 
@@ -46,6 +47,7 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String EXPANSION_CONFIG_REF = "expansion-config-ref";
 	public static final String HTTP_POSTER_REF = "http-poster-ref";
 	public static final String HTTP_CLIENT_CONFIG_REF = "http-client-config-ref";
+	public static final String SOURCE_REGEX = "source-regex";
 
 	public static final String DELETE_IDLE_STATS = "delete-idle-stats";
 	public static final String OMIT_COMPLEX_GAUGES = "omit-complex-gauges";
@@ -131,6 +133,10 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 
 		if (hasProperty(CLOCK_REF)) {
 			reporter.setClock(getPropertyRef(CLOCK_REF, Clock.class));
+		}
+
+		if (hasProperty(SOURCE_REGEX)) {
+			reporter.setSourceRegex(Pattern.compile(getProperty(SOURCE_REGEX)));
 		}
 
 		reporter.setFilter(getMetricFilter());
