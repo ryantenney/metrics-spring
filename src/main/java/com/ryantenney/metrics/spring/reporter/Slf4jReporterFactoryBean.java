@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 
 import com.codahale.metrics.Slf4jReporter;
+import com.codahale.metrics.Slf4jReporter.LoggingLevel;
 
 public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBean<Slf4jReporter> {
 
@@ -32,6 +33,7 @@ public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBe
 	public static final String RATE_UNIT = "rate-unit";
 	public static final String MARKER = "marker";
 	public static final String LOGGER = "logger";
+	public static final String LEVEL = "level";
 
 	@Override
 	public Class<Slf4jReporter> getObjectType() {
@@ -58,6 +60,10 @@ public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBe
 
 		if (hasProperty(LOGGER)) {
 			reporter.outputTo(LoggerFactory.getLogger(getProperty(LOGGER)));
+		}
+
+		if (hasProperty(LEVEL)) {
+			reporter.withLoggingLevel(getProperty(LEVEL, LoggingLevel.class));
 		}
 
 		return reporter.build();

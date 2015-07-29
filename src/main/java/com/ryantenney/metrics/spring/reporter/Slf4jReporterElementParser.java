@@ -34,6 +34,7 @@ public class Slf4jReporterElementParser extends AbstractReporterElementParser {
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.optional(MARKER);
 		c.optional(LOGGER);
+		c.optional(LEVEL);
 
 		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
