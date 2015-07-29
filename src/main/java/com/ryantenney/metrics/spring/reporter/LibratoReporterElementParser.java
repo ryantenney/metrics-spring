@@ -39,10 +39,15 @@ public class LibratoReporterElementParser extends AbstractReporterElementParser 
 		c.optional(TIMEOUT, DURATION_STRING_REGEX, "Timeout must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.optional(NAME);
 		c.optional(SANITIZER_REF);
-		c.optional(HTTP_POSTER_REF);
 		c.optional(PREFIX);
 		c.optional(PREFIX_DELIMITER);
 		c.optional(CLOCK_REF);
+
+		c.optional(HTTP_POSTER_REF);
+		c.optional(HTTP_CLIENT_CONFIG_REF);
+
+		c.optional(DELETE_IDLE_STATS);
+		c.optional(OMIT_COMPLEX_GAUGES);
 
 		c.optional(EXPANSION_CONFIG);
 		c.optional(EXPANSION_CONFIG_REF);

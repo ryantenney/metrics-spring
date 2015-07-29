@@ -28,6 +28,7 @@ import com.librato.metrics.LibratoReporter;
 import com.librato.metrics.LibratoReporter.ExpandedMetric;
 import com.librato.metrics.LibratoReporter.MetricExpansionConfig;
 import com.librato.metrics.Sanitizer;
+import com.ning.http.client.AsyncHttpClientConfig;
 
 public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactoryBean<LibratoReporter> {
 
@@ -45,6 +46,10 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String EXPANSION_CONFIG_REF = "expansion-config-ref";
 	public static final String HTTP_POSTER_REF = "http-poster-ref";
 	public static final String PREFIX = "prefix";
+	public static final String HTTP_CLIENT_CONFIG_REF = "http-client-config-ref";
+
+	public static final String DELETE_IDLE_STATS = "delete-idle-stats";
+	public static final String OMIT_COMPLEX_GAUGES = "omit-complex-gauges";
 	public static final String PREFIX_DELIMITER = "prefix-delimiter";
 	public static final String CLOCK_REF = "clock-ref";
 	public static final String DURATION_UNIT = "duration-unit";
@@ -95,12 +100,24 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.setExpansionConfig(getProperty(EXPANSION_CONFIG, MetricExpansionConfig.class));
 		}
 
+		if (hasProperty(PREFIX)) {
+			reporter.setPrefix(getProperty(PREFIX));
+		}
+
 		if (hasProperty(HTTP_POSTER_REF)) {
 			reporter.setHttpPoster(getPropertyRef(HTTP_POSTER_REF, HttpPoster.class));
 		}
 
-		if (hasProperty(PREFIX)) {
-			reporter.setPrefix(getProperty(PREFIX));
+		if (hasProperty(HTTP_CLIENT_CONFIG_REF)) {
+			reporter.setHttpClientConfig(getPropertyRef(HTTP_CLIENT_CONFIG_REF, AsyncHttpClientConfig.class));
+		}
+
+		if (hasProperty(DELETE_IDLE_STATS)) {
+			reporter.setDeleteIdleStats(getPropertyRef(DELETE_IDLE_STATS, boolean.class));
+		}
+
+		if (hasProperty(OMIT_COMPLEX_GAUGES)) {
+			reporter.setOmitComplexGauges(getPropertyRef(OMIT_COMPLEX_GAUGES, boolean.class));
 		}
 
 		if (hasProperty(PREFIX_DELIMITER)) {
