@@ -70,7 +70,7 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 
 		final String source;
 		if (hasProperty(SOURCE_SUPPLIER_REF)) {
-			source = getProperty(SOURCE_SUPPLIER_REF, MetricPrefixSupplier.class).getPrefix();
+			source = getPropertyRef(SOURCE_SUPPLIER_REF, MetricPrefixSupplier.class).getPrefix();
 		}
 		else {
 			source = getProperty(SOURCE);
