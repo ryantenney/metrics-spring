@@ -46,6 +46,7 @@ public abstract class AbstractReporterFactoryBean<T> implements FactoryBean<T>, 
 	private boolean enabled = true;
 	private boolean initialized = false;
 
+	@Override
 	public abstract Class<? extends T> getObjectType();
 
 	@Override
