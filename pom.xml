@@ -212,6 +212,12 @@
 			<artifactId>metrics-librato</artifactId>
 			<version>${librato.version}</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>com.codahale.metrics</groupId>
+					<artifactId>metrics-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
@@ -445,6 +451,12 @@
 						<configuration>
 							<rules>
 								<DependencyConvergence />
+								<bannedDependencies>
+									<excludes>
+										<exclude>commons-logging:commons-logging</exclude>
+										<exclude>com.codahale.metrics:metrics-core</exclude>
+									</excludes>
+								</bannedDependencies>
 							</rules>
 						</configuration>
 					</execution>
