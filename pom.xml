@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>3.1.2-SNAPSHOT</version>
+	<version>3.1.2</version>
 	<packaging>bundle</packaging>
 	<name>Metrics Spring Integration</name>
 	<description>Spring integration for Coda Hale's Metrics Library</description>
