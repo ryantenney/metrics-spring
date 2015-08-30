@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ryantenney.metrics.CompositeTimer;
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,10 @@ import com.ryantenney.metrics.annotation.Metric;
 class TestUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
+
+	static String forCompositeTimedMethod(Class<?> klass, Member member, CompositeTimed annotation) {
+		return Util.forCompositeTimedMethod(klass, member, annotation);
+	}
 
 	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
 		return Util.forTimedMethod(klass, member, annotation);
@@ -95,6 +101,19 @@ class TestUtil {
 		String metricName = forTimedMethod(clazz, method, method.getAnnotation(Timed.class));
 		log.info("Looking up timed method named '{}'", metricName);
 		return metricRegistry.getTimers().get(metricName);
+	}
+
+	static CompositeTimer forCompositeTimedMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {
+		Method method = findMethod(clazz, methodName);
+		CompositeTimed annotation = method.getAnnotation(CompositeTimed.class);
+		String metricName = forCompositeTimedMethod(clazz, method, annotation);
+		String successMetricName = metricName + annotation.successSuffix();
+		String failureMetricName = metricName + annotation.failedSuffix();
+		Timer timer = metricRegistry.getTimers().get(metricName);
+		Timer successTimer = metricRegistry.getTimers().get(successMetricName);
+		Timer failedTimer = metricRegistry.getTimers().get(failureMetricName);
+		log.info("Looking up timed method named '{}'", metricName);
+		return new CompositeTimer(timer, successTimer, failedTimer);
 	}
 
 	static Meter forMeteredMethod(MetricRegistry metricRegistry, Class<?> clazz, String methodName) {

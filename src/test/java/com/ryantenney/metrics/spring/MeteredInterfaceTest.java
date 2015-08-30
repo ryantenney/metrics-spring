@@ -15,6 +15,7 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -74,6 +75,12 @@ public class MeteredInterfaceTest {
 	}
 
 	@Test
+	public void testCompositeTimedMethod() {
+		ctx.getBean(MeteredInterface.class).compositeTimedMethod();
+		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+	}
+
+	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredInterface.class).meteredMethod();
 		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
@@ -101,6 +108,9 @@ public class MeteredInterfaceTest {
 		@Timed
 		public void timedMethod();
 
+		@CompositeTimed
+		public void compositeTimedMethod();
+
 		@Metered
 		public void meteredMethod();
 
@@ -116,6 +126,9 @@ public class MeteredInterfaceTest {
 
 		@Override
 		public void timedMethod() {}
+
+		@Override
+		public void compositeTimedMethod() {}
 
 		@Override
 		public void meteredMethod() {}

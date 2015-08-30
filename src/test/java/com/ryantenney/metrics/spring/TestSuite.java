@@ -29,7 +29,7 @@ import com.codahale.metrics.SharedMetricRegistries;
 		CovariantReturnTypeTest.class,
 		EnableMetricsTest.class,
 		HealthCheckTest.class,
-		MeteredClassImpementsInterfaceTest.class,
+		MeteredClassImplementsInterfaceTest.class,
 		MeteredClassTest.class,
 		MeteredInterfaceTest.class,
 		MetricAnnotationTest.class,

@@ -15,6 +15,7 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,6 +69,12 @@ public class CovariantReturnTypeTest {
 	}
 
 	@Test
+	public void testCompositeTimedMethod() {
+		ctx.getBean(MeteredInterface.class).compositeTimedMethod();
+		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+	}
+
+	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredInterface.class).meteredMethod();
 		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
@@ -95,6 +102,9 @@ public class CovariantReturnTypeTest {
 		@Timed
 		public Number timedMethod();
 
+		@CompositeTimed
+		public Number compositeTimedMethod();
+
 		@Metered
 		public Number meteredMethod();
 
@@ -110,6 +120,11 @@ public class CovariantReturnTypeTest {
 
 		@Override
 		public Integer timedMethod() {
+			return 0;
+		}
+
+		@Override
+		public Integer compositeTimedMethod() {
 			return 0;
 		}
 

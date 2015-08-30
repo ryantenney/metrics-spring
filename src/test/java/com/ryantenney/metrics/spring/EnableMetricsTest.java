@@ -15,18 +15,14 @@
  */
 package com.ryantenney.metrics.spring;
 
-import static com.ryantenney.metrics.spring.TestUtil.forCachedGaugeMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
-import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
+import static com.ryantenney.metrics.spring.TestUtil.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
+import com.ryantenney.metrics.CompositeTimer;
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -137,6 +133,44 @@ public class EnableMetricsTest {
 	}
 
 	@Test
+	public void compositeTimedMethod() throws Throwable {
+		// Verify that the Timer's counter is incremented on method invocation
+		CompositeTimer timedMethodTimer = forCompositeTimedMethod(metricRegistry, TestBean.class, "compositeTimedMethod");
+		assertNotNull(timedMethodTimer);
+		assertNotNull(timedMethodTimer.getTotalTimer());
+		assertNotNull(timedMethodTimer.getSuccessTimer());
+		assertNotNull(timedMethodTimer.getFailureTimer());
+		assertThat(timedMethodTimer.getTotalTimer().getCount(), is(0L));
+		assertThat(timedMethodTimer.getSuccessTimer().getCount(), is(0L));
+		assertThat(timedMethodTimer.getFailureTimer().getCount(), is(0L));
+		testBean.compositeTimedMethod();
+		assertThat(timedMethodTimer.getTotalTimer().getCount(), is(1L));
+		assertThat(timedMethodTimer.getSuccessTimer().getCount(), is(1L));
+		assertThat(timedMethodTimer.getFailureTimer().getCount(), is(0L));
+	}
+
+	@Test
+	public void exceptionCompositeTimedMethod() throws Throwable {
+		// Verify that the Timer's counter is incremented on method invocation
+		CompositeTimer timedMethodTimer = forCompositeTimedMethod(metricRegistry, TestBean.class, "exceptionCompositeTimedMethod");
+		assertNotNull(timedMethodTimer);
+		assertNotNull(timedMethodTimer.getTotalTimer());
+		assertNotNull(timedMethodTimer.getSuccessTimer());
+		assertNotNull(timedMethodTimer.getFailureTimer());
+		assertThat(timedMethodTimer.getTotalTimer().getCount(), is(0L));
+		assertThat(timedMethodTimer.getSuccessTimer().getCount(), is(0L));
+		assertThat(timedMethodTimer.getFailureTimer().getCount(), is(0L));
+		try
+		{
+			testBean.exceptionCompositeTimedMethod();
+		}
+		catch (Throwable t){}
+		assertThat(timedMethodTimer.getTotalTimer().getCount(), is(1L));
+		assertThat(timedMethodTimer.getSuccessTimer().getCount(), is(0L));
+		assertThat(timedMethodTimer.getFailureTimer().getCount(), is(1L));
+	}
+
+	@Test
 	public void meteredMethod() throws Throwable {
 		// Verify that the Meter's counter is incremented on method invocation
 		Meter meteredMethodMeter = forMeteredMethod(metricRegistry, TestBean.class, "meteredMethod");
@@ -220,6 +254,14 @@ public class EnableMetricsTest {
 		@Timed
 		public void timedMethod() {}
 
+		@CompositeTimed
+		public void compositeTimedMethod() {}
+
+		@CompositeTimed
+		public void exceptionCompositeTimedMethod() {
+			throw new RuntimeException();
+		}
+
 		@Metered
 		public void meteredMethod() {}
 
@@ -232,7 +274,6 @@ public class EnableMetricsTest {
 		public void exceptionMeteredMethod() {
 			throw new RuntimeException();
 		}
-
 	}
 
 }
