@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 
-public class CompositeTimedMethodInterceptor extends AbstractMetricMethodInterceptor<CompositeTimed, CompositeTimer> implements Ordered
+class CompositeTimedMethodInterceptor extends AbstractMetricMethodInterceptor<CompositeTimed, CompositeTimer> implements Ordered
 {
     public static final Class<CompositeTimed> ANNOTATION = CompositeTimed.class;
     public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
@@ -72,7 +72,7 @@ public class CompositeTimedMethodInterceptor extends AbstractMetricMethodInterce
     }
 
     @Override
-    protected CompositeTimer buildMetric(MetricRegistry metricRegistry, String metricName, CompositeTimed annotation)
+    protected CompositeTimer buildMetric(final MetricRegistry metricRegistry, final String metricName, final CompositeTimed annotation)
     {
         final Timer totalTimer = metricRegistry.timer(metricName);
         final Timer successTimer = metricRegistry.timer(metricName + annotation.successSuffix());
@@ -81,7 +81,7 @@ public class CompositeTimedMethodInterceptor extends AbstractMetricMethodInterce
     }
 
     @Override
-    protected String buildMetricName(Class<?> targetClass, Method method, CompositeTimed annotation)
+    protected String buildMetricName(final Class<?> targetClass, final Method method, final CompositeTimed annotation)
     {
         return Util.chooseName(annotation.name(), annotation.absolute(), targetClass, method);
     }
