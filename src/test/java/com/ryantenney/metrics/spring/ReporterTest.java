@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
 
+import com.palominolabs.metrics.newrelic.NewRelicReporter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
@@ -111,6 +112,7 @@ public class ReporterTest {
 			Assert.assertNotNull(ctx.getBean(JmxReporter.class));
 			Assert.assertNotNull(ctx.getBean(Slf4jReporter.class));
 			Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
+			Assert.assertNotNull(ctx.getBean(NewRelicReporter.class));
 
 			Assert.assertNotNull(ctx.getBean("graphite", GraphiteReporter.class));
 			Assert.assertNotNull(ctx.getBean("graphite-tcp", GraphiteReporter.class));
