@@ -94,6 +94,7 @@
 					<tool:exports type="com.codahale.metrics.JmxReporter"/>
 					<tool:exports type="com.codahale.metrics.ganglia.GangliaReporter"/>
 					<tool:exports type="com.codahale.metrics.graphite.GraphiteReporter"/>
+					<tool:exports type="com.palominolabs.metrics.newrelic.NewRelicReporter"/>
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
