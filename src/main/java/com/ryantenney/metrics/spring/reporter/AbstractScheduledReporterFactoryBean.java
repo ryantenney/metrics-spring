@@ -68,7 +68,7 @@ public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledRe
 	protected long convertDurationString(String duration) {
 		final Matcher m = DURATION_STRING_PATTERN.matcher(duration);
 		if (!m.matches()) {
-			throw new IllegalArgumentException("Invalid duration string format");
+			throw new IllegalArgumentException("Invalid duration string format: " + duration);
 		}
 
 		final long sourceDuration = Long.parseLong(m.group(1));
