@@ -94,6 +94,7 @@
 					<tool:exports type="io.dropwizard.metrics.JmxReporter"/>
 					<tool:exports type="io.dropwizard.metrics.ganglia.GangliaReporter"/>
 					<tool:exports type="io.dropwizard.metrics.graphite.GraphiteReporter"/>
+					<tool:exports type="io.dropwizard.metrics.influxdb.InfluxDbReporter" />
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>

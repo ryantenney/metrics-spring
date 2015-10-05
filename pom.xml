@@ -117,6 +117,11 @@
 				<version>${metrics.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.dropwizard.metrics</groupId>
+				<artifactId>metrics-influxdb</artifactId>
+				<version>${metrics.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.rabbitmq</groupId>
 				<artifactId>amqp-client</artifactId>
 				<version>${rabbitmq.version}</version>
@@ -211,6 +216,11 @@
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-graphite</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-influxdb</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
