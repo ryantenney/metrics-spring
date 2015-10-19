@@ -81,11 +81,12 @@ public class InfluxdbReporterFactoryBean
         final String hostname = getProperty(HOST);
         final int port = getProperty(PORT, Integer.TYPE, DEFAULT_PORT);
         final String database = getProperty(DATABASE);
-        final String authString = getProperty(USERNAME) + ":" + getProperty(PASSWORD);
+        final String username = getProperty(USERNAME);
+        final String password = getProperty(PASSWORD);
         final TimeUnit timeUnit = getProperty(PRECISION, TimeUnit.class, null);
 
         return timeUnit != null ?
-            new InfluxDbHttpSender( hostname, port, database, authString, timeUnit ) :
-            new InfluxDbHttpSender( hostname, port, database, authString );
+            new InfluxDbHttpSender( hostname, port, database, username, password, timeUnit ) :
+            new InfluxDbHttpSender( hostname, port, database, username, password );
     }
 }
