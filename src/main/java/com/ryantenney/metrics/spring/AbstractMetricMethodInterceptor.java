@@ -39,13 +39,17 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 	private final Class<?> targetClass;
 	private final Class<A> annotationClass;
 	private final Map<MethodKey, AnnotationMetricPair<A, M>> metrics;
+	private final MetricFactory<M, A> metricFactory;
+	private final MetricNamingStrategy<A> namingStrategy;
 
 	AbstractMetricMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, final Class<A> annotationClass,
-			final MethodFilter methodFilter) {
+			final MethodFilter methodFilter, MetricFactory<M, A> metricFactory, MetricNamingStrategy<A> namingStrategy) {
 		this.metricRegistry = metricRegistry;
 		this.targetClass = targetClass;
 		this.annotationClass = annotationClass;
+		this.metricFactory = metricFactory;
 		this.metrics = new HashMap<MethodKey, AnnotationMetricPair<A, M>>();
+		this.namingStrategy = namingStrategy;
 
 		LOG.debug("Creating method interceptor for class {}", targetClass.getCanonicalName());
 		LOG.debug("Scanning for @{} annotated methods", annotationClass.getSimpleName());
@@ -82,9 +86,13 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 		}
 	}
 
-	protected abstract MetricName buildMetricName(Class<?> targetClass, Method method, A annotation);
+	protected MetricName buildMetricName(Class<?> targetClass, Method method, A annotation) {
+		return namingStrategy.buildMetricName(targetClass, method, annotation);
+	}
 
-	protected abstract M buildMetric(MetricRegistry metricRegistry, MetricName metricName, A annotation);
+	protected M buildMetric(MetricRegistry metricRegistry, MetricName metricName, A annotation) {
+		return metricFactory.getMetric(metricRegistry, metricName, annotation);
+	}
 
 	protected abstract Object invoke(MethodInvocation invocation, M metric, A annotation) throws Throwable;
 

@@ -15,11 +15,16 @@
  */
 package com.ryantenney.metrics.spring;
 
+import java.lang.annotation.Annotation;
+
 import org.springframework.aop.framework.ProxyConfig;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
 import io.dropwizard.metrics.health.HealthCheckRegistry;
 
 import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.Timer;
+import io.dropwizard.metrics.annotation.Timed;
 
 public class MetricsBeanPostProcessorFactory {
 
@@ -35,7 +40,13 @@ public class MetricsBeanPostProcessorFactory {
 	}
 
 	public static AdvisingBeanPostProcessor timed(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
-		return new AdvisingBeanPostProcessor(TimedMethodInterceptor.POINTCUT, TimedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+		return new AdvisingBeanPostProcessor(new AnnotationMatchingPointcut(null, Timed.class), TimedMethodInterceptor.adviceFactory(metricRegistry, Timed.class, new TimerFactory(), new TimedNamingStrategy()), proxyConfig);
+	}
+
+	public static <A extends Annotation> AdvisingBeanPostProcessor timer(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig, 
+			final Class<A> annotationClass, MetricFactory<Timer, A> timerFactory, MetricNamingStrategy<A> namingStrategy) {
+		return new AdvisingBeanPostProcessor(new AnnotationMatchingPointcut(null, annotationClass), 
+				TimedMethodInterceptor.adviceFactory(metricRegistry, annotationClass, timerFactory, namingStrategy), proxyConfig);
 	}
 
 	public static AdvisingBeanPostProcessor counted(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {

@@ -37,7 +37,7 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public CountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER, new CounterFactory(), new CountedNamingStrategy());
 	}
 
 	@Override
@@ -53,14 +53,18 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 		}
 	}
 
-	@Override
-	protected Counter buildMetric(MetricRegistry metricRegistry, MetricName metricName, Counted annotation) {
-		return metricRegistry.counter(metricName);
+	static class CounterFactory implements MetricFactory<Counter, Counted> {
+		@Override
+		public Counter getMetric(MetricRegistry metricRegistry, MetricName metricName, Counted annotation) {
+			return metricRegistry.counter(metricName);
+		}
 	}
 
-	@Override
-	protected MetricName buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
-		return Util.forCountedMethod(targetClass, method, annotation);
+	static class CountedNamingStrategy implements MetricNamingStrategy<Counted> {
+		@Override
+		public MetricName buildMetricName(Class<?> targetClass, Method method, Counted annotation) {
+			return Util.forCountedMethod(targetClass, method, annotation);
+		}
 	}
 
 	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {

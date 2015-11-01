@@ -25,11 +25,16 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
-import io.dropwizard.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.MetricFactory;
+import com.ryantenney.metrics.spring.MetricNamingStrategy;
+import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
+import com.ryantenney.metrics.spring.TimedNamingStrategy;
+import com.ryantenney.metrics.spring.TimerFactory;
 
 import io.dropwizard.metrics.MetricRegistry;
-
-import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
+import io.dropwizard.metrics.Timer;
+import io.dropwizard.metrics.annotation.Timed;
+import io.dropwizard.metrics.health.HealthCheckRegistry;
 
 /**
  * This is the main class providing the configuration behind the Metrics Java config.
@@ -75,7 +80,19 @@ public class MetricsConfigurationSupport implements ImportAware {
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor timedAnnotationBeanPostProcessor() {
-		return MetricsBeanPostProcessorFactory.timed(getMetricRegistry(), proxyConfig);
+		return MetricsBeanPostProcessorFactory.timer(getMetricRegistry(), proxyConfig, Timed.class, timedFactory(), timedNamingStrategy());
+	}
+
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public MetricFactory<Timer, Timed> timedFactory() {
+		return new TimerFactory();
+	}
+	
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public MetricNamingStrategy<Timed> timedNamingStrategy() {
+		return new TimedNamingStrategy();
 	}
 
 	@Bean

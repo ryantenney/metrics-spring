@@ -38,7 +38,7 @@ class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public ExceptionMeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER, new MeterFactory(), new ExceptionMeteredNamingFactory());
 	}
 
 	@Override
@@ -54,14 +54,18 @@ class ExceptionMeteredMethodInterceptor extends AbstractMetricMethodInterceptor<
 		}
 	}
 
-	@Override
-	protected Meter buildMetric(MetricRegistry metricRegistry, MetricName metricName, ExceptionMetered annotation) {
-		return metricRegistry.meter(metricName);
+	static class MeterFactory implements MetricFactory<Meter, ExceptionMetered> {
+		@Override
+		public Meter getMetric(MetricRegistry metricRegistry, MetricName metricName, ExceptionMetered annotation) {
+			return metricRegistry.meter(metricName);
+		}
 	}
 
-	@Override
-	protected MetricName buildMetricName(Class<?> targetClass, Method method, ExceptionMetered annotation) {
-		return Util.forExceptionMeteredMethod(targetClass, method, annotation);
+	static class ExceptionMeteredNamingFactory implements MetricNamingStrategy<ExceptionMetered> {
+		@Override
+		public MetricName buildMetricName(Class<?> targetClass, Method method, ExceptionMetered annotation) {
+			return Util.forExceptionMeteredMethod(targetClass, method, annotation);
+		}
 	}
 
 	@Override

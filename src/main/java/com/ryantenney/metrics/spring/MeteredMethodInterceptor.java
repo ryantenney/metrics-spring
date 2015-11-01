@@ -37,7 +37,7 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public MeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER, new MeterFactory(), new MeteredNamingStrategy());
 	}
 
 	@Override
@@ -46,14 +46,18 @@ class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, 
 		return invocation.proceed();
 	}
 
-	@Override
-	protected Meter buildMetric(MetricRegistry metricRegistry, MetricName metricName, Metered annotation) {
-		return metricRegistry.meter(metricName);
+	static class MeterFactory implements MetricFactory<Meter, Metered> {
+		@Override
+		public Meter getMetric(MetricRegistry metricRegistry, MetricName metricName, Metered annotation) {
+			return metricRegistry.meter(metricName);
+		}
 	}
 
-	@Override
-	protected MetricName buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
-		return Util.forMeteredMethod(targetClass, method, annotation);
+	static class MeteredNamingStrategy implements MetricNamingStrategy<Metered> {
+		@Override
+		public MetricName buildMetricName(Class<?> targetClass, Method method, Metered annotation) {
+			return Util.forMeteredMethod(targetClass, method, annotation);
+		}
 	}
 
 	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {

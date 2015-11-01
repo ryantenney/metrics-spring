@@ -15,35 +15,26 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Method;
+import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
+
+import java.lang.annotation.Annotation;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.core.Ordered;
-import org.springframework.util.ReflectionUtils.MethodFilter;
 
-import io.dropwizard.metrics.annotation.Timed;
-
-import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
 import io.dropwizard.metrics.Timer.Context;
-import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 
-class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Timer> implements Ordered {
+class TimedMethodInterceptor<A extends Annotation> extends AbstractMetricMethodInterceptor<A, Timer> implements Ordered {
 
-	public static final Class<Timed> ANNOTATION = Timed.class;
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
-	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
-
-	public TimedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
-		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
+	public TimedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass, Class<A> annotationClass, MetricFactory<Timer, A> timerFactory, MetricNamingStrategy<A> namingStrategy) {
+		super(metricRegistry, targetClass, annotationClass, new AnnotationFilter(annotationClass, PROXYABLE_METHODS), timerFactory, namingStrategy);
 	}
 
 	@Override
-	protected Object invoke(MethodInvocation invocation, Timer timer, Timed annotation) throws Throwable {
+	protected Object invoke(MethodInvocation invocation, Timer timer, A annotation) throws Throwable {
 		final Context timerCtx = timer.time();
 		try {
 			return invocation.proceed();
@@ -54,27 +45,17 @@ class TimedMethodInterceptor extends AbstractMetricMethodInterceptor<Timed, Time
 	}
 
 	@Override
-	protected Timer buildMetric(MetricRegistry metricRegistry, MetricName metricName, Timed annotation) {
-		return metricRegistry.timer(metricName);
-	}
-
-	@Override
-	protected MetricName buildMetricName(Class<?> targetClass, Method method, Timed annotation) {
-		return Util.forTimedMethod(targetClass, method, annotation);
-	}
-
-	@Override
 	public int getOrder() {
 		return HIGHEST_PRECEDENCE;
 	}
 
-	static AdviceFactory adviceFactory(final MetricRegistry metricRegistry) {
+	static <A extends Annotation> AdviceFactory adviceFactory(final MetricRegistry metricRegistry, final Class<A> annotationClass, 
+			final MetricFactory<Timer, A> timerFactory, final MetricNamingStrategy<A> namingStrategy) {
 		return new AdviceFactory() {
 			@Override
 			public Advice getAdvice(Object bean, Class<?> targetClass) {
-				return new TimedMethodInterceptor(metricRegistry, targetClass);
+				return new TimedMethodInterceptor<>(metricRegistry, targetClass, annotationClass, timerFactory, namingStrategy);
 			}
 		};
 	}
-
 }
