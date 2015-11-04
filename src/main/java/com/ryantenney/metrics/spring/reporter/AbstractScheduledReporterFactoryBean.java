@@ -42,7 +42,7 @@ public abstract class AbstractScheduledReporterFactoryBean<T extends ScheduledRe
 	public void stop() {
 		if (isEnabled() && isRunning()) {
 			getObject().stop();
-			running = true;
+			running = false;
 		}
 	}
 

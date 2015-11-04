@@ -64,7 +64,7 @@ public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxRepor
 
 	@Override
 	public void start() {
-		if (!running) {
+		if (isEnabled() && !isRunning()) {
 			getObject().start();
 			running = true;
 		}
@@ -72,7 +72,7 @@ public class JmxReporterFactoryBean extends AbstractReporterFactoryBean<JmxRepor
 
 	@Override
 	public void stop() {
-		if (running) {
+		if (isRunning()) {
 			getObject().stop();
 			running = false;
 		}

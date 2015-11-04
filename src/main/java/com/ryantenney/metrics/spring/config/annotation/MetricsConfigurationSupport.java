@@ -32,7 +32,7 @@ import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 /**
  * This is the main class providing the configuration behind the Metrics Java config.
  * It is typically imported by adding {@link EnableMetrics @EnableMetrics} to an
- * application {@link Configuration @Configuration} class.
+ * application {@link org.springframework.context.annotation.Configuration @Configuration} class.
  *
  * @see MetricsConfigurer
  * @see MetricsConfigurerAdapter

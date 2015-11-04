@@ -60,7 +60,7 @@ public class LibratoReporterElementParser extends AbstractReporterElementParser 
 		c.optional(EXPANSION_CONFIG);
 		c.optional(EXPANSION_CONFIG_REF);
 		if (c.has(EXPANSION_CONFIG) && c.has(EXPANSION_CONFIG_REF)) {
-			c.reject(FILTER_REF, "Librato Reporter element must not specify both the 'expansion-config' and 'expansion-config-ref' attributes");
+			c.reject(EXPANSION_CONFIG, "Librato Reporter element must not specify both the 'expansion-config' and 'expansion-config-ref' attributes");
 		}
 
 		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
