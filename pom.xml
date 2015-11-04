@@ -233,6 +233,12 @@
 			<artifactId>metrics-datadog</artifactId>
 			<version>${datadog.version}</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
