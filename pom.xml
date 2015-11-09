@@ -351,7 +351,8 @@
 							javax.servlet;version="[3.0,4)";resolution:=optional,
 							*]]></Import-Package>
 						<Require-Capability><![CDATA[osgi.extender;
-							filter:="(osgi.extender=osgi.serviceloader.registrar)"]]></Require-Capability>
+							filter:="(|(osgi.extender=osgi.serviceloader.registrar)(osgi.extender=osgi.serviceloader.processor))",
+							osgi.serviceloader;filter:=(osgi.serviceloader=com.ryantenney.metrics.spring.reporter.ReporterElementParser);cardinality:=multiple]]></Require-Capability>
 						<Provide-Capability><![CDATA[osgi.serviceloader;
 							osgi.serviceloader=com.ryantenney.metrics.spring.reporter.ReporterElementParser]]></Provide-Capability>
 					</instructions>
