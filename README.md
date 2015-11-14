@@ -8,7 +8,7 @@
 
 The `metrics-spring` module integrates [Dropwizard Metrics library](http://metrics.dropwizard.io/) with Spring, and provides XML and Java configuration.
 
-This module does the following things:
+This module does the following:
 
 * Creates metrics and proxies beans which contain methods annotated with `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted`
 * Registers a `Gauge` for beans which have members annotated with `@Gauge` and `@CachedGauge`
@@ -19,13 +19,13 @@ This module does the following things:
 
 ###Maven
 
-Current version is 3.1.2, which is compatible with Metrics 3.1.2
+Current version is 3.1.3, which is compatible with Metrics 3.1.2
 
 ```xml
 <dependency>
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>3.1.2</version>
+    <version>3.1.3</version>
 </dependency>
 ```
 
@@ -41,21 +41,27 @@ Spring Context XML:
        xmlns:metrics="http://www.ryantenney.com/schema/metrics"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/beans/spring-beans.xsd
            http://www.ryantenney.com/schema/metrics
-           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
+           http://www.ryantenney.com/schema/metrics/metrics.xsd">
 
-    <!-- Registry should be defined in only one context XML file -->
-    <metrics:metric-registry id="metrics" />
+    <!-- Creates a MetricRegistry bean -->
+    <metrics:metric-registry id="metricRegistry" />
 
-    <!-- annotation-driven must be included in all context files -->
-    <metrics:annotation-driven metric-registry="metrics" />
+    <!-- Creates a HealthCheckRegistry bean (Optional) -->
+    <metrics:health-check-registry id="health" />
 
-    <!-- (Optional) Registry should be defined in only one context XML file -->
-    <metrics:reporter type="console" metric-registry="metrics" period="1m" />
+    <!-- Registers BeanPostProcessors with Spring which proxy beans and capture metrics -->
+    <!-- Include this once per context (once in the parent context and in any subcontexts) -->
+    <metrics:annotation-driven metric-registry="metricRegistry" />
 
-    <!-- (Optional) The metrics in this example require the metrics-jvm jar-->
-    <metrics:register metric-registry="metrics">
+    <!-- Example reporter definiton. Supported reporters include jmx, slf4j, graphite, and others.
+    <!-- Reporters should be defined only once, preferably in the parent context -->
+    <metrics:reporter type="console" metric-registry="metricRegistry" period="1m" />
+
+    <!-- Register metric beans (Optional) -->
+    <!-- The metrics in this example require metrics-jvm -->
+    <metrics:register metric-registry="metricRegistry">
         <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
         <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet" />
         <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
@@ -187,7 +193,7 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 
 ### License
 
-Copyright (c) 2012-2014 Ryan Tenney
+Copyright (c) 2012-2015 Ryan Tenney
 
 Portions Copyright (c) 2012-2013 Martello Technologies
 
