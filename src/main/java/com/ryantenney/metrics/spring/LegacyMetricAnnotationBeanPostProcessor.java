@@ -15,24 +15,24 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Field;
-
-import org.springframework.core.Ordered;
-import org.springframework.util.ReflectionUtils;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.ryantenney.metrics.annotation.Metric;
+import org.springframework.core.Ordered;
+import org.springframework.util.ReflectionUtils;
 
-import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_FIELDS;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_REGISTERABLE_FIELDS;
 
 @Deprecated
 class LegacyMetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 
-	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INJECTABLE_FIELDS);
+	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INJECTABLE_REGISTERABLE_FIELDS);
 
 	private final MetricRegistry metrics;
 
@@ -59,6 +59,12 @@ class LegacyMetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPost
 
 		if (metric == null) {
 			// If null, create a metric of the appropriate type and inject it
+
+            // but first, check that field is not final - just in case
+            if (Modifier.isFinal(field.getModifiers())) {
+                throw new IllegalArgumentException("Field " + targetClass.getCanonicalName() + "." + field.getName() + " is final and null which is very strange");
+            }
+
 			metric = getMetric(metrics, type, metricName);
 			ReflectionUtils.setField(field, bean, metric);
 			LOG.debug("Injected metric {} for field {}.{}", metricName, targetClass.getCanonicalName(), field.getName());
