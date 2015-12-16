@@ -55,7 +55,7 @@ Spring Context XML:
     <!-- Include this once per context (once in the parent context and in any subcontexts) -->
     <metrics:annotation-driven metric-registry="metricRegistry" />
 
-    <!-- Example reporter definiton. Supported reporters include jmx, slf4j, graphite, and others.
+    <!-- Example reporter definiton. Supported reporters include jmx, slf4j, graphite, and others. -->
     <!-- Reporters should be defined only once, preferably in the parent context -->
     <metrics:reporter type="console" metric-registry="metricRegistry" period="1m" />
 
