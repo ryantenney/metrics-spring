@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils.FieldFilter;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
@@ -69,7 +70,7 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	@Override
 	public boolean matches(Method method) {
-		if (USER_DECLARED_METHODS.matches(method) && method.isAnnotationPresent(clazz)) {
+		if (USER_DECLARED_METHODS.matches(method) && AnnotationUtils.findAnnotation(method, clazz) != null) {
 			if (checkModifiers(method, methodModifiers)) {
 				return true;
 			}

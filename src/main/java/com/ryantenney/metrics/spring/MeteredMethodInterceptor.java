@@ -15,24 +15,21 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Method;
-
-import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
-import org.springframework.util.ReflectionUtils.MethodFilter;
-
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metered;
+import java.lang.reflect.Method;
+import org.aopalliance.aop.Advice;
+import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.aop.Pointcut;
+import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 
 class MeteredMethodInterceptor extends AbstractMetricMethodInterceptor<Metered, Meter> {
 
 	public static final Class<Metered> ANNOTATION = Metered.class;
-	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
+	public static final Pointcut POINTCUT = new AnnotationClassOrMethodPointcut(ANNOTATION);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
 	public MeteredMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
