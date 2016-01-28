@@ -32,6 +32,12 @@ import static java.lang.reflect.Modifier.*;
 class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AnnotationFilter.class);
+	private static final int SYNTHETIC_METHOD_MODIFIER = 0x00001000;
+	private static final MethodFilter USER_DECLARED_OR_SYNTHETIC_METHODS = new MethodFilter() {
+		public boolean matches(Method method) {
+			return (method.getDeclaringClass() != Object.class);
+		}
+	};
 
 	public static final int FIELDS =
         Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
@@ -42,7 +48,9 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
         Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
         Modifier.ABSTRACT       | Modifier.STATIC       | Modifier.FINAL   |
         Modifier.SYNCHRONIZED   | Modifier.NATIVE       | Modifier.STRICT  |
-        Modifier.TRANSIENT; // TRANSIENT flag is the same as the VARARGS flag
+        Modifier.TRANSIENT      |  // TRANSIENT flag is the same as the VARARGS flag
+        Modifier.VOLATILE       |  // VOLATILE flag is the same as BRIDGE flag
+        SYNTHETIC_METHOD_MODIFIER;
 
 	public static final int INJECTABLE_FIELDS = FIELDS ^ (FINAL | STATIC);
 	public static final int INSTANCE_FIELDS = FIELDS ^ STATIC;
@@ -69,7 +77,7 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
 
 	@Override
 	public boolean matches(Method method) {
-		if (USER_DECLARED_METHODS.matches(method) && method.isAnnotationPresent(clazz)) {
+		if(USER_DECLARED_OR_SYNTHETIC_METHODS.matches(method) && method.isAnnotationPresent(clazz)) {
 			if (checkModifiers(method, methodModifiers)) {
 				return true;
 			}
