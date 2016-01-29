@@ -184,6 +184,8 @@ Javadocs are hosted at http://ryantenney.github.io/metrics-spring/docs/
 
 ### Acknowledgements
 
+[![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com/)
+
 YourKit is kindly supporting this open source project with its full-featured Java Profiler.
 YourKit, LLC is the creator of innovative and intelligent tools for profiling
 Java and .NET applications. Take a look at YourKit's leading software products:
@@ -193,7 +195,7 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 
 ### License
 
-Copyright (c) 2012-2015 Ryan Tenney
+Copyright (c) 2012-2016 Ryan Tenney
 
 Portions Copyright (c) 2012-2013 Martello Technologies
 
