@@ -1,6 +1,6 @@
 #Metrics for Spring
 
-[![Build Status](https://img.shields.io/travis/ryantenney/metrics-spring.svg?style=flat-square)](https://travis-ci.org/ryantenney/metrics-spring)
+[![Build Status](https://img.shields.io/travis/ryantenney/metrics-spring/master.svg?style=flat-square)](https://travis-ci.org/ryantenney/metrics-spring)
 ![Maven Central](https://img.shields.io/maven-central/v/com.ryantenney.metrics/metrics-spring.svg?style=flat-square)
 ![GitHub license](https://img.shields.io/github/license/ryantenney/metrics-spring.svg?style=flat-square)
 
