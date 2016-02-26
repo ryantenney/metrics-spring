@@ -30,6 +30,7 @@
 	<bean id="filter" class="com.ryantenney.metrics.spring.ReporterTest.BarFilter" />
 	<bean id="mockClock" class="org.mockito.Mockito" factory-method="mock" c:classToMock="com.codahale.metrics.Clock" />
 	<bean id="mockConnectionFactory" class="org.mockito.Mockito" factory-method="mock" c:classToMock="com.rabbitmq.client.ConnectionFactory" />
+	<bean id="influxdbTestAuth" class="com.ryantenney.metrics.spring.InfluxdbTestAuthImpl"></bean>
 
 	<metrics:reporter type="console" metric-registry="metrics" period="100ms" output-ref="printStream" clock-ref="mockClock" locale="en_GB" timezone="Europe/London" filter="com\..*" rate-unit="HOURS" duration-unit="NANOSECONDS" />
 	<metrics:reporter type="slf4j" metric-registry="metrics" period="100ms" logger="com.foo.bar" marker="foobar" filter-ref="filter" rate-unit="MINUTES" duration-unit="MICROSECONDS" />
@@ -43,5 +44,7 @@
 	<metrics:reporter id="graphite-udp" type="graphite" metric-registry="metrics" transport="udp" period="100ms" host="localhost" port="6666" charset="ISO-8859-1" prefix="metrics-test" clock-ref="mockClock" filter-ref="filter" rate-unit="DAYS" duration-unit="HOURS" />
 	<metrics:reporter id="graphite-pickle" type="graphite" metric-registry="metrics" transport="pickle" period="100ms" host="localhost" port="6666" batch-size="200" charset="ISO-8859-1" prefix="metrics-test" clock-ref="mockClock" filter-ref="filter" rate-unit="DAYS" duration-unit="HOURS" />
 	<metrics:reporter id="graphite-rabbitmq" type="graphite" metric-registry="metrics" transport="rabbitmq" period="100ms" connection-factory-ref="mockConnectionFactory" exchange="exchange" prefix="metrics-test" clock-ref="mockClock" filter-ref="filter" rate-unit="DAYS" duration-unit="HOURS" />
+	<metrics:reporter id="influxdb" type="influxdb" metric-registry="metrics" host="localhost" port="8086"
+					  database="metrics" period="100ms" influxdb-auth-ref="influxdbTestAuth"/>
 
 </beans>

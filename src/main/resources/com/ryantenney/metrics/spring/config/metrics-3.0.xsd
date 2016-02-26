@@ -96,6 +96,7 @@
 					<tool:exports type="com.codahale.metrics.graphite.GraphiteReporter"/>
 					<tool:exports type="com.palominolabs.metrics.newrelic.NewRelicReporter"/>
 					<tool:exports type="org.coursera.metrics.datadog.DatadogReporter"/>
+					<tool:exports type="com.codahale.metrics.ScheduledReporter"/>
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
