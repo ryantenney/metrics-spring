@@ -62,8 +62,8 @@
 		<rabbitmq.version>3.5.1</rabbitmq.version>
 		<librato.version>4.0.1.7</librato.version>
 		<spring.version>4.1.6.RELEASE</spring.version>
-		<slf4j.version>1.7.12</slf4j.version>
-		<logback.version>1.1.3</logback.version>
+		<slf4j.version>1.7.19</slf4j.version>
+		<logback.version>1.1.6</logback.version>
 		<aspectjweaver.version>1.8.5</aspectjweaver.version>
 		<hamcrest.version>1.3</hamcrest.version>
 		<junit.version>4.12</junit.version>
