@@ -1,5 +1,9 @@
 language: java
 
+#avoid bug in : https://github.com/travis-ci/travis-ci/issues/5227
+before_install:
+  - sudo hostname "$(hostname | cut -c1-63)"
+
 # don't just run the tests, also run Findbugs and friends
 script: mvn verify
 
