@@ -71,6 +71,7 @@
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.9.5</mockito.version>
 		<servlet.version>3.1.0</servlet.version>
+		<jackson.version>2.4.2</jackson.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -119,6 +120,22 @@
 				<artifactId>amqp-client</artifactId>
 				<version>${rabbitmq.version}</version>
 				<optional>true</optional>
+			</dependency>
+			<!-- transitively through metrics-core and elasticsearch - make them converge -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-afterburner</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.elasticsearch</groupId>
+				<artifactId>metrics-elasticsearch-reporter</artifactId>
+				<version>2.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -174,6 +191,11 @@
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-jvm</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>metrics-elasticsearch-reporter</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
