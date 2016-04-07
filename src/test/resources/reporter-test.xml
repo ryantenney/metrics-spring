@@ -19,12 +19,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:c="http://www.springframework.org/schema/c"
-	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:metrics="http://www.ryantenney.com/schema/metrics"
 
 	xsi:schemaLocation="
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 			http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics.xsd">
 
 	<metrics:metric-registry id="metrics" name="reporterTestRegistry" />
@@ -43,6 +43,11 @@
 	<metrics:reporter type="jmx" metric-registry="metrics" domain="com.foo" mbean-server-ref="mbeanServer" filter-ref="filter" rate-unit="MILLISECONDS" duration-unit="DAYS" />
 	<metrics:reporter type="newrelic" metric-registry="metrics" period="1m" name="new relic reporter" prefix="newrelic-test"/>
 	<metrics:reporter type="datadog" metric-registry="metrics" period="1m" transport="http" api-key="a12b3c" host="test" />
+	<metrics:reporter type="elasticsearch" metric-registry="metrics" period="1m" hosts="localhost:9200" additionalFieldsRef="additionalFields" />
+
+	<util:map id="additionalFields">
+		<entry key="someKey" value="someValue" />
+	</util:map>
 
 	<metrics:reporter id="graphite" type="graphite" metric-registry="metrics" period="100ms" host="localhost" port="6666" charset="ISO-8859-1" prefix="metrics-test" clock-ref="mockClock" filter-ref="filter" rate-unit="DAYS" duration-unit="HOURS" />
 	<metrics:reporter id="graphite-tcp" type="graphite" metric-registry="metrics" transport="tcp" period="100ms" host="localhost" port="6666" charset="ISO-8859-1" prefix="metrics-test" clock-ref="mockClock" filter-ref="filter" rate-unit="DAYS" duration-unit="HOURS" />

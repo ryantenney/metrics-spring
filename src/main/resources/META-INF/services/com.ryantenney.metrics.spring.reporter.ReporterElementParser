@@ -7,3 +7,4 @@ com.ryantenney.metrics.spring.reporter.GangliaReporterElementParser
 com.ryantenney.metrics.spring.reporter.LibratoReporterElementParser
 com.ryantenney.metrics.spring.reporter.NewRelicReporterElementParser
 com.ryantenney.metrics.spring.reporter.DatadogReporterElementParser
+com.ryantenney.metrics.spring.reporter.ElasticSearchReporterElementParser
