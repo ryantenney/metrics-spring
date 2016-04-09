@@ -48,7 +48,11 @@ class GaugeMethodAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 		metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {
 			@Override
 			public Object getValue() {
-				return ReflectionUtils.invokeMethod(method, bean);
+				try {
+					return ReflectionUtils.invokeMethod(bean.getClass().getMethod(method.getName(), method.getParameterTypes()), bean);
+				} catch (NoSuchMethodException e) {
+					throw new IllegalArgumentException(e);
+				}
 			}
 		});
 
