@@ -35,5 +35,11 @@
 		<bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
 		<bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
 	</metrics:register>
+    <!--  test duplicate names due to spring lifecycle issues this can occur -->
+    <metrics:register metric-registry="metrics">
+        <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
+        <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
+    </metrics:register>
+
 
 </beans>

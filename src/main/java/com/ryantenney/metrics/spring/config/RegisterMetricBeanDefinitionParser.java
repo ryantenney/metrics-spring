@@ -15,8 +15,12 @@
  */
 package com.ryantenney.metrics.spring.config;
 
+import static com.ryantenney.metrics.spring.config.MetricsNamespaceHandler.METRICS_NAMESPACE;
+
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
@@ -31,10 +35,10 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
-
-import static com.ryantenney.metrics.spring.config.MetricsNamespaceHandler.METRICS_NAMESPACE;
+import com.ryantenney.metrics.spring.RegexMetricFilter;
 
 class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
 
@@ -79,6 +83,7 @@ class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
 
 	public static class MetricRegisterer implements InitializingBean {
 
+	    private final Logger log = LoggerFactory.getLogger(MetricRegisterer.class);
 		private final MetricRegistry metricRegistry;
 		private final String name;
 		private final Metric metric;
@@ -95,9 +100,22 @@ class RegisterMetricBeanDefinitionParser implements BeanDefinitionParser {
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
-			metricRegistry.register(name, metric);
+		    try {
+		        metricRegistry.register(name, metric);
+		    } catch (IllegalArgumentException iae) {
+		        // handle duplicate names gracefully
+		        replaceMetrics();
+		    }
 		}
 
+        private void replaceMetrics() {
+            // Metrics really should provide a way to do this themselves
+            log.warn("Possible duplicate registry detected for name '{}', replacing with {}", name, metric.getClass());
+            MetricFilter filter = new RegexMetricFilter("^" + name + ".*$");
+            metricRegistry.removeMatching(filter);
+            metricRegistry.register(name, metric);
+        }
 	}
 
 }
+
