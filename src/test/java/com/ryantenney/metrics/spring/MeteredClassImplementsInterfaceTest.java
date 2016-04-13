@@ -15,11 +15,11 @@
  */
 package com.ryantenney.metrics.spring;
 
-import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
+import static com.ryantenney.metrics.spring.TestUtil.*;
 import static org.junit.Assert.assertEquals;
 
+import com.ryantenney.metrics.CompositeTimer;
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +42,8 @@ import com.ryantenney.metrics.annotation.Counted;
  * but annotated at the class level doesn't throw an NPE
  * Also verifies that it does register metrics.
  */
-public class MeteredClassImpementsInterfaceTest {
+public class MeteredClassImplementsInterfaceTest
+{
 
 	MeteredClassInterface meteredClass;
 
@@ -85,6 +86,12 @@ public class MeteredClassImpementsInterfaceTest {
 	}
 
 	@Test
+	public void testCompositeTimedMethod() {
+		ctx.getBean(MeteredClassInterface.class).compositeTimedMethod();
+		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getTimers().isEmpty());
+	}
+
+	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredClassInterface.class).meteredMethod();
 		Assert.assertFalse("Metrics should be registered", this.metricRegistry.getMeters().isEmpty());
@@ -118,6 +125,43 @@ public class MeteredClassImpementsInterfaceTest {
 	}
 
 	@Test
+	public void compositeTimedMethod() throws Throwable {
+		CompositeTimer timedMethod = forCompositeTimedMethod(metricRegistry, MeteredClassImpl.class,
+				"compositeTimedMethod");
+
+		assertEquals(0, timedMethod.getTotalTimer().getCount());
+		assertEquals(0, timedMethod.getSuccessTimer().getCount());
+		assertEquals(0, timedMethod.getFailureTimer().getCount());
+
+		meteredClass.compositeTimedMethod();
+
+		assertEquals(1, timedMethod.getTotalTimer().getCount());
+		assertEquals(1, timedMethod.getSuccessTimer().getCount());
+		assertEquals(0, timedMethod.getFailureTimer().getCount());
+	}
+
+	@Test
+	public void exceptionCompositeTimedMethod() throws Throwable {
+		CompositeTimer timedMethod = forCompositeTimedMethod(metricRegistry, MeteredClassImpl.class,
+				"exceptionCompositeTimedMethod");
+
+		assertEquals(0, timedMethod.getTotalTimer().getCount());
+		assertEquals(0, timedMethod.getSuccessTimer().getCount());
+		assertEquals(0, timedMethod.getFailureTimer().getCount());
+
+		try{
+			meteredClass.exceptionCompositeTimedMethod();
+		}
+		catch(Throwable e)
+		{
+		}
+
+		assertEquals(1, timedMethod.getTotalTimer().getCount());
+		assertEquals(0, timedMethod.getSuccessTimer().getCount());
+		assertEquals(1, timedMethod.getFailureTimer().getCount());
+	}
+
+	@Test
 	public void meteredMethod() throws Throwable {
 		Meter meteredMethod = forMeteredMethod(metricRegistry, MeteredClassImpl.class, "meteredMethod");
 
@@ -147,6 +191,10 @@ public class MeteredClassImpementsInterfaceTest {
 
 		public void timedMethod();
 
+		public void compositeTimedMethod();
+
+		public void exceptionCompositeTimedMethod() throws Throwable;
+
 		public void meteredMethod();
 
 		public void countedMethod(Runnable runnable);
@@ -160,6 +208,17 @@ public class MeteredClassImpementsInterfaceTest {
 		@Override
 		@Timed
 		public void timedMethod() {}
+
+		@Override
+		@CompositeTimed
+		public void compositeTimedMethod() {}
+
+		@Override
+		@CompositeTimed
+		public void exceptionCompositeTimedMethod() throws Throwable
+		{
+			throw new BogusException();
+		}
 
 		@Override
 		@Metered

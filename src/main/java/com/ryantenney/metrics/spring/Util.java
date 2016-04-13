@@ -24,6 +24,7 @@ import com.codahale.metrics.annotation.Gauge;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.CachedGauge;
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import com.ryantenney.metrics.annotation.Counted;
 import com.ryantenney.metrics.annotation.Metric;
 
@@ -32,6 +33,10 @@ class Util {
 	private Util() {}
 
 	static String forTimedMethod(Class<?> klass, Member member, Timed annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+	}
+
+	static String forCompositeTimedMethod(Class<?> klass, Member member, CompositeTimed annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 

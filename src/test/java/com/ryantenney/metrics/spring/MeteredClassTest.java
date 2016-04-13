@@ -15,13 +15,7 @@
  */
 package com.ryantenney.metrics.spring;
 
-import static com.ryantenney.metrics.spring.TestUtil.forCachedGaugeMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forCountedMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forExceptionMeteredMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forGaugeField;
-import static com.ryantenney.metrics.spring.TestUtil.forGaugeMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forMeteredMethod;
-import static com.ryantenney.metrics.spring.TestUtil.forTimedMethod;
+import static com.ryantenney.metrics.spring.TestUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +23,8 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
+import com.ryantenney.metrics.CompositeTimer;
+import com.ryantenney.metrics.annotation.CompositeTimed;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +96,31 @@ public class MeteredClassTest {
 			assertTrue(e instanceof BogusException);
 		}
 		assertEquals(2, timedMethod.getCount());
+	}
+
+	@Test
+	public void compositeTimedMethod() throws Throwable {
+		CompositeTimer timedMethod = forCompositeTimedMethod(metricRegistry, MeteredClass.class,
+				"compositeTimedMethod");
+
+		assertEquals(0, timedMethod.getTotalTimer().getCount());
+
+		meteredClass.compositeTimedMethod(false);
+		assertEquals(1, timedMethod.getTotalTimer().getCount());
+		assertEquals(1, timedMethod.getSuccessTimer().getCount());
+		assertEquals(0, timedMethod.getFailureTimer().getCount());
+
+		// getCount increments even when the method throws an exception
+		try {
+			meteredClass.compositeTimedMethod(true);
+			fail();
+		}
+		catch (Throwable e) {
+			assertTrue(e instanceof BogusException);
+		}
+		assertEquals(2, timedMethod.getTotalTimer().getCount());
+		assertEquals(1, timedMethod.getSuccessTimer().getCount());
+		assertEquals(1, timedMethod.getFailureTimer().getCount());
 	}
 
 	@Test
@@ -186,12 +207,15 @@ public class MeteredClassTest {
 		Timer quadruple_Timed = forTimedMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
 		Meter quadruple_Metered = forMeteredMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
 		Meter quadruple_ExceptionMetered = forExceptionMeteredMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
+		CompositeTimer quadruple_CompositeTimed = forCompositeTimedMethod(metricRegistry, MeteredClass.class,
+				"quadruplyMeteredMethod");
 		final Counter quadruple_Counted = forCountedMethod(metricRegistry, MeteredClass.class, "quadruplyMeteredMethod");
 
 		assertEquals(0, quadruple_Metered.getCount());
 		assertEquals(0, quadruple_Timed.getCount());
 		assertEquals(0, quadruple_ExceptionMetered.getCount());
 		assertEquals(0, quadruple_Counted.getCount());
+		assertEquals(0, quadruple_CompositeTimed.getTotalTimer().getCount());
 
 		// doesn't throw an exception
 		meteredClass.quadruplyMeteredMethod(new Runnable() {
@@ -203,6 +227,9 @@ public class MeteredClassTest {
 
 		assertEquals(1, quadruple_Metered.getCount());
 		assertEquals(1, quadruple_Timed.getCount());
+		assertEquals(1, quadruple_CompositeTimed.getTotalTimer().getCount());
+		assertEquals(1, quadruple_CompositeTimed.getSuccessTimer().getCount());
+		assertEquals(0, quadruple_CompositeTimed.getFailureTimer().getCount());
 		assertEquals(0, quadruple_ExceptionMetered.getCount());
 		assertEquals(0, quadruple_Counted.getCount());
 
@@ -222,6 +249,9 @@ public class MeteredClassTest {
 		}
 		assertEquals(2, quadruple_Metered.getCount());
 		assertEquals(2, quadruple_Timed.getCount());
+		assertEquals(2, quadruple_CompositeTimed.getTotalTimer().getCount());
+		assertEquals(1, quadruple_CompositeTimed.getSuccessTimer().getCount());
+		assertEquals(1, quadruple_CompositeTimed.getFailureTimer().getCount());
 		assertEquals(1, quadruple_ExceptionMetered.getCount());
 		assertEquals(0, quadruple_Counted.getCount());
 	}
@@ -261,6 +291,31 @@ public class MeteredClassTest {
 
 		assertEquals(1, overloaded.getCount());
 		assertEquals(2, overloaded_param.getCount());
+	}
+
+	@Test
+	public void overloadedCompositeTimedMethod() {
+		Timer compositeOverloaded = metricRegistry.getTimers().get(MetricRegistry.name(MeteredClass.class
+				.getCanonicalName(), "overloaded-compositeTimed"));
+		Timer compositeOverloaded_param = metricRegistry.getTimers().get(MetricRegistry.name(MeteredClass.class.getCanonicalName(), "overloaded-compositeTimed-param"));
+
+		assertEquals(0, compositeOverloaded.getCount());
+		assertEquals(0, compositeOverloaded_param.getCount());
+
+		meteredClass.overloadedCompositeTimedMethod();
+
+		assertEquals(1, compositeOverloaded.getCount());
+		assertEquals(0, compositeOverloaded_param.getCount());
+
+		meteredClass.overloadedCompositeTimedMethod(1);
+
+		assertEquals(1, compositeOverloaded.getCount());
+		assertEquals(1, compositeOverloaded_param.getCount());
+
+		meteredClass.overloadedCompositeTimedMethod(1);
+
+		assertEquals(1, compositeOverloaded.getCount());
+		assertEquals(2, compositeOverloaded_param.getCount());
 	}
 
 	@Test
@@ -438,6 +493,13 @@ public class MeteredClassTest {
 			}
 		}
 
+		@CompositeTimed
+		public void compositeTimedMethod(boolean doThrow) throws Throwable {
+			if (doThrow) {
+				throw new BogusException();
+			}
+		}
+
 		@Metered
 		public void meteredMethod() {}
 
@@ -457,6 +519,7 @@ public class MeteredClassTest {
 		}
 
 		@Timed(name = "quadruplyMeteredMethod-timed")
+		@CompositeTimed(name = "quadruplyMeteredMethod-compositeTimed")
 		@Metered(name = "quadruplyMeteredMethod-metered")
 		@Counted(name = "quadruplyMeteredMethod-counted")
 		@ExceptionMetered(name = "quadruplyMeteredMethod-exceptionMetered", cause = BogusException.class)
@@ -470,8 +533,14 @@ public class MeteredClassTest {
 		@Timed(name = "overloaded-timed")
 		public void overloadedTimedMethod() {}
 
+		@CompositeTimed(name = "overloaded-compositeTimed")
+		public void overloadedCompositeTimedMethod() {}
+
 		@Timed(name = "overloaded-timed-param")
 		public void overloadedTimedMethod(int param) {}
+
+		@CompositeTimed(name = "overloaded-compositeTimed-param")
+		public void overloadedCompositeTimedMethod(int param) {}
 
 		@Metered(name = "overloaded-metered")
 		public void overloadedMeteredMethod() {}

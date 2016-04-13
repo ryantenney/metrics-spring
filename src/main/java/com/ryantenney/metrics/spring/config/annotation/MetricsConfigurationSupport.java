@@ -15,6 +15,9 @@
  */
 package com.ryantenney.metrics.spring.config.annotation;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -24,10 +27,6 @@ import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
-
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
-import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 
 /**
  * This is the main class providing the configuration behind the Metrics Java config.
@@ -74,6 +73,12 @@ public class MetricsConfigurationSupport implements ImportAware {
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanPostProcessor timedAnnotationBeanPostProcessor() {
 		return MetricsBeanPostProcessorFactory.timed(getMetricRegistry(), proxyConfig);
+	}
+
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public BeanPostProcessor compositeTimedAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.compositeTimed(getMetricRegistry(), proxyConfig);
 	}
 
 	@Bean

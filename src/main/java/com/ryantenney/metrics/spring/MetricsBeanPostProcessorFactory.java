@@ -37,6 +37,12 @@ public class MetricsBeanPostProcessorFactory {
 		return new AdvisingBeanPostProcessor(TimedMethodInterceptor.POINTCUT, TimedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
 
+	public static AdvisingBeanPostProcessor compositeTimed(final MetricRegistry metricRegistry, final ProxyConfig
+			proxyConfig) {
+		return new AdvisingBeanPostProcessor(CompositeTimedMethodInterceptor.POINTCUT, CompositeTimedMethodInterceptor.adviceFactory(metricRegistry),
+				proxyConfig);
+	}
+
 	public static AdvisingBeanPostProcessor counted(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
 		return new AdvisingBeanPostProcessor(CountedMethodInterceptor.POINTCUT, CountedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
 	}
