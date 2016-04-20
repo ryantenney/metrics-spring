@@ -15,6 +15,10 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.Timer;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +32,13 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.Counted;
 
+import java.util.SortedSet;
+
 public class CovariantReturnTypeTest {
+	public static final String COUNTER_NAME = "com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterface.countedMethod";
+	public static final String EXCEPTION_METER_NAME = "com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterface.exceptionMeteredMethod.exceptions";
+	public static final String METER_NAME = "com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterface.meteredMethod";
+	public static final String TIMER_NAME = "com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterface.timedMethod";
 
 	ClassPathXmlApplicationContext ctx;
 	MetricRegistry metricRegistry;
@@ -45,8 +55,14 @@ public class CovariantReturnTypeTest {
 	}
 
 	@Test
-	public void noMetricsRegistered() {
-		Assert.assertTrue("No metrics registered", this.metricRegistry.getNames().isEmpty());
+	public void allMetricsRegistered() {
+		SortedSet<String> metricNames = this.metricRegistry.getNames();
+		Assert.assertThat("4 metrics present", metricNames, CoreMatchers.hasItems(
+				COUNTER_NAME,
+				EXCEPTION_METER_NAME,
+				METER_NAME,
+				TIMER_NAME
+		));
 	}
 
 	@Test
@@ -64,13 +80,17 @@ public class CovariantReturnTypeTest {
 	@Test
 	public void testTimedMethod() {
 		ctx.getBean(MeteredInterface.class).timedMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Timer timer = this.metricRegistry.getTimers().get(TIMER_NAME);
+		Assert.assertNotNull("Timer should be registered", timer);
+		Assert.assertEquals("Timer count should be 0", 0L, timer.getCount());
 	}
 
 	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredInterface.class).meteredMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Meter meter = this.metricRegistry.getMeters().get(METER_NAME);
+		Assert.assertNotNull("Meter should be registered", meter);
+		Assert.assertEquals("Meter count should be 0", 0L, meter.getCount());
 	}
 
 	@Test(expected = BogusException.class)
@@ -79,7 +99,9 @@ public class CovariantReturnTypeTest {
 			ctx.getBean(MeteredInterface.class).exceptionMeteredMethod();
 		}
 		catch (Throwable t) {
-			Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+			Meter meter = this.metricRegistry.getMeters().get(EXCEPTION_METER_NAME);
+			Assert.assertNotNull("Exception Meter should be registered", meter);
+			Assert.assertEquals("Exception Meter count should be 0", 0L, meter.getCount());
 			throw t;
 		}
 	}
@@ -87,7 +109,9 @@ public class CovariantReturnTypeTest {
 	@Test
 	public void testCountedMethod() {
 		ctx.getBean(MeteredInterface.class).countedMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Counter counter = this.metricRegistry.getCounters().get(COUNTER_NAME);
+		Assert.assertNotNull("Counter should be registered", counter);
+		Assert.assertEquals("Counter count should be 0", 0L, counter.getCount());
 	}
 
 	public interface MeteredInterface {

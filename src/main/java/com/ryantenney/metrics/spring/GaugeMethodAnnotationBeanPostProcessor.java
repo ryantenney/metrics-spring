@@ -18,6 +18,7 @@ package com.ryantenney.metrics.spring;
 import java.lang.reflect.Method;
 
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
 import com.codahale.metrics.MetricRegistry;
@@ -42,7 +43,7 @@ class GaugeMethodAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostP
 			throw new IllegalStateException("Method " + method.getName() + " is annotated with @Gauge but requires parameters.");
 		}
 
-		final Gauge annotation = method.getAnnotation(Gauge.class);
+		final Gauge annotation = AnnotationUtils.findAnnotation(method, Gauge.class);
 		final String metricName = Util.forGauge(targetClass, method, annotation);
 
 		metrics.register(metricName, new com.codahale.metrics.Gauge<Object>() {

@@ -15,6 +15,8 @@
  */
 package com.ryantenney.metrics.spring;
 
+import com.codahale.metrics.*;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,11 +24,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.ryantenney.metrics.annotation.Counted;
+
+import java.util.SortedSet;
 
 /**
  * Purpose of test:
@@ -35,6 +38,10 @@ import com.ryantenney.metrics.annotation.Counted;
  * Also verifies that it doesn't register any metrics.
  */
 public class MeteredInterfaceTest {
+	public static final String COUNTER_NAME = "com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterface.countedMethod";
+	public static final String EXCEPTION_METER_NAME = "com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterface.exceptionMeteredMethod.exceptions";
+	public static final String METER_NAME = "com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterface.meteredMethod";
+	public static final String TIMER_NAME = "com.ryantenney.metrics.spring.MeteredInterfaceTest.MeteredInterface.timedMethod";
 
 	ClassPathXmlApplicationContext ctx;
 	MetricRegistry metricRegistry;
@@ -51,8 +58,14 @@ public class MeteredInterfaceTest {
 	}
 
 	@Test
-	public void noMetricsRegistered() {
-		Assert.assertTrue("No metrics registered", this.metricRegistry.getNames().isEmpty());
+	public void allMetricsRegistered() {
+		SortedSet<String> metricNames = this.metricRegistry.getNames();
+		Assert.assertThat("4 metrics present", metricNames, CoreMatchers.hasItems(
+				COUNTER_NAME,
+				EXCEPTION_METER_NAME,
+				METER_NAME,
+				TIMER_NAME
+				));
 	}
 
 	@Test
@@ -70,13 +83,17 @@ public class MeteredInterfaceTest {
 	@Test
 	public void testTimedMethod() {
 		ctx.getBean(MeteredInterface.class).timedMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Timer timer = this.metricRegistry.getTimers().get(TIMER_NAME);
+		Assert.assertNotNull("Timer should be registered", timer);
+		Assert.assertEquals("Timer count should be 1", 1L, timer.getCount());
 	}
 
 	@Test
 	public void testMeteredMethod() {
 		ctx.getBean(MeteredInterface.class).meteredMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Meter meter = this.metricRegistry.getMeters().get(METER_NAME);
+		Assert.assertNotNull("Meter should be registered", meter);
+		Assert.assertEquals("Meter count should be 1", 1L, meter.getCount());
 	}
 
 	@Test(expected = BogusException.class)
@@ -85,7 +102,9 @@ public class MeteredInterfaceTest {
 			ctx.getBean(MeteredInterface.class).exceptionMeteredMethod();
 		}
 		catch (Throwable t) {
-			Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+			Meter meter = this.metricRegistry.getMeters().get(EXCEPTION_METER_NAME);
+			Assert.assertNotNull("Exception Meter should be registered", meter);
+			Assert.assertEquals("Exception Meter count should be 1", 1L, meter.getCount());
 			throw t;
 		}
 	}
@@ -93,7 +112,9 @@ public class MeteredInterfaceTest {
 	@Test
 	public void testCountedMethod() {
 		ctx.getBean(MeteredInterface.class).countedMethod();
-		Assert.assertTrue("No metrics should be registered", this.metricRegistry.getNames().isEmpty());
+		Counter counter = this.metricRegistry.getCounters().get(COUNTER_NAME);
+		Assert.assertNotNull("Counter should be registered", counter);
+		Assert.assertEquals("Counter count should be 1", 1L, counter.getCount());
 	}
 
 	public interface MeteredInterface {
@@ -104,10 +125,10 @@ public class MeteredInterfaceTest {
 		@Metered
 		public void meteredMethod();
 
-		@ExceptionMetered
+		@ExceptionMetered(cause = BogusException.class)
 		public void exceptionMeteredMethod() throws Throwable;
 
-		@Counted
+		@Counted(monotonic = true)
 		public void countedMethod();
 
 	}
