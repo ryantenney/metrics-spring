@@ -52,9 +52,23 @@ abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implemen
 		ReflectionUtils.doWithMethods(targetClass, this, methodFilter);
 	}
 
+	private AnnotationMetricPair<A, M> getAnnotationMetricPair(MethodInvocation invocation) {
+		final Method method = invocation.getMethod();
+		AnnotationMetricPair<A, M> annotationMetricPair = metrics.get(MethodKey.forMethod(method));
+		if (annotationMetricPair != null) {
+			return annotationMetricPair;
+		}
+		for (MethodKey methodKey: metrics.keySet()) {
+			if (methodKey.isCompatibleWith(invocation)) {
+				return metrics.get(methodKey);
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		final AnnotationMetricPair<A, M> annotationMetricPair = metrics.get(MethodKey.forMethod(invocation.getMethod()));
+		final AnnotationMetricPair<A, M> annotationMetricPair = getAnnotationMetricPair(invocation);
 		if (annotationMetricPair != null) {
 			return invoke(invocation, annotationMetricPair.getMeter(), annotationMetricPair.getAnnotation());
 		}

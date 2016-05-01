@@ -160,7 +160,7 @@ class TestUtil {
 		log.info("Looking for method {}.{}", clazz, methodName);
 		List<Method> methodsFound = new ArrayList<Method>();
 		for (Method method : clazz.getDeclaredMethods()) {
-			if (method.getName().equals(methodName)) {
+			if (method.getName().equals(methodName) && !method.isBridge()) {
 				methodsFound.add(method);
 			}
 		}
