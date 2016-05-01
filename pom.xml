@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>3.1.1-SNAPSHOT</version>
+	<version>3.1.3-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Metrics Spring Integration</name>
 	<description>Spring integration for Coda Hale's Metrics Library</description>
@@ -60,7 +60,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<metrics.version>3.1.2</metrics.version>
 		<rabbitmq.version>3.5.1</rabbitmq.version>
-		<librato.version>4.0.1.7</librato.version>
+		<librato.version>4.0.1.9</librato.version>
 		<new-relic.version>1.1.1</new-relic.version>
 		<datadog.version>1.1.3</datadog.version>
 		<spring.version>4.1.6.RELEASE</spring.version>
@@ -221,6 +221,12 @@
 			<artifactId>metrics-librato</artifactId>
 			<version>${librato.version}</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>com.codahale.metrics</groupId>
+					<artifactId>metrics-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.palominolabs.metrics</groupId>
@@ -473,6 +479,12 @@
 						<configuration>
 							<rules>
 								<DependencyConvergence />
+								<bannedDependencies>
+									<excludes>
+										<exclude>commons-logging:commons-logging</exclude>
+										<exclude>com.codahale.metrics:metrics-core</exclude>
+									</excludes>
+								</bannedDependencies>
 							</rules>
 						</configuration>
 					</execution>
@@ -501,7 +513,7 @@
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>findbugs-maven-plugin</artifactId>
-							<version>2.5.2</version>
+							<version>3.0.1</version>
 							<configuration>
 								<effort>Max</effort>
 								<threshold>Default</threshold>
@@ -512,7 +524,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.10</version>
+							<version>3.0.1</version>
 							<configuration>
 								<configLocation>checkstyle.xml</configLocation>
 								<encoding>UTF-8</encoding>
@@ -599,6 +611,25 @@
 						</executions>
 					</plugin>
 				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>java8</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<configuration>
+								<additionalparam>-Xdoclint:none</additionalparam>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 	</profiles>

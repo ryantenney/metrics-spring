@@ -33,16 +33,29 @@ public class LibratoReporterElementParser extends AbstractReporterElementParser 
 	protected void validate(ValidationContext c) {
 		c.require(USERNAME);
 		c.require(TOKEN);
-		c.require(SOURCE);
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
+
+		c.optional(SOURCE);
+		c.optional(SOURCE_SUPPLIER_REF);
+		if (!c.has(SOURCE) && !c.has(SOURCE_SUPPLIER_REF)) {
+			c.require(SOURCE);
+		}
+		else if (c.has(SOURCE) && c.has(SOURCE_SUPPLIER_REF)) {
+			c.reject(SOURCE_SUPPLIER_REF, "Reporter element must not specify both the 'source' and 'source-supplier-ref' attributes");
+		}
 
 		c.optional(TIMEOUT, DURATION_STRING_REGEX, "Timeout must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.optional(NAME);
 		c.optional(SANITIZER_REF);
-		c.optional(HTTP_POSTER_REF);
-		c.optional(PREFIX);
 		c.optional(PREFIX_DELIMITER);
 		c.optional(CLOCK_REF);
+		c.optional(SOURCE_REGEX);
+
+		c.optional(HTTP_POSTER_REF);
+		c.optional(HTTP_CLIENT_CONFIG_REF);
+
+		c.optional(DELETE_IDLE_STATS);
+		c.optional(OMIT_COMPLEX_GAUGES);
 
 		c.optional(EXPANSION_CONFIG);
 		c.optional(EXPANSION_CONFIG_REF);
@@ -52,6 +65,12 @@ public class LibratoReporterElementParser extends AbstractReporterElementParser 
 
 		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
+
+		c.optional(PREFIX);
+		c.optional(PREFIX_SUPPLIER_REF);
+		if (c.has(PREFIX) && c.has(PREFIX_SUPPLIER_REF)) {
+			c.reject(PREFIX_SUPPLIER_REF, "Reporter element must not specify both the 'prefix' and 'prefix-supplier-ref' attributes");
+		}
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);

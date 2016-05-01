@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.springframework.util.StringUtils;
 
@@ -28,14 +29,17 @@ import com.librato.metrics.LibratoReporter;
 import com.librato.metrics.LibratoReporter.ExpandedMetric;
 import com.librato.metrics.LibratoReporter.MetricExpansionConfig;
 import com.librato.metrics.Sanitizer;
+import com.ning.http.client.AsyncHttpClientConfig;
 
 public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactoryBean<LibratoReporter> {
 
 	// Required
 	public static final String USERNAME = "username";
 	public static final String TOKEN = "token";
-	public static final String SOURCE = "source";
 	public static final String PERIOD = "period";
+
+	public static final String SOURCE = "source";
+	public static final String SOURCE_SUPPLIER_REF = "source-supplier-ref";
 
 	// Optional
 	public static final String TIMEOUT = "timeout";
@@ -44,7 +48,11 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String EXPANSION_CONFIG = "expansion-config";
 	public static final String EXPANSION_CONFIG_REF = "expansion-config-ref";
 	public static final String HTTP_POSTER_REF = "http-poster-ref";
-	public static final String PREFIX = "prefix";
+	public static final String HTTP_CLIENT_CONFIG_REF = "http-client-config-ref";
+	public static final String SOURCE_REGEX = "source-regex";
+
+	public static final String DELETE_IDLE_STATS = "delete-idle-stats";
+	public static final String OMIT_COMPLEX_GAUGES = "omit-complex-gauges";
 	public static final String PREFIX_DELIMITER = "prefix-delimiter";
 	public static final String CLOCK_REF = "clock-ref";
 	public static final String DURATION_UNIT = "duration-unit";
@@ -59,7 +67,14 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	protected LibratoReporter createInstance() {
 		final String username = getProperty(USERNAME);
 		final String token = getProperty(TOKEN);
-		final String source = getProperty(SOURCE);
+
+		final String source;
+		if (hasProperty(SOURCE_SUPPLIER_REF)) {
+			source = getPropertyRef(SOURCE_SUPPLIER_REF, MetricPrefixSupplier.class).getPrefix();
+		}
+		else {
+			source = getProperty(SOURCE);
+		}
 
 		final LibratoReporter.Builder reporter = LibratoReporter.builder(getMetricRegistry(), username, token, source);
 
@@ -99,9 +114,19 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 			reporter.setHttpPoster(getPropertyRef(HTTP_POSTER_REF, HttpPoster.class));
 		}
 
-		if (hasProperty(PREFIX)) {
-			reporter.setPrefix(getProperty(PREFIX));
+		if (hasProperty(HTTP_CLIENT_CONFIG_REF)) {
+			reporter.setHttpClientConfig(getPropertyRef(HTTP_CLIENT_CONFIG_REF, AsyncHttpClientConfig.class));
 		}
+
+		if (hasProperty(DELETE_IDLE_STATS)) {
+			reporter.setDeleteIdleStats(getPropertyRef(DELETE_IDLE_STATS, boolean.class));
+		}
+
+		if (hasProperty(OMIT_COMPLEX_GAUGES)) {
+			reporter.setOmitComplexGauges(getPropertyRef(OMIT_COMPLEX_GAUGES, boolean.class));
+		}
+
+		reporter.setPrefix(getPrefix());
 
 		if (hasProperty(PREFIX_DELIMITER)) {
 			reporter.setPrefixDelimiter(getProperty(PREFIX_DELIMITER));
@@ -117,6 +142,10 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 
 		if (hasProperty(CLOCK_REF)) {
 			reporter.setClock(getPropertyRef(CLOCK_REF, Clock.class));
+		}
+
+		if (hasProperty(SOURCE_REGEX)) {
+			reporter.setSourceRegex(Pattern.compile(getProperty(SOURCE_REGEX)));
 		}
 
 		reporter.setFilter(getMetricFilter());

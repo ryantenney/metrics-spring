@@ -15,28 +15,28 @@
  */
 package com.ryantenney.metrics.spring;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import org.springframework.core.Ordered;
-import org.springframework.util.ReflectionUtils;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.codahale.metrics.annotation.Metric;
+import com.ryantenney.metrics.annotation.Metric;
+import org.springframework.core.Ordered;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INJECTABLE_REGISTERABLE_FIELDS;
 
-class MetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
+@Deprecated
+class LegacyMetricAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 
 	private static final AnnotationFilter FILTER = new AnnotationFilter(Metric.class, INJECTABLE_REGISTERABLE_FIELDS);
 
 	private final MetricRegistry metrics;
 
-	public MetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+	public LegacyMetricAnnotationBeanPostProcessor(final MetricRegistry metrics) {
 		super(Members.FIELDS, Phase.PRE_INIT, FILTER);
 		this.metrics = metrics;
 	}

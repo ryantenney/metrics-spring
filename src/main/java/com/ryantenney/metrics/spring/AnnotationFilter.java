@@ -44,7 +44,7 @@ class AnnotationFilter implements MethodFilter, FieldFilter {
         Modifier.SYNCHRONIZED   | Modifier.NATIVE       | Modifier.STRICT  |
         Modifier.TRANSIENT; // TRANSIENT flag is the same as the VARARGS flag
 
-	public static final int INJECTABLE_FIELDS = FIELDS ^ (FINAL | STATIC);
+	public static final int INJECTABLE_REGISTERABLE_FIELDS = FIELDS ^ (STATIC);
 	public static final int INSTANCE_FIELDS = FIELDS ^ STATIC;
 	public static final int INSTANCE_METHODS = METHODS ^ (ABSTRACT | STATIC);
 	public static final int PROXYABLE_METHODS = METHODS ^ (ABSTRACT | FINAL | PRIVATE | STATIC);

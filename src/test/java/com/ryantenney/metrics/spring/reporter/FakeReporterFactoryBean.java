@@ -34,7 +34,7 @@ public class FakeReporterFactoryBean extends AbstractScheduledReporterFactoryBea
 		TimeUnit durationUnit = getProperty(DURATION_UNIT, TimeUnit.class);
 		TimeUnit rateUnit = getProperty(RATE_UNIT, TimeUnit.class);
 
-		return new FakeReporter(getMetricRegistry(), getMetricFilter(), rateUnit, durationUnit);
+		return new FakeReporter(getMetricRegistry(), getMetricFilter(), getPrefix(), rateUnit, durationUnit);
 	}
 
 	@Override

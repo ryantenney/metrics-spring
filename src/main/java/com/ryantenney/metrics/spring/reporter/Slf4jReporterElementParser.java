@@ -19,6 +19,8 @@ import static com.ryantenney.metrics.spring.reporter.Slf4jReporterFactoryBean.*;
 
 public class Slf4jReporterElementParser extends AbstractReporterElementParser {
 
+	protected static final String LOG_LEVEL_STRING_REGEX = "^(?:TRACE|DEBUG|INFO|WARN|ERROR)$";
+
 	@Override
 	public String getType() {
 		return "slf4j";
@@ -34,9 +36,16 @@ public class Slf4jReporterElementParser extends AbstractReporterElementParser {
 		c.require(PERIOD, DURATION_STRING_REGEX, "Period is required and must be in the form '\\d+(ns|us|ms|s|m|h|d)'");
 		c.optional(MARKER);
 		c.optional(LOGGER);
+		c.optional(LEVEL, LOG_LEVEL_STRING_REGEX, "Level must be one of the enum constants from com.codahale.metrics.Slf4jReporter.LoggingLevel");
 
 		c.optional(RATE_UNIT, TIMEUNIT_STRING_REGEX, "Rate unit must be one of the enum constants from java.util.concurrent.TimeUnit");
 		c.optional(DURATION_UNIT, TIMEUNIT_STRING_REGEX, "Duration unit must be one of the enum constants from java.util.concurrent.TimeUnit");
+
+		c.optional(PREFIX);
+		c.optional(PREFIX_SUPPLIER_REF);
+		if (c.has(PREFIX) && c.has(PREFIX_SUPPLIER_REF)) {
+			c.reject(PREFIX_SUPPLIER_REF, "Reporter element must not specify both the 'prefix' and 'prefix-supplier-ref' attributes");
+		}
 
 		c.optional(FILTER_PATTERN);
 		c.optional(FILTER_REF);

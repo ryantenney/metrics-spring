@@ -28,6 +28,6 @@
 
 	<metrics:annotation-driven />
 
-	<bean id="coveriant-return-type" class="com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterfaceImpl" />
+	<bean id="metered-class" class="com.ryantenney.metrics.spring.LegacyAnnotationMeteredClassTest.LegacyMeteredClass" />
 
 </beans>

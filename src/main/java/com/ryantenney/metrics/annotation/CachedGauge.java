@@ -31,13 +31,14 @@ import java.util.concurrent.TimeUnit;
  *     public int getQueueSize() {
  *         return queue.getSize();
  *     }
- * 
+ *
  * </code></pre>
  * <p></p>
  * 
  * A gauge for the defining class with the name queueSize will be created which uses the annotated method's
  * return value as its value, and which caches the result for 30 seconds.
  */
+@Deprecated
 @com.codahale.metrics.annotation.CachedGauge(timeout = 0)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

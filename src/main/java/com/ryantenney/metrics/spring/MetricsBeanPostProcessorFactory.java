@@ -61,4 +61,19 @@ public class MetricsBeanPostProcessorFactory {
 		return new HealthCheckBeanPostProcessor(healthRegistry);
 	}
 
+	@Deprecated
+	public static AdvisingBeanPostProcessor legacyCounted(final MetricRegistry metricRegistry, final ProxyConfig proxyConfig) {
+		return new AdvisingBeanPostProcessor(LegacyCountedMethodInterceptor.POINTCUT, LegacyCountedMethodInterceptor.adviceFactory(metricRegistry), proxyConfig);
+	}
+
+	@Deprecated
+	public static LegacyCachedGaugeAnnotationBeanPostProcessor legacyCachedGauge(final MetricRegistry metricRegistry) {
+		return new LegacyCachedGaugeAnnotationBeanPostProcessor(metricRegistry);
+	}
+
+	@Deprecated
+	public static LegacyMetricAnnotationBeanPostProcessor legacyMetric(final MetricRegistry metricRegistry) {
+		return new LegacyMetricAnnotationBeanPostProcessor(metricRegistry);
+	}
+
 }
