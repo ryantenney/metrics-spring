@@ -29,7 +29,6 @@ import com.librato.metrics.LibratoReporter;
 import com.librato.metrics.LibratoReporter.ExpandedMetric;
 import com.librato.metrics.LibratoReporter.MetricExpansionConfig;
 import com.librato.metrics.Sanitizer;
-import com.ning.http.client.AsyncHttpClientConfig;
 
 public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactoryBean<LibratoReporter> {
 
@@ -48,7 +47,6 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 	public static final String EXPANSION_CONFIG = "expansion-config";
 	public static final String EXPANSION_CONFIG_REF = "expansion-config-ref";
 	public static final String HTTP_POSTER_REF = "http-poster-ref";
-	public static final String HTTP_CLIENT_CONFIG_REF = "http-client-config-ref";
 	public static final String SOURCE_REGEX = "source-regex";
 
 	public static final String DELETE_IDLE_STATS = "delete-idle-stats";
@@ -112,10 +110,6 @@ public class LibratoReporterFactoryBean extends AbstractScheduledReporterFactory
 
 		if (hasProperty(HTTP_POSTER_REF)) {
 			reporter.setHttpPoster(getPropertyRef(HTTP_POSTER_REF, HttpPoster.class));
-		}
-
-		if (hasProperty(HTTP_CLIENT_CONFIG_REF)) {
-			reporter.setHttpClientConfig(getPropertyRef(HTTP_CLIENT_CONFIG_REF, AsyncHttpClientConfig.class));
 		}
 
 		if (hasProperty(DELETE_IDLE_STATS)) {

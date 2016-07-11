@@ -52,7 +52,6 @@ public class LibratoReporterElementParser extends AbstractReporterElementParser 
 		c.optional(SOURCE_REGEX);
 
 		c.optional(HTTP_POSTER_REF);
-		c.optional(HTTP_CLIENT_CONFIG_REF);
 
 		c.optional(DELETE_IDLE_STATS);
 		c.optional(OMIT_COMPLEX_GAUGES);
