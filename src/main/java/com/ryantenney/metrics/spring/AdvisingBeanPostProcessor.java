@@ -15,6 +15,9 @@
  */
 package com.ryantenney.metrics.spring;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.aopalliance.aop.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +42,8 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 	private final AdviceFactory adviceFactory;
 	private final ProxyConfig proxyConfig;
 
+	private final ConcurrentMap<Class<?>, Boolean> applicabilityCache = new ConcurrentHashMap<Class<?>, Boolean>(256);
+
 	public AdvisingBeanPostProcessor(final Pointcut pointcut, final AdviceFactory adviceFactory, final ProxyConfig proxyConfig) {
 		this.pointcut = pointcut;
 		this.adviceFactory = adviceFactory;
@@ -58,7 +63,7 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 
 		final Class<?> targetClass = AopUtils.getTargetClass(bean);
 
-		if (AopUtils.canApply(pointcut, targetClass)) {
+		if (canApply(targetClass)) {
 			final Advice advice = adviceFactory.getAdvice(bean, targetClass);
 			final Advisor advisor = new DefaultPointcutAdvisor(pointcut, advice);
 
@@ -85,6 +90,17 @@ class AdvisingBeanPostProcessor implements BeanPostProcessor {
 		}
 
 		return bean;
+	}
+
+	private boolean canApply(final Class<?> targetClass) {
+		Boolean cachedApplicability = applicabilityCache.get(targetClass);
+		if (cachedApplicability != null) {
+			return (boolean) cachedApplicability;
+		}
+
+		boolean canApply = AopUtils.canApply(pointcut, targetClass);
+		applicabilityCache.putIfAbsent(targetClass, canApply);
+		return canApply;
 	}
 
 }
