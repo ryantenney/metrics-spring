@@ -48,8 +48,6 @@ public class ElasticSearchReporterFactoryBean
             .hosts(getProperty(ElasticSearchReporterElementParser.HOSTS, String[].class))
             .build();
 
-        elasticsearchReporter.start(getPeriod(), TimeUnit.NANOSECONDS);
-
         return elasticsearchReporter;
     }
 
