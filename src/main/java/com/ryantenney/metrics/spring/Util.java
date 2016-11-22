@@ -19,13 +19,13 @@ import static com.codahale.metrics.MetricRegistry.name;
 
 import java.lang.reflect.Member;
 
+import com.codahale.metrics.annotation.CachedGauge;
+import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Gauge;
 import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Metric;
 import com.codahale.metrics.annotation.Timed;
-import com.ryantenney.metrics.annotation.CachedGauge;
-import com.ryantenney.metrics.annotation.Counted;
-import com.ryantenney.metrics.annotation.Metric;
 
 class Util {
 
@@ -56,6 +56,21 @@ class Util {
 	}
 
 	static String forMetricField(Class<?> klass, Member member, Metric annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+	}
+
+	@Deprecated
+	static String forCachedGauge(Class<?> klass, Member member, com.ryantenney.metrics.annotation.CachedGauge annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+	}
+
+	@Deprecated
+	static String forCountedMethod(Class<?> klass, Member member, com.ryantenney.metrics.annotation.Counted annotation) {
+		return chooseName(annotation.name(), annotation.absolute(), klass, member);
+	}
+
+	@Deprecated
+	static String forMetricField(Class<?> klass, Member member, com.ryantenney.metrics.annotation.Metric annotation) {
 		return chooseName(annotation.name(), annotation.absolute(), klass, member);
 	}
 

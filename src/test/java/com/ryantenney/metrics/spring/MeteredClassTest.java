@@ -42,10 +42,10 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.RatioGauge;
 import com.codahale.metrics.Timer;
+import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
-import com.ryantenney.metrics.annotation.Counted;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:metered-class.xml")
@@ -426,7 +426,7 @@ public class MeteredClassTest {
 			this.gaugedField = value;
 		}
 
-		@com.ryantenney.metrics.annotation.CachedGauge(timeout = 1, timeoutUnit = TimeUnit.DAYS)
+		@com.codahale.metrics.annotation.CachedGauge(timeout = 1, timeoutUnit = TimeUnit.DAYS)
 		public int cachedGaugedMethod() {
 			return this.gaugedField;
 		}

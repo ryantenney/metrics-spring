@@ -28,6 +28,7 @@
 
 	<metrics:annotation-driven />
 
-	<bean id="coveriant-return-type" class="com.ryantenney.metrics.spring.CovariantReturnTypeTest.MeteredInterfaceImpl" />
+	<bean id="target1" class="com.ryantenney.metrics.spring.LegacyMetricAnnotationTest.Target" />
+	<bean id="target2" class="com.ryantenney.metrics.spring.LegacyMetricAnnotationTest.Target" />
 
 </beans>

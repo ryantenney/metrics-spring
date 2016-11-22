@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
@@ -38,10 +39,13 @@ import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.ganglia.GangliaReporter;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.ryantenney.metrics.spring.reporter.FakeReporter;
+import com.ryantenney.metrics.spring.reporter.MetricPrefixSupplier;
 
 import static org.hamcrest.Matchers.*;
 
 public class ReporterTest {
+
+	private static final String TEST_PREFIX = "test.i-001a391f";
 
 	@SuppressWarnings("resource")
 	@Test
@@ -58,6 +62,7 @@ public class ReporterTest {
 			Thread.sleep(1000);
 
 			one = ctx.getBean("fakeReporterOne", FakeReporter.class);
+			Assert.assertNotNull(one);
 			Assert.assertFalse(AopUtils.isAopProxy(one.getRegistry()));
 			Assert.assertSame(registry, one.getRegistry());
 			Assert.assertEquals("milliseconds", one.getDurationUnit());
@@ -65,17 +70,22 @@ public class ReporterTest {
 			Assert.assertEquals(100000000, one.getPeriod());
 			Assert.assertThat(one.getCalls(), allOf(greaterThanOrEqualTo(9), lessThanOrEqualTo(11)));
 			Assert.assertEquals("[MetricFilter regex=foo]", one.getFilter().toString());
+			Assert.assertEquals("some.crummy.prefix", one.getPrefix());
 			Assert.assertTrue(one.isRunning());
 
 			two = ctx.getBean("fakeReporterTwo", FakeReporter.class);
-			Assert.assertFalse(AopUtils.isAopProxy(one.getRegistry()));
+			Assert.assertNotNull(two);
+			Assert.assertFalse(AopUtils.isAopProxy(two.getRegistry()));
 			Assert.assertSame(registry, two.getRegistry());
 			Assert.assertEquals("nanoseconds", two.getDurationUnit());
 			Assert.assertEquals("hour", two.getRateUnit());
 			Assert.assertEquals(100000000, two.getPeriod());
 			Assert.assertThat(two.getCalls(), allOf(greaterThanOrEqualTo(9), lessThanOrEqualTo(11)));
 			Assert.assertEquals(ctx.getBean(BarFilter.class), two.getFilter());
-			Assert.assertTrue(one.isRunning());
+			Assert.assertEquals(TEST_PREFIX, two.getPrefix());
+			Assert.assertTrue(two.isRunning());
+
+			Assert.assertNull(ctx.getBean("fakeReporterThree", FakeReporter.class));
 
 			// Make certain reporters aren't candidates for autowiring
 			ReporterCollaborator collab = ctx.getBean(ReporterCollaborator.class);
@@ -107,6 +117,7 @@ public class ReporterTest {
 			// intentionally avoids calling ctx.start()
 
 			Assert.assertNotNull(ctx.getBean(ConsoleReporter.class));
+			Assert.assertNotNull(ctx.getBean(CsvReporter.class));
 			Assert.assertNotNull(ctx.getBean(JmxReporter.class));
 			Assert.assertNotNull(ctx.getBean(Slf4jReporter.class));
 			Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
@@ -155,6 +166,15 @@ public class ReporterTest {
 		@Override
 		public boolean matches(String name, Metric metric) {
 			return false;
+		}
+
+	}
+
+	public static class TestMetricPrefixSupplier implements MetricPrefixSupplier {
+
+		@Override
+		public String getPrefix() {
+			return TEST_PREFIX;
 		}
 
 	}

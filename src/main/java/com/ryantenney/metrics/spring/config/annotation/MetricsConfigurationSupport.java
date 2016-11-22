@@ -112,6 +112,27 @@ public class MetricsConfigurationSupport implements ImportAware {
 		return MetricsBeanPostProcessorFactory.healthCheck(getHealthCheckRegistry());
 	}
 
+	@Deprecated
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public BeanPostProcessor legacyCountedAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.legacyCounted(getMetricRegistry(), proxyConfig);
+	}
+
+	@Deprecated
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public BeanPostProcessor legacyCachedGaugeAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.legacyCachedGauge(getMetricRegistry());
+	}
+
+	@Deprecated
+	@Bean
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public BeanPostProcessor legacyMetricAnnotationBeanPostProcessor() {
+		return MetricsBeanPostProcessorFactory.legacyMetric(getMetricRegistry());
+	}
+
 	protected MetricRegistry getMetricRegistry() {
 		if (metricRegistry == null) {
 			synchronized (lock) {

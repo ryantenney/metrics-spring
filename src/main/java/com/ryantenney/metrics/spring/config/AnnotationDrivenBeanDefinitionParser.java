@@ -112,6 +112,22 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 					.setFactoryMethod("healthCheck")
 					.addConstructorArgReference(healthCheckBeanName));
 
+		registerComponent(parserContext,
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("legacyCounted")
+					.addConstructorArgReference(metricsBeanName)
+					.addConstructorArgValue(proxyConfig));
+
+		registerComponent(parserContext,
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("legacyCachedGauge")
+					.addConstructorArgReference(metricsBeanName));
+
+		registerComponent(parserContext,
+				build(MetricsBeanPostProcessorFactory.class, source, ROLE_INFRASTRUCTURE)
+					.setFactoryMethod("legacyMetric")
+					.addConstructorArgReference(metricsBeanName));
+
 		//@formatter:on
 
 		parserContext.popAndRegisterContainingComponent();

@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
-import com.ryantenney.metrics.annotation.Metric;
+import com.codahale.metrics.annotation.Metric;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aop-field-injection-interaction.xml")

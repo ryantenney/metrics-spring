@@ -15,34 +15,33 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
+import java.io.File;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.MarkerFactory;
+import com.codahale.metrics.Clock;
+import com.codahale.metrics.CsvReporter;
 
-import com.codahale.metrics.Slf4jReporter;
-import com.codahale.metrics.Slf4jReporter.LoggingLevel;
-
-public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBean<Slf4jReporter> {
+public class CsvReporterFactoryBean extends AbstractScheduledReporterFactoryBean<CsvReporter> {
 
 	// Required
 	public static final String PERIOD = "period";
 
 	// Optional
+	public static final String CLOCK_REF = "clock-ref";
+	public static final String DIRECTORY = "directory";
+	public static final String LOCALE = "locale";
 	public static final String DURATION_UNIT = "duration-unit";
 	public static final String RATE_UNIT = "rate-unit";
-	public static final String MARKER = "marker";
-	public static final String LOGGER = "logger";
-	public static final String LEVEL = "level";
 
 	@Override
-	public Class<Slf4jReporter> getObjectType() {
-		return Slf4jReporter.class;
+	public Class<CsvReporter> getObjectType() {
+		return CsvReporter.class;
 	}
 
 	@Override
-	protected Slf4jReporter createInstance() {
-		final Slf4jReporter.Builder reporter = Slf4jReporter.forRegistry(getMetricRegistry());
+	protected CsvReporter createInstance() {
+		final CsvReporter.Builder reporter = CsvReporter.forRegistry(getMetricRegistry());
 
 		if (hasProperty(DURATION_UNIT)) {
 			reporter.convertDurationsTo(getProperty(DURATION_UNIT, TimeUnit.class));
@@ -53,26 +52,36 @@ public class Slf4jReporterFactoryBean extends AbstractScheduledReporterFactoryBe
 		}
 
 		reporter.filter(getMetricFilter());
-		reporter.prefixedWith(getPrefix());
 
-		if (hasProperty(MARKER)) {
-			reporter.markWith(MarkerFactory.getMarker(getProperty(MARKER)));
+		if (hasProperty(CLOCK_REF)) {
+			reporter.withClock(getPropertyRef(CLOCK_REF, Clock.class));
 		}
 
-		if (hasProperty(LOGGER)) {
-			reporter.outputTo(LoggerFactory.getLogger(getProperty(LOGGER)));
+		if (hasProperty(LOCALE)) {
+			reporter.formatFor(parseLocale(getProperty(LOCALE)));
 		}
 
-		if (hasProperty(LEVEL)) {
-			reporter.withLoggingLevel(getProperty(LEVEL, LoggingLevel.class));
+		File dir = new File(getProperty(DIRECTORY));
+		if (!dir.mkdirs() && !dir.isDirectory()) {
+			throw new IllegalArgumentException("Directory doesn't exist or couldn't be created");
 		}
 
-		return reporter.build();
+		return reporter.build(dir);
 	}
 
 	@Override
 	protected long getPeriod() {
 		return convertDurationString(getProperty(PERIOD));
+	}
+
+	protected Locale parseLocale(String localeString) {
+		final int underscore = localeString.indexOf('_');
+		if (underscore == -1) {
+			return new Locale(localeString);
+		}
+		else {
+			return new Locale(localeString.substring(0, underscore), localeString.substring(underscore + 1));
+		}
 	}
 
 }

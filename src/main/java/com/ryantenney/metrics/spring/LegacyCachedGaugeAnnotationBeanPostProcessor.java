@@ -21,17 +21,18 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ReflectionUtils;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.CachedGauge;
+import com.ryantenney.metrics.annotation.CachedGauge;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.INSTANCE_METHODS;
 
-class CachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
+@Deprecated
+class LegacyCachedGaugeAnnotationBeanPostProcessor extends AbstractAnnotationBeanPostProcessor implements Ordered {
 
 	private static final AnnotationFilter FILTER = new AnnotationFilter(CachedGauge.class, INSTANCE_METHODS);
 
 	private final MetricRegistry metrics;
 
-	public CachedGaugeAnnotationBeanPostProcessor(final MetricRegistry metrics) {
+	public LegacyCachedGaugeAnnotationBeanPostProcessor(final MetricRegistry metrics) {
 		super(Members.METHODS, Phase.POST_INIT, FILTER);
 		this.metrics = metrics;
 	}

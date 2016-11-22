@@ -25,17 +25,18 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Counted;
+import com.ryantenney.metrics.annotation.Counted;
 
 import static com.ryantenney.metrics.spring.AnnotationFilter.PROXYABLE_METHODS;
 
-class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, Counter> {
+@Deprecated
+class LegacyCountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, Counter> {
 
 	public static final Class<Counted> ANNOTATION = Counted.class;
 	public static final Pointcut POINTCUT = new AnnotationMatchingPointcut(null, ANNOTATION);
 	public static final MethodFilter METHOD_FILTER = new AnnotationFilter(ANNOTATION, PROXYABLE_METHODS);
 
-	public CountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
+	public LegacyCountedMethodInterceptor(final MetricRegistry metricRegistry, final Class<?> targetClass) {
 		super(metricRegistry, targetClass, ANNOTATION, METHOD_FILTER);
 	}
 
@@ -66,7 +67,7 @@ class CountedMethodInterceptor extends AbstractMetricMethodInterceptor<Counted, 
 		return new AdviceFactory() {
 			@Override
 			public Advice getAdvice(Object bean, Class<?> targetClass) {
-				return new CountedMethodInterceptor(metricRegistry, targetClass);
+				return new LegacyCountedMethodInterceptor(metricRegistry, targetClass);
 			}
 		};
 	}
