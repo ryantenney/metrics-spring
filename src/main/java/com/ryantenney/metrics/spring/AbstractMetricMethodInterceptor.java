@@ -30,7 +30,7 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
 
 import com.codahale.metrics.MetricRegistry;
 
-abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implements MethodInterceptor, MethodCallback {
+public abstract class AbstractMetricMethodInterceptor<A extends Annotation, M> implements MethodInterceptor, MethodCallback {
 
 	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
