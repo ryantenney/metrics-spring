@@ -16,9 +16,14 @@
 package com.ryantenney.metrics.spring;
 
 import org.springframework.aop.framework.ProxyConfig;
+import org.springframework.aop.Pointcut;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MetricsBeanPostProcessorFactory {
 
@@ -60,5 +65,37 @@ public class MetricsBeanPostProcessorFactory {
 	public static HealthCheckBeanPostProcessor healthCheck(final HealthCheckRegistry healthRegistry) {
 		return new HealthCheckBeanPostProcessor(healthRegistry);
 	}
-
+	
+	public static AdvisingBeanPostProcessor customInterceptorFactoryMethod(String interceptorName, final MetricRegistry metricRegistry, final ProxyConfig proxyConfig){
+		try{
+			Class<?> interceptorClass = Class.forName(interceptorName);
+			Field fieldPointCut = interceptorClass.getDeclaredField("POINTCUT");
+			Pointcut pointcut = (Pointcut) fieldPointCut.get(null);
+			Method factoryMethod = interceptorClass.getDeclaredMethod("adviceFactory",MetricRegistry.class);
+			AdviceFactory adviceFactory = (AdviceFactory) factoryMethod.invoke(null, metricRegistry);
+			return new AdvisingBeanPostProcessor(pointcut, adviceFactory, proxyConfig);
+		}
+		catch(ClassNotFoundException e){
+			e.printStackTrace();
+		}
+		catch(SecurityException e){
+			e.printStackTrace();
+		}
+		catch(NoSuchMethodException e){
+			e.printStackTrace();
+		}
+		catch(NoSuchFieldException e){
+			e.printStackTrace();
+		}
+		catch(IllegalArgumentException e){
+			e.printStackTrace();
+		}
+		catch(IllegalAccessException e){
+			e.printStackTrace();
+		}
+		catch(InvocationTargetException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
