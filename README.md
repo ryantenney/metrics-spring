@@ -1,10 +1,10 @@
-#Metrics for Spring
+# Metrics for Spring
 
 [![Build Status](https://img.shields.io/travis/ryantenney/metrics-spring/master.svg?style=flat-square)](https://travis-ci.org/ryantenney/metrics-spring)
 ![Maven Central](https://img.shields.io/maven-central/v/com.ryantenney.metrics/metrics-spring.svg?style=flat-square)
 ![GitHub license](https://img.shields.io/github/license/ryantenney/metrics-spring.svg?style=flat-square)
 
-##About
+## About
 
 The `metrics-spring` module integrates [Dropwizard Metrics library](http://metrics.dropwizard.io/) with Spring, and provides XML and Java configuration.
 
@@ -17,7 +17,7 @@ This module does the following:
 * Creates reporters from XML config and binds them to the Spring lifecycle
 * Registers metrics and metric sets in XML
 
-###Maven
+### Maven
 
 Current version is 3.1.3, which is compatible with Metrics 3.1.2
 
@@ -29,7 +29,7 @@ Current version is 3.1.3, which is compatible with Metrics 3.1.2
 </dependency>
 ```
 
-###Basic Usage
+### Basic Usage
 
 As of version 3, `metrics-spring` may be configured using XML or Java, depending on your personal preference.
 
@@ -101,7 +101,7 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 }
 ```
 
-###XML Config Documentation
+### XML Config Documentation
 
 The `<metrics:annotation-driven />` element is required, and has 4 optional arguments:
 * Attributes
@@ -137,7 +137,7 @@ The `<metrics:register />` element registers with the MetricRegistry a bean whic
  * `<bean />` - The beans to register with the specified registry.
   * `metrics:name` attribute on the bean element - specifies the name with which the metric will be registered. Optional if the bean is a MetricSet.
 
-###Java Config Documentation
+### Java Config Documentation
 
 A `@Configuration` class annotated with `@EnableMetrics` is functionally equivalent to using the `<metrics:annotation-driven />` element.
 
@@ -173,11 +173,11 @@ public class Foo {
 As `@Gauge` doesn’t involve a proxy, it may be used on non-public fields and methods.
 Additionally, `@InjectMetric` may be used on non-public, non-final fields.
 
-###Users of the Maven Shade plugin
+### Users of the Maven Shade plugin
 
 Please see the [Shade Readme](SHADE-README.md)
 
-###Documentation
+### Documentation
 
 Javadocs are hosted at http://ryantenney.github.io/metrics-spring/docs/
 
@@ -195,7 +195,7 @@ Java and .NET applications. Take a look at YourKit's leading software products:
 
 ### License
 
-Copyright (c) 2012-2016 Ryan Tenney
+Copyright (c) 2012-2017 Ryan Tenney
 
 Portions Copyright (c) 2012-2013 Martello Technologies
 
