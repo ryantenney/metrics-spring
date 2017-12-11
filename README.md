@@ -105,8 +105,8 @@ public class SpringConfiguringClass extends MetricsConfigurerAdapter {
 
 The `<metrics:annotation-driven />` element is required, and has 4 optional arguments:
 * Attributes
- * `metric-registry` - the id of the `MetricRegsitry` bean with which the generated metrics should be registered. If omitted a new `MetricRegistry` bean is created.
- * `health-check-registry` - the id of the `HealthCheckRegsitry` bean with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` bean is created.
+ * `metric-registry` - the id of the `MetricRegistry` bean with which the generated metrics should be registered. If omitted a new `MetricRegistry` bean is created.
+ * `health-check-registry` - the id of the `HealthCheckRegistry` bean with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` bean is created.
  * `proxy-target-class` - if set to true, always creates CGLIB proxies instead of defaulting to JDK proxies. This *may* be necessary if you use class-based autowiring.
  * `expose-proxy` - if set to true, the target can access the proxy which wraps it by calling `AopContext.currentProxy()`.
 
@@ -122,7 +122,7 @@ The `<metrics:health-check-registry />` element constructs a new HealthCheckRegi
 The `<metrics:reporter />` element creates and starts a reporter:
 * Attributes
  * `id` - the bean name
- * `metric-registry` - the id of the `MetricRegsitry` bean for which the reporter should retrieve metrics
+ * `metric-registry` - the id of the `MetricRegistry` bean for which the reporter should retrieve metrics
  * `type` - the type of the reporter. Additional types may be registered through SPI (more on this later).
   * `console`: ConsoleReporter
   * `jmx`: JmxReporter
@@ -132,7 +132,7 @@ The `<metrics:reporter />` element creates and starts a reporter:
 
 The `<metrics:register />` element registers with the MetricRegistry a bean which extends implements Metric or MetricSet
 * Attributes
- * `metric-registry` - the id of the `MetricRegsitry` bean with which the metrics are to be registered
+ * `metric-registry` - the id of the `MetricRegistry` bean with which the metrics are to be registered
 * Child elements
  * `<bean />` - The beans to register with the specified registry.
   * `metrics:name` attribute on the bean element - specifies the name with which the metric will be registered. Optional if the bean is a MetricSet.
@@ -146,8 +146,8 @@ A `@Configuration` class annotated with `@EnableMetrics` is functionally equival
 
 The class may also implement the interface `MetricsConfigurer`, or extend the abstract class `MetricsConfigurerAdapter`
 
-* `getMetricRegistry()` - return the `MetricRegsitry` instance with which metrics should be registered. If omitted a new `MetricRegistry` instance is created.
-* `getHealthCheckRegistry()` - return the `HealthCheckRegsitry` instance with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` instance is created.
+* `getMetricRegistry()` - return the `MetricRegistry` instance with which metrics should be registered. If omitted a new `MetricRegistry` instance is created.
+* `getHealthCheckRegistry()` - return the `HealthCheckRegistry` instance with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` instance is created.
 * `configureReporters(MetricRegistry)` - configure reporters
 
 ###A Note on the Limitations of Spring AOP
