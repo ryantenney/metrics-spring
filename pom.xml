@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ryantenney.metrics</groupId>
 	<artifactId>metrics-spring</artifactId>
-	<version>4.0.0-SNAPSHOT</version>
+	<version>4.0.0</version>
 	<packaging>bundle</packaging>
 	<name>Metrics Spring Integration</name>
 	<description>Spring integration for Coda Hale's Metrics Library</description>
@@ -113,7 +113,7 @@
 			<dependency>
 				<groupId>io.dropwizard.metrics</groupId>
 				<artifactId>metrics-ganglia</artifactId>
-				<version>${metrics.version}</version>
+				<version>3.2.6</version>
 			</dependency>
 			<dependency>
 				<groupId>io.dropwizard.metrics</groupId>
@@ -338,7 +338,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-jmx</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+    </dependencies>
 	<build>
 		<pluginManagement>
 			<plugins>
