@@ -150,7 +150,7 @@ The class may also implement the interface `MetricsConfigurer`, or extend the ab
 * `getHealthCheckRegistry()` - return the `HealthCheckRegistry` instance with which to register any beans which extend the class `HealthCheck`. If omitted a new `HealthCheckRegistry` instance is created.
 * `configureReporters(MetricRegistry)` - configure reporters
 
-###A Note on the Limitations of Spring AOP
+### A Note on the Limitations of Spring AOP
 
 Due to limitations of Spring AOP only public methods can be proxied, so `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted` have no effect on non-public methods. Additionally, calling an annotated method from within the same class will not go through the proxy.
 
