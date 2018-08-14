@@ -33,7 +33,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
  * @since 3.0
  */
 @Configuration
-public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport implements MetricsConfigurer {
+public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport {
 
 	private MetricsConfigurerComposite delegates = new MetricsConfigurerComposite();
 
@@ -47,17 +47,12 @@ public class DelegatingMetricsConfiguration extends MetricsConfigurationSupport 
 		}
 	}
 
-	@Override
-	public void configureReporters(final MetricRegistry metricRegistry) {
-		this.delegates.configureReporters(metricRegistry);
-	}
-
 	@Bean
 	@Override
 	public MetricRegistry getMetricRegistry() {
 		if (this.metricRegistry == null) {
 			this.metricRegistry = this.delegates.getMetricRegistry();
-			this.configureReporters(this.metricRegistry);
+			this.delegates.configureReporters(this.metricRegistry);
 		}
 		return this.metricRegistry;
 	}
