@@ -19,13 +19,14 @@ This module does the following:
 
 ### Maven
 
-Current version is 3.1.3, which is compatible with Metrics 3.1.2
+Current version is 4.0.0.  It is not compatible with Metrics 3.1.2 due to package name changes
+in dependencies.
 
 ```xml
 <dependency>
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>3.1.3</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 

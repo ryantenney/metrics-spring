@@ -15,7 +15,7 @@
  */
 package com.ryantenney.metrics.spring.reporter;
 
-import com.codahale.metrics.JmxReporter;
+import com.codahale.metrics.jmx.JmxReporter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.SmartLifecycle;
 
