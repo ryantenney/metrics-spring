@@ -19,13 +19,13 @@ This module does the following:
 
 ### Maven
 
-Current version is 3.1.3, which is compatible with Metrics 3.1.2
+Current version is 3.9.9, which is compatible with Metrics 4.0.2
 
 ```xml
 <dependency>
     <groupId>com.ryantenney.metrics</groupId>
     <artifactId>metrics-spring</artifactId>
-    <version>3.1.3</version>
+    <version>3.9.9</version>
 </dependency>
 ```
 
@@ -127,7 +127,6 @@ The `<metrics:reporter />` element creates and starts a reporter:
   * `console`: ConsoleReporter
   * `jmx`: JmxReporter
   * `slf4j`: Slf4jReporter
-  * `ganglia`: GangliaReporter (requires `metrics-ganglia`)
   * `graphite`: GraphiteReporter (requires `metrics-graphite`)
 
 The `<metrics:register />` element registers with the MetricRegistry a bean which extends implements Metric or MetricSet

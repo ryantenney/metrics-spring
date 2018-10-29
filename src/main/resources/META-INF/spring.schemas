@@ -1,3 +1,6 @@
 http\://www.ryantenney.com/schema/metrics/metrics.xsd=com/ryantenney/metrics/spring/config/metrics.xsd
 http\://www.ryantenney.com/schema/metrics/metrics-3.0.xsd=com/ryantenney/metrics/spring/config/metrics-3.0.xsd
 http\://www.ryantenney.com/schema/metrics/metrics-3.1.xsd=com/ryantenney/metrics/spring/config/metrics-3.1.xsd
+http\://www.ryantenney.com/schema/metrics/metrics-4.0.xsd=com/ryantenney/metrics/spring/config/metrics-4.0.xsd
+
+

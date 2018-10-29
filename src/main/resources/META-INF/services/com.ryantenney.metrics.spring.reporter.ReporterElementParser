@@ -3,7 +3,6 @@ com.ryantenney.metrics.spring.reporter.Slf4jReporterElementParser
 com.ryantenney.metrics.spring.reporter.ConsoleReporterElementParser
 com.ryantenney.metrics.spring.reporter.CsvReporterElementParser
 com.ryantenney.metrics.spring.reporter.GraphiteReporterElementParser
-com.ryantenney.metrics.spring.reporter.GangliaReporterElementParser
 com.ryantenney.metrics.spring.reporter.LibratoReporterElementParser
 com.ryantenney.metrics.spring.reporter.NewRelicReporterElementParser
 com.ryantenney.metrics.spring.reporter.DatadogReporterElementParser
