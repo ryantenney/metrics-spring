@@ -39,7 +39,6 @@
 	<metrics:reporter type="console" metric-registry="metrics" period="100ms" output-ref="printStream" clock-ref="mockClock" locale="en_GB" timezone="Europe/London" filter="com\..*" rate-unit="HOURS" duration-unit="NANOSECONDS" />
 	<metrics:reporter type="csv" metric-registry="metrics" period="1ms" directory="./tmp/" clock-ref="mockClock" locale="en_GB" filter="org\..*" rate-unit="HOURS" duration-unit="MINUTES" />
 	<metrics:reporter type="slf4j" metric-registry="metrics" period="100ms" logger="com.foo.bar" marker="foobar" prefix-supplier-ref="prefixSupplier" filter-ref="filter" rate-unit="MINUTES" duration-unit="MICROSECONDS" />
-	<metrics:reporter type="ganglia" metric-registry="metrics" period="100ms" group="localhost" port="5555" udp-mode="UNICAST" ttl="100" prefix="test" spoof="foobar" protocol="v3.1" dmax="5" tmax="10" uuid="550e8400-e29b-41d4-a716-446655440000" filter="org\..*" rate-unit="SECONDS" duration-unit="MILLISECONDS" />
 	<metrics:reporter type="jmx" metric-registry="metrics" domain="com.foo" mbean-server-ref="mbeanServer" filter-ref="filter" rate-unit="MILLISECONDS" duration-unit="DAYS" />
 	<metrics:reporter type="newrelic" metric-registry="metrics" period="1m" name="new relic reporter" prefix="newrelic-test"/>
 	<metrics:reporter type="datadog" metric-registry="metrics" period="1m" transport="http" api-key="a12b3c" host="test" />

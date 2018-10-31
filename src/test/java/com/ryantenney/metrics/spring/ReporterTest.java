@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2012 Ryan W Tenney (ryan@10e.us)
+ * Copyright © 2012 Ryan W Tenney (ryan@10e.us)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,26 @@
  */
 package com.ryantenney.metrics.spring;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.CsvReporter;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricFilter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
+import com.codahale.metrics.Slf4jReporter;
+import com.codahale.metrics.graphite.GraphiteReporter;
+import com.codahale.metrics.jmx.JmxReporter;
 import com.palominolabs.metrics.newrelic.NewRelicReporter;
+import com.ryantenney.metrics.spring.reporter.FakeReporter;
+import com.ryantenney.metrics.spring.reporter.MetricPrefixSupplier;
 
 import org.coursera.metrics.datadog.DatadogReporter;
 import org.junit.Assert;
@@ -27,21 +42,6 @@ import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.CsvReporter;
-import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricFilter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
-import com.codahale.metrics.Slf4jReporter;
-import com.codahale.metrics.ganglia.GangliaReporter;
-import com.codahale.metrics.graphite.GraphiteReporter;
-import com.ryantenney.metrics.spring.reporter.FakeReporter;
-import com.ryantenney.metrics.spring.reporter.MetricPrefixSupplier;
-
-import static org.hamcrest.Matchers.*;
 
 public class ReporterTest {
 
@@ -120,7 +120,7 @@ public class ReporterTest {
 			Assert.assertNotNull(ctx.getBean(CsvReporter.class));
 			Assert.assertNotNull(ctx.getBean(JmxReporter.class));
 			Assert.assertNotNull(ctx.getBean(Slf4jReporter.class));
-			Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
+			//Assert.assertNotNull(ctx.getBean(GangliaReporter.class));
 			Assert.assertNotNull(ctx.getBean(NewRelicReporter.class));
 			Assert.assertNotNull(ctx.getBean(DatadogReporter.class));
 

@@ -92,7 +92,6 @@
 					<tool:exports type="com.codahale.metrics.Slf4jReporter"/>
 					<tool:exports type="com.codahale.metrics.ConsoleReporter"/>
 					<tool:exports type="com.codahale.metrics.JmxReporter"/>
-					<tool:exports type="com.codahale.metrics.ganglia.GangliaReporter"/>
 					<tool:exports type="com.codahale.metrics.graphite.GraphiteReporter"/>
 					<tool:exports type="com.palominolabs.metrics.newrelic.NewRelicReporter"/>
 					<tool:exports type="org.coursera.metrics.datadog.DatadogReporter"/>
