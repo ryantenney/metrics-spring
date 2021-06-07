@@ -65,7 +65,7 @@
 		<datadog.version>1.1.3</datadog.version>
 		<spring.version>4.1.6.RELEASE</spring.version>
 		<slf4j.version>1.7.12</slf4j.version>
-		<logback.version>1.1.3</logback.version>
+		<logback.version>1.2.0</logback.version>
 		<aspectjweaver.version>1.8.5</aspectjweaver.version>
 		<hamcrest.version>1.3</hamcrest.version>
 		<junit.version>4.12</junit.version>
